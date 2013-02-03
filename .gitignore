@@ -1,0 +1,16 @@
+ignore project specific
+.project
+.buildpath
+.settings
+#ignore yii specific
+assets/*
+!assets/.gitignore
+protected/runtime/*
+!protected/runtime/.gitignore
+protected/data/*.db
+protected/tests/report/*
+yii/tests
+yii/build
+yii/demos
+yi/docs
+yii/requirements
