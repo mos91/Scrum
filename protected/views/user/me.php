@@ -2,7 +2,7 @@
 	$this->pageTitle=Yii::app()->name .' | Me';
 ?>
 <?php $this->beginClip('styles');?>
-<style type="text/css">
+<style type="text/css" media="screen">
 	.user-status {
 		margin-top:13px;
 	}

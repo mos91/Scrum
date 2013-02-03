@@ -1,5 +1,5 @@
 <?php
-class TopPanel extends CTabView {
+class BootstrapTabView extends CTabView {
 	public function init(){
 		
 	}

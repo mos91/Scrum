@@ -21,23 +21,18 @@ $projectName = Yii::app()->name.' project';
   <!--[if lt IE 8]>
   <link rel="stylesheet" type="text/css" href="<?php $baseUrl; ?>/css/ie.css" media="screen, projection" />
   <![endif]-->
-  <style>
+  <style type="text/css" media="screen">
   	body {
   		padding-top: 60px;
   	}
+
+	.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+		width: 1140px;
+	}
   </style>
   <?php if (isset($this->clips['styles'])) echo $this->clips['styles'];?>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="<?php echo $bootstrapBase?>/js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $('.nav a').click(function(){
-        $.load('index.php/' + $(this).attr('href'), function(responseText){
-          $('.container').prepend(responseText);
-        });
-      })
-    });
-  </script>
   <?php if (isset($this->clips['script'])) echo $this->clips['script'];?>
   <title><?php echo $pageTitle; ?></title>
 </head>
@@ -53,7 +48,7 @@ $projectName = Yii::app()->name.' project';
           </a>
           <a class="brand" href="#"><?php echo $projectName ?></a>
           <div class="nav-collapse collapse">
-            <?php $this->widget('TopPanel', array('activeTab' => $data['activeTab'],
+            <?php $this->widget('BootstrapTabView', array('activeTab' => $data['activeTab'],
 					'tabs' => array
 					(
 						'main' => array('title' => 'Main', 'url' => '/site/index'),
