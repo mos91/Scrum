@@ -46,7 +46,7 @@ $projectName = Yii::app()->name.' project';
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#"><?php echo $projectName ?></a>
+          <a class="brand" href="/project/index"><?php echo $projectName ?></a>
           <div class="nav-collapse collapse">
             <?php $this->widget('BootstrapTabView', array('activeTab' => $data['activeTab'],
 					'tabs' => array
@@ -67,8 +67,7 @@ $projectName = Yii::app()->name.' project';
       </div>
 </div>
 
-
-<div class="container">
+<div class="<?php echo isset($this->clips['containerCssClass'])? $this->clips['containerCssClass']:'container'?>">
   <?php echo $content ?>
 <hr/>
 <footer>

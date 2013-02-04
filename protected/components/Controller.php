@@ -5,6 +5,10 @@
  */
 class Controller extends CController
 {
+	public function representations($representation){
+		return array();
+	}
+	
 	public function render($view,$data=null,$return=false){
 		if($this->beforeRender($view))
 		{

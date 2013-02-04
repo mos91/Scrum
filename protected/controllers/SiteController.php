@@ -2,23 +2,10 @@
 
 class SiteController extends Controller
 {
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
-
 	public function actionIndex(){
 		$this->render('index', array('activeTab' => 'main'));
 	}
 
-	/**/
 	public function actionContacts(){
 		if ($this->request->isAjaxRequest)
 			$this->renderPartial('contacts.php', array('activeTab' => 'contacts'));

@@ -1,6 +1,5 @@
 ﻿<?php 
 	$this->pageTitle=Yii::app()->name.' | Main';
-	$activeTab = 'main';
 ?>
 <div class="hero-unit">
   <h1>Scrum</h1>
@@ -47,7 +46,6 @@
     </h2>
   </div>
   </div>
-  
 
 
 

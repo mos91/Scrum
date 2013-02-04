@@ -2,17 +2,6 @@
 
 class UserController extends Controller
 {
-	public function actions()
-	{
-		return array(
-				// page action renders "static" pages stored under 'protected/views/site/pages'
-				// They can be accessed via: index.php?r=site/page&view=FileName
-				'page'=>array(
-						'class'=>'CViewAction',
-				),
-		);
-	}
-
 	public function representations($representation){
 		$arr = array('table' => 'BootstrapTableView', 'grid' => 'BootstrapGridView');
 		return (!empty($representation) && isset($arr[$representation]))? $arr[$representation]: $arr; 
@@ -21,7 +10,7 @@ class UserController extends Controller
 	public function actionIndex(){
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('me');
+		$this->render('me' , array('activeTab' => 'you'));
 	}
 
 	public function actionMe(){
