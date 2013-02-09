@@ -53,8 +53,7 @@ $projectName = Yii::app()->name.' project';
 					(
 						'main' => array('title' => 'Main', 'url' => '/site/index'),
 						'you' => array('title' => 'You', 'url' => '/user/me'),
-						'team' => array('title' => 'Team', 'url' => '/user/team'), 
-						'contacts' => array('title' => 'Contacts', 'url' => '/site/contacts')
+						'team' => array('title' => 'Team', 'url' => '/user/team')
 					)
 				));?>
             <form class="navbar-form pull-right">

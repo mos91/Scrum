@@ -2,59 +2,108 @@
 $this->pageTitle=Yii::app()->name .' | Backlog';
 $this->clips['containerCssClass'] = 'container-fluid';
 ?>
+
+<?php $this->beginClip('styles')?>
+<style type="text/css">
+	.hero-unit {
+		padding:20px 60px;
+	}
+	
+	.breadcrumb {
+		background:none !important; 
+		padding:8px 0px;
+		margin:0px 0px 5px;
+	}
+</style>
+<?php $this->endClip('styles')?>
 <div class="container-fluid">
 	<div class="row-fluid">
-		<div class="span3">
+		<div class="span4">
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
-				<li class="nav-header">Sidebar</li>
-				<li class="active"><a href="#">Link</a></li>
-				<li><a href="#">Link</a></li>
-				<li><a href="#">Link</a></li>
-				<li><a href="#">Link</a></li>
+				<li class="nav-header">Backlog</li>
+				<li class="active">
+					<a href="#"><span>Backlog item 1</span><span class="label label-success pull-right">Success</span></a>			
+				</li>
+				<li>
+					<a href="#"><span>Backlog item 2</span><span class="label label-important pull-right">Important</span></a>
+				</li>
+				<li>
+					<a href="#"><span>Backlog item 3</span><span class="label label-success pull-right">Success</span></a>
+				</li>
 				</ul>
-			</div><!--/.well -->
-		</div><!--/span-->
-	<div class="span9">
-	
-<div class="hero-unit">
-<h1>Hello, world!</h1>
-<p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-<p><a class="btn btn-primary btn-large">Learn more »</a></p>
-</div>
-          <div class="row-fluid">
-          <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details »</a></p>
-          </div><!--/span-->
-          <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details »</a></p>
-          </div><!--/span-->
-          <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details »</a></p>
-          </div><!--/span-->
-          </div><!--/row-->
-          		<div class="row-fluid">
-            <div class="span4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#">View details »</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details »</a></p>
-              </div><!--/span-->
-              <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details »</a></p>
-              </div><!--/span-->
-              </div><!--/row-->
-              </div><!--/span-->
-              </div><!--/row-->
+			</div>
+			<div class="well well-large sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Tasks</li>
+					<li class="active">
+						<a href="#"><span>Task 1</span><span class="label label-important pull-right">New</span></a>
+					</li>
+					<li>
+						<a href="#"><span>Task 2</span><span class="label label-important pull-right">New</span></a>
+					</li>
+					<li>
+						<a href="#"><span>Task 3</span><span class="label label-important pull-right">New</span></a>
+					</li>			
+				</li>
+				</ul>
+			</div>
+		</div>
+		<div class="span8">	
+		<div class="hero-unit">		
+			<div class="row"><ul class="breadcrumb">
+			  <li><a href="#">Item 1</a> <span class="divider">/</span></li>
+			  <li class="active">Task 1</li>
+			</ul></div>
+			<form>
+			<div class="row">
+			<div class="span6">
+				  <fieldset>
+				    <legend>Item Details</legend>
+				    <label>Name</label>
+				    <input name="name" type="text" placeholde="type something..."></input>
+				    <label>Description</label>
+				    <textarea name="description" rows="10" maxlength="144"></textarea>
+				    <label>Status</label>
+				    <select name="status">
+				    	<option value="new">New</option><option value="ready_for_estimation">Ready for estimation</option>
+				    	<option value="ready_for_sprint">Ready for sprint</option>
+				    	<option value="assigned_to_sprint">Assigned to sprint</option>
+				    	<option value="todo">To do</option><option value="in_progress">In Progress</option>
+				    	<option value="to_test">To test</option><option value="done">Done</option>
+				    	<option value="sprint_complete">Sprint Complete</option>
+				    </select>
+				    <label>Type</label>
+				    <select name="type">
+				    	<option value="feature">Feature</option><option value="bug">Bug</option>
+				    	<option value="suggestion">Suggestion</option><option value="other">Other</option>
+				    </select>
+				    <label>Created by</label>
+				    <select class="span5" name="created_by" placeholder="Select something...">
+				    	<option value="1">Jonh Doe</option>
+				    	<option value="2">Jack Shepard</option>
+				    	<option value="3">Antony Hartmann</option>
+				    	<option value="4">Gregory Ivanesko</option>
+				    	<option value="5">Basil Kulish</option>
+				    	<option value="6">James Mute</option>
+				    </select>	
+				 </fieldset>
+			 </div>
+			 <div class="span6">
+			 <fieldset>
+			 	<legend>Estimates</legend>
+			 	<label>Estimate efforts</label>
+			    <input type="range" name="estimate_efforts" min="1" max="10">
+			    <label>Risk</label>
+			    <input type="range" name="risk" min="1" max="10">
+			    <label>Priority</label>
+			    <input type="range" name="priority" min="1" max="10">
+			    <label>Value</label>
+			    <input type="range" name="value" min="1" max="10">
+			 </fieldset>
+		     </div>
+			 </div>
+			</form>
+		</div>
+		</div>
+		</div>
