@@ -14,12 +14,19 @@ $this->clips['containerCssClass'] = 'container-fluid';
 		padding:8px 0px;
 		margin:0px 0px 5px;
 	}
+	
+	#backlog {
+		height:300px;
+	}
+	
+	#tasks {
+		height:265px;
+	}
 </style>
 <?php $this->endClip('styles')?>
-<div class="container-fluid">
 	<div class="row-fluid">
 		<div class="span4">
-			<div class="well sidebar-nav">
+			<div id="backlog" class="well sidebar-nav">
 				<ul class="nav nav-list">
 				<li class="nav-header">Backlog</li>
 				<li class="active">
@@ -33,7 +40,7 @@ $this->clips['containerCssClass'] = 'container-fluid';
 				</li>
 				</ul>
 			</div>
-			<div class="well well-large sidebar-nav">
+			<div id="tasks" class="well well-large sidebar-nav">
 				<ul class="nav nav-list">
 					<li class="nav-header">Tasks</li>
 					<li class="active">
@@ -52,8 +59,7 @@ $this->clips['containerCssClass'] = 'container-fluid';
 		<div class="span8">	
 		<div class="hero-unit">		
 			<div class="row"><ul class="breadcrumb">
-			  <li><a href="#">Item 1</a> <span class="divider">/</span></li>
-			  <li class="active">Task 1</li>
+			  <li class="active"><a href="#">Item 1</a></li>
 			</ul></div>
 			<form>
 			<div class="row">
@@ -104,6 +110,5 @@ $this->clips['containerCssClass'] = 'container-fluid';
 		     </div>
 			 </div>
 			</form>
-		</div>
 		</div>
 		</div>

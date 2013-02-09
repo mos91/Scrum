@@ -68,11 +68,10 @@ $projectName = Yii::app()->name.' project';
 
 <div class="<?php echo isset($this->clips['containerCssClass'])? $this->clips['containerCssClass']:'container'?>">
   <?php echo $content ?>
-<hr/>
-<footer>
-  	<p>&copy; <?php echo $projectName?>, <?php echo $endDate?></p>
-</footer>
 </div>
-
+<div class="<?php echo isset($this->clips['containerCssClass'])? $this->clips['containerCssClass']:'container'?>"><footer>
+	<hr/>
+  	<p>&copy; <?php echo $projectName?>, <?php echo $endDate?></p>
+</footer></div>
 </body>
 </html>

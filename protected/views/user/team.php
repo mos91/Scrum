@@ -14,12 +14,6 @@
 </style>
 <?php $this->endClip('styles');?>
 <div class="row"><form>
-<div class="span2">
-<select name="current_project">
-	<option value="project_1">project 1</option>
-	<option value="project_2">project 2</option>
-</select>
-</div>
 <div class="span3 pull-right">
 	<?php $this->widget('BootstrapPills', array('activeTab' => $activeRepresentation,
 				'tabs' => array( 
