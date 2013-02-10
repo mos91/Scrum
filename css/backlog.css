@@ -11,6 +11,7 @@
 .container-fluid {
 	padding-left:10px;
 	padding-right:10px;
+	min-width:1024px;
 }
 /*--------------icons--------------------*/
 .bug {
@@ -40,6 +41,20 @@
 	display:inline-block;
 	background-image : url("/images/common/16/question.png");
 }
+
+.avatar_16 {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background-image : url("/images/avatar_male/avatar_16.png");
+}
+
+.avatar_32 {
+	width:32px;
+	height:32px;
+	display:inline-block;
+	background-image : url("/images/avatar_male/avatar_32.png");
+}
 /*-------------backlog------------------*/
 #backlog {
 	height:300px;
@@ -47,18 +62,27 @@
 
 #backlog a {
 	padding:3px 15px 3px 11px;
-	height:48px;
+	height:56px;
 }
 
-#backlog a > :first-child {
+#backlog a > :first-child, #backlog a > .avatar_16 {
 	margin-bottom:-3px;
 	margin-right:7px;
 }
 
-/*---------------------item-styles-------------*/
 #backlog .short-item-description {
 	font-size:12px;
 	float:left;
+}
+
+#backlog .item-bottom-part {
+	margin-top:16px;
+}
+
+#backlog .assigned-people {
+	display:inline-block;
+	float:right;
+	margin-right:7px;
 }
 
 #backlog .item-comments,#backlog .item-news {

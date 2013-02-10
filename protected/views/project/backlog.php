@@ -4,60 +4,82 @@ $this->clips['containerCssClass'] = 'container-fluid';
 ?>
 
 <?php $this->beginClip('styles')?>
-<style type="text/css">
-	.hero-unit {
-		padding:20px 60px;
-	}
-	
-	.breadcrumb {
-		background:none !important; 
-		padding:8px 0px;
-		margin:0px 0px 5px;
-	}
-	
-	#backlog {
-		height:300px;
-	}
-	
-	#tasks {
-		height:265px;
-	}
-</style>
+	<link rel="stylesheet" href="/css/backlog.css">
 <?php $this->endClip('styles')?>
 	<div class="row-fluid">
-		<div class="span4">
-			<div id="backlog" class="well sidebar-nav">
-				<ul class="nav nav-list">
-				<li class="nav-header">Backlog</li>
-				<li class="active">
-					<a href="#"><span>Backlog item 1</span><span class="label label-success pull-right">Success</span></a>			
-				</li>
-				<li>
-					<a href="#"><span>Backlog item 2</span><span class="label label-important pull-right">Important</span></a>
-				</li>
-				<li>
-					<a href="#"><span>Backlog item 3</span><span class="label label-success pull-right">Success</span></a>
-				</li>
-				</ul>
-			</div>
-			<div id="tasks" class="well well-large sidebar-nav">
-				<ul class="nav nav-list">
-					<li class="nav-header">Tasks</li>
-					<li class="active">
-						<a href="#"><span>Task 1</span><span class="label label-important pull-right">New</span></a>
-					</li>
-					<li>
-						<a href="#"><span>Task 2</span><span class="label label-important pull-right">New</span></a>
-					</li>
-					<li>
-						<a href="#"><span>Task 3</span><span class="label label-important pull-right">New</span></a>
-					</li>			
-				</li>
-				</ul>
-			</div>
+		<div class="span7">
+			<ul id="backlog" class="nav nav-list">
+			<li class="nav-header">Backlog</li>
+			<li class="active">
+				<a href="#">
+					<div class="bug"></div>
+					<span>Backlog item 1</span>
+					<span class="label label-success pull-right">Done</span>
+					<div class="assigned-people">
+						<div class="avatar_16"></div>
+						<div class="avatar_16"></div>
+						<div class="avatar_16"></div>
+						<div class="avatar_16"></div>
+					</div>
+					<div class="item-bottom-part">
+						<!-- 75 cимволов + троеточие -->
+						<div class="short-item-description">
+							Donec sed odio dui. Cras justo odio,
+							dapibus ac facilisis in, egestas eget quam...
+						</div>
+						<div class="item-news">0 news</div>
+						<div class="item-comments">1 comment</div>
+					</div>
+				</a>			
+			</li>
+			<li>
+				<a href="#">
+					<div class="brainstorm"></div>
+					<span>Backlog item 2</span>
+					<span class="label label-important pull-right">Ready for estimation</span>
+					<div class="assigned-people">
+						<div class="avatar_16"></div>
+						<div class="avatar_16"></div>
+					</div>
+					<div class="item-bottom-part">
+						<div class="short-item-description muted">Short description...</div>
+						<div class="item-news muted">1 news</div>
+						<div class="item-comments muted">0 comments</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="feature"></div>
+					<span>Backlog item 3</span>
+					<span class="label label-success pull-right">Done</span>
+					<div class="assigned-people">
+					</div>
+					<div class="item-bottom-part">
+						<div class="short-item-description muted">Short description...</div>
+						<div class="item-news muted">1 news</div>
+						<div class="item-comments muted">0 comments</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="other"></div>
+					<span>Backlog item 4</span>
+					<span class="label label-important pull-right">To Do</span>
+					<div class="assigned-people">
+						<div class="avatar_16"></div>
+					</div>
+					<div class="item-bottom-part">
+						<div class="short-item-description muted">Short description...</div>
+						<div class="item-news muted">2 news</div>
+						<div class="item-comments muted">2 comments</span></div>
+					</div>
+				</a>
+			</li>
+			</ul>
 		</div>
-		<div class="span8">	
-		<div class="hero-unit">		
+		<div class="span5">	
 			<div class="row"><ul class="breadcrumb">
 			  <li class="active"><a href="#">Item 1</a></li>
 			</ul></div>
@@ -110,5 +132,4 @@ $this->clips['containerCssClass'] = 'container-fluid';
 		     </div>
 			 </div>
 			</form>
-		</div>
 		</div>
