@@ -1,0 +1,75 @@
+.hero-unit {
+		padding:20px 60px;
+}
+
+.breadcrumb {
+	background:none !important; 
+	padding:8px 0px;
+	margin:0px 0px 5px;
+}
+
+.container-fluid {
+	padding-left:10px;
+	padding-right:10px;
+}
+/*--------------icons--------------------*/
+.bug {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background-image : url("/images/bug/set_tiny_green/bug_exclamation.png");
+}
+
+.brainstorm {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background-image : url("/images/brainstorm/brainstorming_16.png");
+}
+
+.feature {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background-image : url("/images/common/16/star.png");
+}
+
+.other {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background-image : url("/images/common/16/question.png");
+}
+/*-------------backlog------------------*/
+#backlog {
+	height:300px;
+}
+
+#backlog a {
+	padding:3px 15px 3px 11px;
+	height:48px;
+}
+
+#backlog a > :first-child {
+	margin-bottom:-3px;
+	margin-right:7px;
+}
+
+/*---------------------item-styles-------------*/
+#backlog .short-item-description {
+	font-size:12px;
+	float:left;
+}
+
+#backlog .item-comments,#backlog .item-news {
+	font-size:12px;
+	float:right;
+}
+
+#backlog .item-comments {
+	margin-right:7px;
+}
+/*----------------tasks-----------------------*/
+#tasks {
+	height:265px;
+}
