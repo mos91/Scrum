@@ -4,8 +4,13 @@ $this->clips['containerCssClass'] = 'container-fluid';
 ?>
 
 <?php $this->beginClip('styles')?>
-	<link rel="stylesheet" href="/css/backlog.css">
+	<link rel="stylesheet/less" type="text/css" href="/css/backlog.less">
+	<!--<link rel="stylesheet" href="/css/backlog.css">  -->  
 <?php $this->endClip('styles')?>
+
+<?php $this->beginClip('script')?>
+	<script src="/assets/less/less.js" type="text/javascript"></script>
+<?php $this->endClip('script')?>
 	<div class="row-fluid">
 		<div class="span7">
 			<ul id="backlog" class="nav nav-list">

@@ -15,9 +15,7 @@
 }
 /*--------------icons--------------------*/
 .bug {
-	width:16px;
-	height:16px;
-	display:inline-block;
+	
 	background-image : url("/images/bug/set_tiny_green/bug_exclamation.png");
 }
 

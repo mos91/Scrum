@@ -1,0 +1,89 @@
+.hero-unit {
+		padding:20px 60px;
+}
+
+.breadcrumb {
+	background:none !important; 
+	padding:8px 0px;
+	margin:0px 0px 5px;
+}
+
+.container-fluid {
+	padding-left:10px;
+	padding-right:10px;
+	min-width:1024px;
+}
+/*--------------icons--------------------*/
+.icon_16 {
+	width:16px;
+	height:16px;
+	display:inline-block;
+}
+
+.icon_32 {
+	width:32px;
+	height:32px;
+	display:inline-block;
+}
+
+.bug {
+	.icon_16;
+	background-image : url("/images/bug/set_tiny_green/bug_exclamation.png");
+}
+
+.brainstorm {
+	.icon_16;
+	background-image : url("/images/brainstorm/brainstorming_16.png");
+}
+
+.feature {
+	.icon_16;
+	background-image : url("/images/common/16/star.png");
+}
+
+.other {
+	.icon_16;
+	background-image : url("/images/common/16/question.png");
+}
+
+.avatar_16 {
+	.icon_16;
+	background-image : url("/images/avatar_male/avatar_16.png");
+}
+
+.avatar_32 {
+	.icon_32;
+	background-image : url("/images/avatar_male/avatar_32.png");
+}
+/*-------------backlog------------------*/
+#backlog a > :first-child,.avatar_16 {
+	margin-bottom:-3px;
+	margin-right:7px;		
+}
+
+#backlog { height:300px;
+	a {
+		padding:3px 15px 3px 11px;
+		height:56px;
+	}
+	
+	.short-item-description {
+		font-size:12px;
+		float:left;		
+	}
+	.item-bottom-part {
+		margin-top:16px;	
+	}
+	.assigned-people {
+		display:inline-block;
+		float:right;
+		margin-right:7px;		
+	}
+	.item-comments,.item-news {
+		font-size:12px;
+		float:right;	
+	}
+	.item-comments {
+		margin-right:7px;	
+	}
+}
