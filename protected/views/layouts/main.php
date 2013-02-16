@@ -1,6 +1,7 @@
 ﻿<?php
 $baseUrl = Yii::app()->request->baseUrl;
 $bootstrapBase = $baseUrl.'/assets/bootstrap';
+$backboneBase = $baseUrl.'/assets/backbone';
 $pageTitle = CHtml::encode($this->pageTitle);
 $startDate  = '2013';
 $endDate = '2013';
@@ -33,7 +34,11 @@ $projectName = Yii::app()->name.' project';
   <?php if (isset($this->clips['styles'])) echo $this->clips['styles'];?>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="<?php echo $bootstrapBase?>/js/bootstrap.min.js"></script>
+  <script src="<?php echo $backboneBase?>/underscore.js"></script>
+  <script src="<?php echo $backboneBase?>/backbone.js"></script>
+  <script src="/assets/less/less.js" type="text/javascript"></script>
   <?php if (isset($this->clips['script'])) echo $this->clips['script'];?>
+  <?php if (isset($this->clips['templates'])) echo $this->clips['templates'];?>
   <title><?php echo $pageTitle; ?></title>
 </head>
 

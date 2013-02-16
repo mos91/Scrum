@@ -5,6 +5,8 @@ ignore project specific
 #ignore yii specific
 assets/*
 !assets/.gitignore
+!assets/bootstrap/*
+!assets/less/*
 protected/runtime/*
 !protected/runtime/.gitignore
 protected/data/*.db
