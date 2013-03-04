@@ -16,3 +16,4 @@ yii/build
 yii/demos
 yii/docs
 yii/requirements
+debug/*

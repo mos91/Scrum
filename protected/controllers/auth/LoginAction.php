@@ -5,21 +5,19 @@ class LoginAction extends CAction {
 		
 	private function checkIsAjax(){
 		if (!Yii::app()->request->isAjaxRequest){
-			throw new NotAjaxRequestException($this->controller);
+			throw new NotAjaxRequestException(500, $this->controller, null);
 		}	
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			//$specific = CJSON::encode($form->errors);
-			$specific 		
-			throw new InvalidRestParamsException($this->controller, $specific);
+			throw new InvalidRestParamsException(200, $this->controller, $form->errors);
 		}
 	}
 	
 	private function checkIsSuccessAuthenticate(){
 		if ($this->identity->errorCode !== UserIdentity::ERROR_NONE){
-			throw new AuthenticationFailureException($this->controller);
+			throw new AuthenticationFailureException(200, $this->controller, $this->identity->errorMessage);
 		}	
 	}
 	
@@ -27,16 +25,10 @@ class LoginAction extends CAction {
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			$this->onGet();
-		}
 	}
 	
-	public function onGet(){
-		$this->controller->render('login');
-	}
 	
-	public function onSubmit(){
+	private function onSubmit(){
 		$this->checkIsAjax();
 		$form = new LoginForm;
 		$form->attributes = Yii::app()->request->restParams["LoginForm"];
@@ -51,7 +43,7 @@ class LoginAction extends CAction {
 		
 		$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
 		Yii::app()->user->login($this->identity,$duration);
-		echo CJson::encode(array('success' => true));
+		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
 	}
 }

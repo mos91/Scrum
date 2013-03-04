@@ -8,16 +8,23 @@ class UserIdentity extends CUserIdentity
     {
         $record=UserRecord::model()->findByAttributes(array('email'=>$this->id));
         
-        if($record===null)
-            $this->errorCode=self::ERROR_USERNAME_INVALID;
-        else if($record->password!==crypt($this->password,$record->password))
-            $this->errorCode=self::ERROR_PASSWORD_INVALID;
+        if($record===null){
+        	$this->errorCode=self::ERROR_USERNAME_INVALID;
+        }
+        else if($record->password!==crypt($this->password,$record->password)){	
+        	$this->errorCode=self::ERROR_PASSWORD_INVALID;
+        }
         else
         {
             $this->_id=$record->id;
             $this->setState('firstname', $record->firstname);
             $this->setState('lastname', $record->lastname);
             $this->errorCode=self::ERROR_NONE;
+        }
+        
+        if ($this->errorCode === self::ERROR_USERNAME_INVALID ||
+        		 $this->errorCode === self::ERROR_PASSWORD_INVALID){
+        	$this->errorMessage = 'user with such email or password doesnt exist';
         }
         return !$this->errorCode;
     }

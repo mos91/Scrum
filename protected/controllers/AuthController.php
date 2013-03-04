@@ -5,7 +5,7 @@ class AuthController extends Controller {
 		return array(
 				'index' => 'application.controllers.auth.LoginAction',
 				'login' => 'application.controllers.auth.LoginAction', 
-				'register' => 'application.controllers.auth.RegisterAction'
+				'registration' => 'application.controllers.auth.RegistrationAction'
 		);
 	}	
 }

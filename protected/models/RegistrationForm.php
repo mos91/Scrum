@@ -11,9 +11,7 @@ class RegistrationForm extends CFormModel {
 		return array(
 				// username and password are required
 				array('firstname,lastname,email,password,passwordConfirm','required'),
-				array('password', 'compare', 'compareAttribute' => 'passwordConfirm'),
-				// rememberMe needs to be a boolean
-				array('rememberMe', 'boolean')
+				array('password', 'compare', 'compareAttribute' => 'passwordConfirm')
 		);
 	}
 }

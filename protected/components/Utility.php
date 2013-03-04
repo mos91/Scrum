@@ -8,7 +8,7 @@ class Utility {
 	 * @throws Exception on invalid cost parameter.
 	 * @return string A Blowfish hash salt for use in PHP's crypt()
 	 */
-	function blowfishSalt($cost = 13)
+	public static function blowfishSalt($cost = 13)
 	{
 		if (!is_numeric($cost) || $cost < 4 || $cost > 31) {
 			throw new Exception("cost parameter must be between 4 and 31");
