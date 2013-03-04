@@ -1,10 +1,14 @@
 <?php
-class NotAjaxRequestException extends CHttpException {
-	public function composeMessage(){
-		return 'Request is not ajax-based in '.$this->context.".".$this->specificMessage;
+class NotAjaxRequestException extends HttpException {
+	protected function composeMessage(){
+		return 'Request is not ajax-based in '.$this->context.".";
 	}
 	
-	public function defineCode(){
-		return ExceptionCodes::AUTHENTICATION_FAILURE;
+	protected function defineCode(){
+		return ExceptionCodes::NOT_AJAX_REQUEST;
+	}
+	
+	protected function defineType(){
+		return 'NOT_AJAX_REQUEST';
 	}
 }

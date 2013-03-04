@@ -1,11 +1,15 @@
 <?php
 
-class AuthenticationFailureException extends CHttpException {
-	public function composeMessage(){
-		return 'Authentication failure in '.$this->context.".".$this->specificMessage;
+class AuthenticationFailureException extends HttpException {
+	protected function composeMessage(){
+		return 'Authentication failure in '.$this->context.".";
 	}
 	
-	public function defineCode(){
-		return ExceptionCodes::AUTHENTICATION_FAILURE;
+	protected function defineCode(){
+		return ExceptionCodes::AUTHENTIFICATION_FAILURE;
+	}
+	
+	protected function defineType(){
+		return 'AUTHENTIFICATION_FAILURE';
 	}
 }

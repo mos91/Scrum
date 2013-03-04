@@ -1,9 +1,11 @@
 <?php
 class HttpException extends CHttpException {
-	protected $context;
-	protected $specific;
+	//type of exception as a string
+	public $type;
+	public $context;
+	public $specific;
 	
-	public function __construct($controller = null, $specific = null)
+	public function __construct($statusCode = 500, $controller = null, $specific = null)
 	{
 		if (!isset($controller)){
 			$this->context = Yii::app()->name;
@@ -13,27 +15,23 @@ class HttpException extends CHttpException {
 		}
 		$this->specific = $specific;
 		
-		parent::__construct(500,$this->composeMessage(), $this->defineCode());
+		parent::__construct($statusCode,$this->composeMessage(), $this->defineCode());
+		$this->type = $this->defineType();
 	}
 	
-	public function composeMessage(){
+	protected function composeMessage(){
 		return 'Unknown exception in '.$this->context.".".$this->composeSpecificMessage();
 	}
 	
-	public function composeSpecificMessage(){
-		return '';
+	protected function composeSpecificMessage(){
+		return '';	
 	}
 	
-	public function defineCode(){
-		return ExceptionCodes::UNKNOWN_ERROR;
+	protected function defineCode(){
+		return ExceptionCodes::UNKNOWN;
 	}
 	
-	public function asArray(){
-		return  array('code' => $this->code, 
-			'message' => $this->message,
-			'specific' => $this->specific,
-			'context' => $this->context,
-			'status' => $this->statusCode
-		);
+	protected function defineType(){
+		return 'UNKNOWN_ERROR';	
 	}
 }
