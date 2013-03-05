@@ -25,7 +25,7 @@ class ErrorAction extends CAction {
 				}
 			}
 			else
-				$this->renderFile('error', $error);
+				$this->controller->renderFile(Yii::getPathOfAlias('application.views.site.error').'.php', $error);
 		}
 	}
 }

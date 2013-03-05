@@ -36,7 +36,8 @@ return array(
 	'components'=>array(
 		'user'=>array(
 			// enable cookie-based authentication
-			'allowAutoLogin'=>true,
+			'class' => 'WebUser',
+			'allowAutoLogin'=> true
 		),
 		// uncomment the following to enable URLs in path-format
 		'urlManager'=>array(
@@ -74,9 +75,9 @@ return array(
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
-				array(
+				/*array(
 					'class'=>'CWebLogRoute'
-				),
+				),*/
 			),
 		),
 	),
