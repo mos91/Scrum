@@ -22,6 +22,7 @@ class UserIdentity extends CUserIdentity
             $this->setState('session-key', $session_key);
             $this->setState('firstname', $record->firstname);
             $this->setState('lastname', $record->lastname);
+            $this->setState('session_count', ++$record->session_count);
             $this->errorCode=self::ERROR_NONE;
             $record->save();
         }

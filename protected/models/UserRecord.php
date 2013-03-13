@@ -4,6 +4,9 @@ class UserRecord extends CActiveRecord {
 	public $lastname;
 	public $email;
 	public $password;
+	public $company;
+	//session_information
+	public $session_count;
 	public $session_key;
 	//user settings;
 	public $date_format = 'dd/mm/yy';
@@ -24,5 +27,9 @@ class UserRecord extends CActiveRecord {
 	
 	public function primaryKey(){
 		return 'id';
+	}
+	
+	public function relations(){
+		return array('company' => array(self::BELONGS_TO, 'Company', 'company_id'));
 	}
 }

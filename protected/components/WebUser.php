@@ -11,4 +11,12 @@ class WebUser extends CWebUser {
 		}
 		return true;
 	}
+	
+	public function beforeLogout(){
+		$session_count = $this->getState('session_count');
+		$userRecord = UserRecord::model()->find('email=:email', array(':email' => $this->getId()));
+		
+		$userRecord->session_count = --$session_count;
+		$userRecord->save();
+	}
 }
