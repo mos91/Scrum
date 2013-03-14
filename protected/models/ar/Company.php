@@ -1,8 +1,9 @@
 <?php
-class Product extends CActiveRecord {
+class Company extends CActiveRecord {
 	public $name;
 	public $description;
-	public $company;
+	public $users;
+	public $products;
 	
 	public static function model($className=__CLASS__)
 	{
@@ -11,7 +12,7 @@ class Product extends CActiveRecord {
 	
 	public function tableName()
 	{
-		return 'product_table';
+		return 'company_table';
 	}
 	
 	public function primaryKey(){
@@ -20,7 +21,8 @@ class Product extends CActiveRecord {
 	
 	public function relations(){
 		return array(
-			'company' => array(self::BELONGS_TO, 'Company', 'company_id')
+			'users' => array(self::HAS_MANY, 'UserRecord', 'company_id'),
+			'products' => array(self::HAS_MANY, 'Product', 'company_id')
 		);
 	}
 }
