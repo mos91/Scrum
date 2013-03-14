@@ -6,5 +6,6 @@ interface ExceptionCodes {
 	const AUTHENTIFICATION_FAILURE = 0x0003;
 	const REGISTRATION_FAILURE = 0x0004;
 	const STORE_OPERATION_FAILURE = 0x0005;
+	const INVALID_STATE = 0x0006;
 	const UNKNOWN = 0xffff;
 }
