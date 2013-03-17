@@ -5,7 +5,7 @@ class ProductForm extends CFormModel {
 	
 	public function rules(){
 		return array(
-				array('name,description', 'required')
+				array('name', 'required')
 			);
 	}
 }

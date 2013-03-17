@@ -24,13 +24,13 @@ class CreateProductAction extends CAction {
 			$this->onSubmit();
 		}
 	}
-	//TODO: Сохранение Product происходит без его привязки к конкретной компании, т.е company_id у product равен NULL
+	
 	private function onSubmit(){
 		//если в состоянии сессии нет id компании, то проект создать нельзя
 		$this->checkIsCompanyExist();
 		$this->checkIsFormExist();
 		$form = new ProductForm;
-		$form->attributes = Yii::app()->request->restParams["ProductForm"];
+		$form->setAttributes(Yii::app()->request->restParams["ProductForm"],false);
 		$this->checkFormIsValid($form);
 		
 		$product = new Product;
