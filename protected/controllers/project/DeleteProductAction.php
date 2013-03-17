@@ -14,9 +14,26 @@ class DeleteProductAction extends CAction {
 	
 	private function onSubmit(){
 		$this->checkIsIdExist();
-		$product = Product::model()->deleteByPk(Yii::app()->request->restParams['id']);
+		$this->safeDelete();
 		
 		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
+	}
+	
+	private function safeDelete(){
+		$transaction = Yii::app()->db->beginTransaction();
+		$id = Yii::app()->request->restParams['id'];
+		try {
+			Issue::model()->deleteAll("product_id=:product_id", array(":product_id" => $id));
+			IssueAssign::model()->deleteAll("product_id=:product_id", array(":product_id" => $id));
+			ProductAssign::model()->deleteAll("product_id=:product_id", array(":product_id" => $id));
+			Product::model()->deleteByPk($id);
+			Yii::app()->user->setState('product-id', null);
+			$transaction->commit();
+		}
+		catch (Exception $e) {
+			$transaction->rollback();
+			throw TransactionFailureException(500, $this->controller);		
+		}
 	}
 }

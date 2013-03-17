@@ -20,6 +20,7 @@ class AssignAction extends CAction {
 		$assign = new IssueAssign;
 		$assign->issue_id = Yii::app()->request->restParams["issue_id"];
 		$assign->user_id = Yii::app()->request->restParams["user_id"];
+		$assign->product_id = Yii::app()->request->restParams["product_id"];
 		$assign->save();
 		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
