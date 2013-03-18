@@ -7,7 +7,6 @@ class WebUser extends CWebUser {
 							':session_key' => $states['session-key']));
 			if ($userRecord === null)
 				return false;
-			
 		}
 		return true;
 	}
