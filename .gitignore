@@ -1,12 +1,8 @@
-ignore project specific
+#ignore project specific
 .project
 .buildpath
 .settings
 #ignore yii specific
-assets/*
-!assets/.gitignore
-!assets/bootstrap/*
-!assets/less/*
 protected/runtime/*
 !protected/runtime/.gitignore
 protected/data/*.db
@@ -16,4 +12,6 @@ yii/build
 yii/demos
 yii/docs
 yii/requirements
-debug/*
+
+
+
