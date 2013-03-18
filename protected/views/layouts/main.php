@@ -40,14 +40,9 @@ else {
   <!--[if lt IE 8]>
   <link rel="stylesheet" type="text/css" href="<?php $baseUrl; ?>/css/ie.css" media="screen, projection" />
   <![endif]-->
+  <link href="/css/main.css" rel="stylesheet" >
   <style type="text/css" media="screen">
-  	body {
-  		padding-top: 60px;
-  	}
-
-	.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-		width: 1140px;
-	}
+  	
   </style>
   <?php if (isset($this->clips['styles'])) echo $this->clips['styles'];?>
   <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -75,14 +70,14 @@ else {
           <a class="brand" href="/project/index"><?php echo $projectName ?></a>
           <div class="nav-collapse collapse">
             <?php $this->widget('BootstrapTabView', $tabPanel);?>
-            <form action="/auth/login" class="navbar-form pull-right">
+            <div class="navbar-form pull-right">
               <input class="span2" name="LoginForm[email]" type="text" placeholder="Email">
               <input class="span2" name="LoginForm[password]" type="password" placeholder="password">
               <div class="btn-group">
-              	<button class="btn">Sign-in</button>
-              	<button class="btn" title="remember me next time">+</button>
+              	<button id="sign_in" class="btn">Sign-in</button>
+              	<button id="remember_me" class="btn remember-me-btn" title="remember me next time"><i class="icon-user"></i></button>
               </div>
-            </form>
+            </div>
           </div><!--/.nav-collapse -->
         </div>
       </div>

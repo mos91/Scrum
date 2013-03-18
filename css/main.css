@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+body {
+  		padding-top: 60px;
+}
+
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+	width: 1140px;
+}
