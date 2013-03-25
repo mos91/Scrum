@@ -2,20 +2,16 @@
 class RegistrationAction extends CAction {
 	private function checkFormIsExist(){
 		if (!isset(Yii::app()->request->restParams['RegistrationForm'])){
-			throw new InvalidRestParamsException(500, $this->controller, 'request params doesnt exist');
+			$this->controller->render('registration');
+			Yii::app()->end();
 		}	
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			throw new InvalidRestParamsException(200,$this->controller, $form->errors); 
+			$this->controller->render('registration', array('model' => $form));
+			Yii::app()->end();
 		}
-	}
-	
-	private function checkIsUserNotExist($userRecord){
-		if ($userRecord->exists('email=:email', array(':email' => $userRecord->email))){
-			throw new RegistrationFailureException(200,$this->controller, 'user with such email already exists');
-		}	
 	}
 	
 	private function createUserRecord($form){
@@ -26,14 +22,27 @@ class RegistrationAction extends CAction {
 		$userRecord->lastname = $form->lastname;
 		$userRecord->session_key = md5($salt.$form->email);
 		
-			
 		return $userRecord;
 	}
 	
 	public function run(){
-		if (Yii::app()->request->isPostRequest){
+		$request = Yii::app()->request; 
+		if ($request->isPostRequest){
 			$this->onSubmit();
 		}
+		else {
+			$this->onGet();
+		}
+	}
+	
+	private function onGet(){
+		if (isset($_GET['success']) && Yii::app()->request->urlReferrer == '/auth/registration'){
+			$this->controller->render('success');
+		}
+		else {
+			$this->controller->render('registration', array('model' => new RegistrationForm));
+		}
+				
 	}
 	
 	private function onSubmit(){
@@ -42,10 +51,7 @@ class RegistrationAction extends CAction {
 		$form->attributes = Yii::app()->request->restParams['RegistrationForm'];
 		$this->checkFormIsValid($form);
 		$userRecord = $this->createUserRecord($form);
-		$this->checkIsUserNotExist($userRecord);
 		$userRecord->save();
-		
-		echo CJSON::encode(array('success' => true));
-		Yii::app()->end();
+		$this->controller->redirect('/auth/registration?success=true');
 	}
 }

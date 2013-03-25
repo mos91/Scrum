@@ -4,5 +4,13 @@ body {
 }
 
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 1140px;
+	width: 1220px;
+}
+
+.brand-icon {
+	margin:5px 0px 0px 5px;
+}
+
+.dropdown-menu .divider {
+	margin:5px 1px;
 }

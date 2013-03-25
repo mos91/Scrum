@@ -11,6 +11,7 @@ class ErrorHandler extends CErrorHandler {
 	 * Handles the exception.
 	 * @param Exception $exception the exception captured
 	 */
+	
 	protected function handleException($exception)
 	{
 		$app=Yii::app();

@@ -17,5 +17,6 @@ class WebUser extends CWebUser {
 		
 		$userRecord->session_count = --$session_count;
 		$userRecord->save();
+		return true;
 	}
 }

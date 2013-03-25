@@ -7,6 +7,7 @@
  */
 class LoginForm extends CFormModel
 {
+	public $identity;
 	public $email;
 	public $password;
 	public $rememberMe;
@@ -17,7 +18,16 @@ class LoginForm extends CFormModel
 			// username and password are required
 			array('email, password', 'required'),
 			// rememberMe needs to be a boolean
-			array('rememberMe', 'boolean')
+			array('rememberMe', 'boolean'),
+			array('password', 'authenticate')
 		);
+	}
+	
+	public function authenticate($attribute,$params)
+	{
+		$this->identity=new UserIdentity($this->email,$this->password);
+		if(!$this->identity->authenticate()){
+			$this->addError('password',$this->identity->errorMessage);
+		}
 	}
 }

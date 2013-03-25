@@ -6,24 +6,7 @@ $backboneBase = $baseUrl.'/assets/backbone';
 $pageTitle = CHtml::encode($this->pageTitle);
 $startDate  = '2013';
 $endDate = '2013';
-$projectName = Yii::app()->name.' project';
-
-if (Yii::app()->user->isGuest){
-	$tabPanel = array(
-		'activeTab' => $data['activeTab'],
-		'tabs' => array( 'main' => array('title' => 'Main', 'url' => '/site/index') )
-	);
-}
-else {
-	$tabPanel = array(
-		'activeTab' => $data['activeTab'],
-		'tabs' => array( 
-			'main' => array('title' => 'Main', 'url' => '/site/index'),
-			'projects' => array('title' => 'Projects', 'url' => '/project/index') 
-		)
-	);
-}
-	
+$projectName = Yii::app()->name.' project'; 
 ?>
 
 <!DOCTYPE html>
@@ -59,30 +42,7 @@ else {
 </head>
 
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/project/index"><?php echo $projectName ?></a>
-          <div class="nav-collapse collapse">
-            <?php $this->widget('BootstrapTabView', $tabPanel);?>
-            <div class="navbar-form pull-right">
-              <input class="span2" name="LoginForm[email]" type="text" placeholder="Email">
-              <input class="span2" name="LoginForm[password]" type="password" placeholder="password">
-              <div class="btn-group">
-              	<button id="sign_in" class="btn">Sign-in</button>
-              	<button id="remember_me" class="btn remember-me-btn" title="remember me next time"><i class="icon-user"></i></button>
-              </div>
-            </div>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-</div>
-
+	<?php include Yii::getPathOfAlias('application.views.layouts.tabpanel').".php";?>
 <div class="<?php echo isset($this->clips['containerCssClass'])? $this->clips['containerCssClass']:'container'?>">
   <?php echo $content ?>
 </div>

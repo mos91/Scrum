@@ -9,7 +9,6 @@ class UserRecord extends CActiveRecord {
 	public $session_count;
 	public $session_key;
 	//user settings;
-	public $active_project;
 	public $date_format = 'dd/mm/yy';
 	public $time_format = 'hh:mm:ss';
 	public $first_day_of_week = 'monday';
@@ -31,7 +30,10 @@ class UserRecord extends CActiveRecord {
 	}
 	
 	public function relations(){
-		return array('company' => array(self::BELONGS_TO, 'Company', 'company_id'),
+		return array('projects' => array(self::MANY_MANY, 'Product', 'user_projects_table(user_id, product_id)'),
+					 'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
 					 'active_project' => array(self::BELONGS_TO, 'Product', 'active_project_id'));
 	}
+	
+	
 }
