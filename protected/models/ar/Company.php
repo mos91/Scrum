@@ -22,7 +22,7 @@ class Company extends CActiveRecord {
 	public function relations(){
 		return array(
 			'users' => array(self::HAS_MANY, 'UserRecord', 'company_id'),
-			'products' => array(self::HAS_MANY, 'Product', 'company_id')
+			'projects' => array(self::HAS_MANY, 'Project', 'company_id')
 		);
 	}
 }

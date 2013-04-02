@@ -14,3 +14,22 @@ body {
 .dropdown-menu .divider {
 	margin:5px 1px;
 }
+
+.dropdown-menu > li.active-project {
+	
+}
+
+.dropdown-menu > li.project-add {
+	
+}
+
+.dropdown-menu > li.project-list-item {
+	
+}
+
+.alert {
+	z-index:1031;
+	top:5px;
+	left:30%;
+	position:fixed;
+}

@@ -1,6 +1,6 @@
 <?php
 //связь "пользователь-проект"
-class ProductAssign extends CActiveRecord {
+class ProjectAssign extends CActiveRecord {
 	public $user;
 	public $product;
 	

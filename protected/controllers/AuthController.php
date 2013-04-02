@@ -11,6 +11,8 @@ class AuthController extends Controller {
 
 	public function actionLogout(){
 		Yii::app()->user->logout();
+		$cookies = Yii::app()->request->getCookies();
+		$cookies->remove('login');
 		$this->redirect('/site/index');
 	}	
 }

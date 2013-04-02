@@ -25,7 +25,7 @@ class UserIdentity extends CUserIdentity
             	$record->session_key = $session_key = md5(Utility::blowfishSalt());
             }
             $this->setState('company-id', $record->getAttribute('company_id'));
-            $this->setState('product-id', $record->getAttribute('active_project_id'));
+            $this->setState('project-id', $record->getAttribute('active_project_id'));
             $this->setState('session-key', $session_key);
             $this->setState('firstname', $record->firstname);
             $this->setState('lastname', $record->lastname);

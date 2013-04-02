@@ -1,37 +1,14 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 <div class="navbar-inner">
 <div class="container">
-<?php
-	if (!Yii::app()->user->isGuest){
-		$activeProjectId = Yii::app()->user->getState('product-id');
-		$userId = Yii::app()->user->getState('user-id');
-		
-		$user = UserRecord::model()->with('projects')->findByPk($userId);
-		foreach($user->projects as $key => $project){
-			if ($project->getAttribute('id') == $activeProjectId){
-				$activeProject = $project;
-				break;
-			}
-		}
-	} 
-?>
 <?php if(Yii::app()->user->isGuest):?>
 <a class="brand" href="/site/index">Scrum</a>
 <?php else:?>
-<ul class="nav"><li class="dropdown"><a class="brand dropdown-toggle" data-toggle="dropdown" href="#">
-<?php echo $activeProject->name?><b class="caret"></b></a>
-<ul class="dropdown-menu">
-	<?php 
-	echo '<li><a data-id="'.$activeProject->getAttribute('id').'" href="/project/change"><i class="icon-ok"></i> '.$activeProject->name.'</a></li>';
-	if (!empty($user->projects)) echo '<li class="divider"></li>';
-	foreach($user->projects as $id => $project){
-		$projectId = $project->getAttribute('id'); 
-		if ($projectId <> $activeProjectId) 
-			echo '<li><a data-id="'.$project->getAttribute('id').'" href="/project/change"><i class="icon-book"></i> '.$project->name.'</a></li>';	
-	}
-	
-	echo '<li class="divider"></li><li class="action-add"><a href="#"><i class="icon-plus"></i> Add New</a></li>';
-	?>
+<ul id="active_project" class="nav"><li class="dropdown"><a id="projects_dropdown_toggle" class="brand dropdown-toggle" 
+	data-toggle="dropdown" href="#">
+<?php $activeProject = Project::model()->findByPk(Yii::app()->user->getState('project-id'));echo $activeProject->name;?>
+<b class="caret"></b></a>
+<ul id="project_list" class="dropdown-menu">
 </ul></li></ul>
 <?php endif;?>
 

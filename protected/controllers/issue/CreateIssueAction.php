@@ -1,9 +1,9 @@
 <?php
 class CreateIssueAction extends CAction {
-	private function checkIsProductExist(){
-		$productId = Yii::app()->user->getState('product-id');
-		if (!isset($productId)){
-			throw new InvalidStateException(500, $this->controller, 'product Id doesnt exist');
+	private function checkIsProjectExist(){
+		$projectId = Yii::app()->user->getState('project-id');
+		if (!isset($projectId)){
+			throw new InvalidStateException(500, $this->controller, 'project Id doesnt exist');
 		}
 	}
 	
@@ -26,14 +26,14 @@ class CreateIssueAction extends CAction {
 	}
 	
 	private function onSubmit(){
-		$this->checkIsProductExist();
+		$this->checkIsProjectExist();
 		$this->checkIsFormExist();
 		$form = new IssueForm;
 		$form->setAttributes(Yii::app()->request->restParams["IssueForm"], false);
 		$this->checkFormIsValid($form);
 		$issue = new Issue;
 		$issue->setAttributes($form->attributes,false);
-		$issue->product_id = Yii::app()->user->getState('product-id');
+		$issue->project_id = Yii::app()->user->getState('project-id');
 		$issue->save();
 		
 		echo CJSON::encode(array('success' => true, 'issue' => $issue));

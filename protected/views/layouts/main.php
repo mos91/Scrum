@@ -7,6 +7,7 @@ $pageTitle = CHtml::encode($this->pageTitle);
 $startDate  = '2013';
 $endDate = '2013';
 $projectName = Yii::app()->name.' project'; 
+
 ?>
 
 <!DOCTYPE html>
@@ -33,9 +34,11 @@ $projectName = Yii::app()->name.' project';
   <script src="<?php echo $backboneBase?>/underscore.js"></script>
   <script src="<?php echo $backboneBase?>/backbone.js"></script>
   <script src="/assets/less/less.js" type="text/javascript"></script>
+  <script src="/assets/jquery.cookies.2.2.0.min.js" type="text/javascript"></script>
   
-  <script src="/js/app-bootstrap.js" type="text/javascript"></script>
-  <script src="/js/auth-tools.js" type="text/javascript"></script>
+  <script src="/js/Alert.js" type="text/javascript"></script>
+  <script src="/js/Popup.js" type="text/javascript"></script>
+  <script src="/js/main.js" type="text/javascript"></script>
   <?php if (isset($this->clips['script'])) echo $this->clips['script'];?>
   <?php if (isset($this->clips['templates'])) echo $this->clips['templates'];?>
   <title><?php echo $pageTitle; ?></title>

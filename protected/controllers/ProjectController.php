@@ -3,10 +3,12 @@
 class ProjectController extends Controller {
 	public function actions(){
 		return array(
-				'create' => 'application.controllers.project.CreateProductAction',
-				'change' => 'application.controllers.project.ChangeActiveProductAction',
-				'drop' => 'application.controllers.project.DropProductAction',
-				'delete' => 'application.controllers.project.DeleteProductAction'
+				'index' => 'application.controllers.project.GetProjectAction',
+				'get' => 'application.controllers.project.GetProjectAction',
+				'create' => 'application.controllers.project.CreateProjectAction',
+				'change' => 'application.controllers.project.ChangeActiveProjectAction',
+				'drop' => 'application.controllers.project.DropProjectAction',
+				'delete' => 'application.controllers.project.DeleteProjectAction'
 		);
 	}
 }

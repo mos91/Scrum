@@ -1,5 +1,5 @@
 <?php
-class ChangeActiveProductAction extends CAction {
+class ChangeActiveProjectAction extends CAction {
 	private function checkIsIdExist(){
 		if (!isset(Yii::app()->request->restParams['id'])){
 			throw new InvalidRestParamsException(500, $this->controller, "Id doesnt exist");
@@ -14,9 +14,14 @@ class ChangeActiveProductAction extends CAction {
 	
 	private function onSubmit(){
 		$this->checkIsIdExist();
+	
+		$userId = Yii::app()->user->getState('user-id');
 		$projectId = Yii::app()->request->restParams['id'];
-		UserRecord::model()->updateByPk(Yii::app()->user->getState('user-id'), array('active_project_id' => $projectId));
-		Yii::app()->user->setState('product-id', $projectId);
-		echo CJSON::encode(array('success' => true));
+		
+		UserRecord::model()->updateByPk($userId, array('active_project_id' => $projectId));
+		$project = Project::model()->findByPk($projectId);
+		Yii::app()->user->setState('project-id', $projectId);
+		echo CJSON::encode($project->getAttributes());
 	}
+	
 }

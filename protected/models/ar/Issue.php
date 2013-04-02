@@ -29,7 +29,7 @@ class Issue extends CActiveRecord {
 	
 	public function relations(){
 		return array(
-			'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
+			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
 			'team' => array(self::MANY_MANY, 'UserRecord', 'user_issues_table(issue_id,user_id)')
 		);
 	}

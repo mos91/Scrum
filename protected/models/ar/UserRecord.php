@@ -30,9 +30,9 @@ class UserRecord extends CActiveRecord {
 	}
 	
 	public function relations(){
-		return array('projects' => array(self::MANY_MANY, 'Product', 'user_projects_table(user_id, product_id)'),
+		return array('projects' => array(self::MANY_MANY, 'Project', 'user_projects_table(user_id, project_id)'),
 					 'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-					 'active_project' => array(self::BELONGS_TO, 'Product', 'active_project_id'));
+					 'active_project' => array(self::BELONGS_TO, 'Project', 'active_project_id'));
 	}
 	
 	

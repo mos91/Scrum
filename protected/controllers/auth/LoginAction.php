@@ -38,6 +38,8 @@ class LoginAction extends CAction {
 		
 		$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
 		Yii::app()->user->login($form->identity,$duration);
+		$cookies = Yii::app()->request->getCookies();
+		$cookies->add('login', new CHttpCookie('login', true));
 		$this->controller->redirect('/site/index');
 		Yii::app()->end();
 	} 

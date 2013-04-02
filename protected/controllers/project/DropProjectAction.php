@@ -1,5 +1,5 @@
 <?php
-class DropProductAction extends CAction {
+class DropProjectAction extends CAction {
 	private function checkIsIdExist(){
 		if (!isset(Yii::app()->request->restParams['id'])){
 			throw new InvalidRestParamsException(500, $this->controller, 'Id doesnt exist');
