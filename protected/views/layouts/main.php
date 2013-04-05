@@ -29,7 +29,7 @@ $projectName = Yii::app()->name.' project';
   	
   </style>
   <?php if (isset($this->clips['styles'])) echo $this->clips['styles'];?>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="/assets/jquery/jquery-1.9.1.min.js"></script>
   <script src="<?php echo $bootstrapBase?>/js/bootstrap.min.js"></script>
   <script src="<?php echo $backboneBase?>/underscore.js"></script>
   <script src="<?php echo $backboneBase?>/backbone.js"></script>

@@ -1,5 +1,5 @@
 <?php
-class DeleteIssueAction extends CAction {
+class DeleteUserStoryAction extends CAction {
 	private function checkIsIdExist(){
 		if (!isset(Yii::app()->request->restParams['id'])){
 			throw new InvalidRestParamsException(500, $this->controller, 'Id doesnt exist');

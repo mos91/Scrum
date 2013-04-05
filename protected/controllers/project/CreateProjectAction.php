@@ -17,7 +17,7 @@ class CreateProjectAction extends CAction {
 		if (!$form->validate()){
 			if (Yii::app()->request->isAjaxRequest){
 				echo CJSON::encode(array('error' => true, 
-						'content' => $this->controller->renderPartial('create', array('model' => $form), true)));
+						'content' => $this->controller->renderPartial('form', array('model' => $form), true)));
 				Yii::app()->end();
 			}
 		}
@@ -29,7 +29,7 @@ class CreateProjectAction extends CAction {
 		}
 		else {
 			if (Yii::app()->request->isAjaxRequest)
-				$this->controller->renderPartial('create', array('model' => new ProjectForm));
+				$this->controller->renderPartial('form', array('model' => new ProjectForm));
 		}
 	}
 	
@@ -57,8 +57,14 @@ class CreateProjectAction extends CAction {
 		catch(Exception $e){
 			$transaction->rollback();
 			throw TransactionFailureException(500, $this->controller);
-		}	
-		echo CJSON::encode($project->getAttributes());
+		}
+
+		$result = array(
+				'project' => $project->getAttributes());
+		if (!empty($form->makeActive)){
+			$result['makeActive'] = true;
+		}
+		echo CJSON::encode($result);
 		Yii::app()->end();
 	}
 }

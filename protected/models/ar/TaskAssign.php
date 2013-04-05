@@ -1,16 +1,16 @@
 <?php
 //связь "пользователь"-"назначенная задача"
-class IssueAssign extends CActiveRecord {
+class TaskAssign extends CActiveRecord {
 	public $user;
-	public $issue;
-	public $product;
+	public $task;
+	public $project;
 	
 	public static function model($className=__CLASS__){
 		return parent::model($className);
 	}
 	
 	public function tableName(){
-		return 'user_issues_table';
+		return 'user_tasks_table';
 	}
 	
 	public function primaryKey(){
@@ -20,8 +20,8 @@ class IssueAssign extends CActiveRecord {
 	public function relations(){
 		return array(
 			'user' => array(self::HAS_ONE, 'UserRecord', 'user_id'),
-			'issue' => array(self::HAS_ONE, 'Issue', 'issue_id'),
-			'product' => array(self::HAS_ONE, 'Product', 'product_id')
+			'task' => array(self::HAS_ONE, 'Issue', 'issue_id'),
+			'project' => array(self::HAS_ONE, 'Project', 'product_id')
 		);
 	}
 }

@@ -27,10 +27,14 @@
 </div></div></div></div>
 <?php else:?>
 <ul class="nav">
-<li><a href="/site/index"><i class="icon-white icon-home"></i> Main</a></li>
+<ul id="active_user_story" class="nav"><li class="dropdown">
+	<a id="backlog_dropdown_toggle" class="dropdown-toggle" data-toggle="dropdown" href="#">
+		<i class="icon-white icon-folder-close"></i> Backlog<b class="caret"></b></a>
+	<ul id="user_story_list" class="dropdown-menu">
+	</ul>
+</li></ul>
 <li class="divider-vertical"></li>
-<li><a href="/project/index">Backlog</a></li>
-<li class="divider-vertical"></li>
+<li><a href="/tasks/index" ><i class="icon-white icon-tasks"></i> Tasks</a></li>
 </ul>
 <ul class="nav pull-right">
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">

@@ -19,7 +19,8 @@ return array(
 		'application.models.ar.*',
 		'application.components.*',
 		'application.components.widgets.*',
-		'application.components.exceptions.*'
+		'application.components.exceptions.*',
+		'application.components.validators.*'
 	),
 
 	'modules'=>array(

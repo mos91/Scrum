@@ -27,7 +27,11 @@ body {
 	
 }
 
-.alert {
+.dropdown-menu > li.user-story-list-item {
+	
+}
+
+.alert-popup {
 	z-index:1031;
 	top:5px;
 	left:30%;
