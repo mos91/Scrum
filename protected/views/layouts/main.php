@@ -25,21 +25,42 @@ $projectName = Yii::app()->name.' project';
   <link rel="stylesheet" type="text/css" href="<?php $baseUrl; ?>/css/ie.css" media="screen, projection" />
   <![endif]-->
   <link href="/css/main.css" rel="stylesheet" >
-  <style type="text/css" media="screen">
-  	
-  </style>
   <?php if (isset($this->clips['styles'])) echo $this->clips['styles'];?>
+  <!-- libs -->
   <script src="/assets/jquery/jquery-1.9.1.min.js"></script>
   <script src="<?php echo $bootstrapBase?>/js/bootstrap.min.js"></script>
   <script src="<?php echo $backboneBase?>/underscore.js"></script>
-  <script src="<?php echo $backboneBase?>/backbone.js"></script>
-  <script src="/assets/less/less.js" type="text/javascript"></script>
+  <script src="<?php echo $backboneBase?>/backbone-dev.1.0.0.js"></script>
+  <script src="/assets/backbone-extensions/backboneObject.js"></script>
+  <!--<script src="/assets/less/less.js" type="text/javascript"></script>  -->
   <script src="/assets/jquery.cookies.2.2.0.min.js" type="text/javascript"></script>
+  <?php if (isset($this->clips['libs'])) echo $this->clips['libs'];?>
   
-  <script src="/js/Alert.js" type="text/javascript"></script>
-  <script src="/js/Popup.js" type="text/javascript"></script>
+  <script src="/js/Const.js" type="text/javascript"></script>
+  <!-- widgets -->
+  <script src="/js/views/Alert.js" type="text/javascript"></script>
+  <script src="/js/views/Popup.js" type="text/javascript"></script>
+  <?php if (isset($this->clips['widgets'])) echo $this->clips['widgets'];?>
+  <!-- models -->
+  <?php if (isset($this->clips['models'])) echo $this->clips['models'];?>
+  <!-- views -->
+  <?php if (isset($this->clips['views'])) echo $this->clips['views'];?>
+  <!-- routers -->
+  <?php if (isset($this->clips['routers'])) echo $this->clips['routers'];?>
+  <!-- behaviours -->
+  <script src="/js/behaviours/behaviour.js" type="text/javascript"></script>
+  <?php if (isset($this->clips['behaviours'])) echo $this->clips['behaviours'];?>
+  
+  <script src="/js/application/Application.js" type="text/javascript"></script>
+  <script src="/js/application/MVCApplication.js" type="text/javascript"></script>
   <script src="/js/main.js" type="text/javascript"></script>
   <?php if (isset($this->clips['script'])) echo $this->clips['script'];?>
+  <script type="text/javascript">
+	  $(document).ready(function(){
+			app = MVCApplication.getInstance();
+			app.start();
+	   });
+  </script>
   <?php if (isset($this->clips['templates'])) echo $this->clips['templates'];?>
   <title><?php echo $pageTitle; ?></title>
 </head>

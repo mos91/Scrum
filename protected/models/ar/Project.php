@@ -2,7 +2,6 @@
 class Project extends CActiveRecord {
 	public $name;
 	public $description;
-	public $company;
 	
 	public static function model($className=__CLASS__){
 		return parent::model($className);
@@ -25,7 +24,8 @@ class Project extends CActiveRecord {
 	
 	public function scopes(){
 		return array(
-			'byUser'
+			'byUser',
+			'trashed'
 		);
 	}
 	
@@ -38,6 +38,19 @@ class Project extends CActiveRecord {
 						  'params' => array(':id' => $userId)
 						)
 			) 		 
+		));
+		return $this;
+	}
+	
+	public function trashed($userId){
+		$this->getDbCriteria()->mergeWith(array(
+				'condition' => 'dropped=1',
+				'with' => array('users' =>
+						array('select' => false,
+								'condition'=>'users.id=:id',
+								'params' => array(':id' => $userId)
+						)
+				)
 		));
 		return $this;
 	}

@@ -78,11 +78,11 @@ return array(
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
-				array(
+				/*array(
 					'class'=>'CWebLogRoute',
 					'categories'=>'system.db.*',
 					'except'=>'system.db.ar.*' // показываем всё, что касается базы данных, но не касается AR
-				)
+				)*/
 			),
 		),
 	),

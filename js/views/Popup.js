@@ -5,15 +5,14 @@ Popup = Backbone.View.extend({
 		this.title = options.title? options.title:''; 
 	},
 	//ajax-handlers
-	getContent : function(){
+	getContent : function(){ 
 		return $.ajax({
 			url : this.url,
 			dataType : 'html'
 		});	
 	},
 	getHtml : function(content){
-		return this.html = 
-			'<div id="' + this.id + '" class="modal hide fade"><div class="modal-header">' +
+		return '<div id="' + this.id + '" class="modal hide fade"><div class="modal-header">' +
 			'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
 		    '<h3>' + this.title + '</h3></div>' + 
 		    '<div class="modal-body">' + 
@@ -28,21 +27,15 @@ Popup = Backbone.View.extend({
 	},
 	render : function(){
 		var self = this;
-		if (this.html){
-			this._render();
-		}
-		else {
-			this.getContent().success(function(data){
-				if (data) {
-					self.html = self.getHtml(data);
-					self._render();
-				}
-			}).error(function(){self.trigger('error')});
-		}
+		this.getContent().success(function(data){
+			if (data) {
+				self._render(data);
+			}
+		}).error(function(){self.trigger('error')});
 		this.trigger('open:popup');
 	},
-	_render : function(){
-		$('body').append(this.html);
+	_render : function(data){
+		$('body').append(this.getHtml(data));
 		this.$el = $('#' + this.id);
 		this.$el.modal().on('hidden', null, {self:this}, this.destroy);
 		this.bindActions();

@@ -6,9 +6,22 @@
 <?php else:?>
 <ul id="active_project" class="nav"><li class="dropdown"><a id="projects_dropdown_toggle" class="brand dropdown-toggle" 
 	data-toggle="dropdown" href="#">
-<?php $activeProject = Project::model()->findByPk(Yii::app()->user->getState('project-id'));echo $activeProject->name;?>
+<?php  
+	$activeProjectId = Yii::app()->user->getState('project-id');
+	$activeProject = Project::model()->findByPk($activeProjectId);
+	echo $activeProject->name;
+?>
 <b class="caret"></b></a>
 <ul id="project_list" class="dropdown-menu">
+	<?php 
+		echo '<li><a href="/project/get?all=1"><i class="icon-th-list"></i> View all</a></li>';
+		echo '<li class="divider"></li>';
+		$projects = Project::model()->byUser(Yii::app()->user->getState('user-id'))->findAll();
+		foreach($projects as $project){
+			if ($project->id !== $activeProjectId) 
+				echo '<li><a href="/project/change/?id='.$project->id.'"><i class="icon-book"></i> '.$project->name.'</a></li>';
+		}	
+	?>
 </ul></li></ul>
 <?php endif;?>
 
@@ -27,14 +40,7 @@
 </div></div></div></div>
 <?php else:?>
 <ul class="nav">
-<ul id="active_user_story" class="nav"><li class="dropdown">
-	<a id="backlog_dropdown_toggle" class="dropdown-toggle" data-toggle="dropdown" href="#">
-		<i class="icon-white icon-folder-close"></i> Backlog<b class="caret"></b></a>
-	<ul id="user_story_list" class="dropdown-menu">
-	</ul>
-</li></ul>
-<li class="divider-vertical"></li>
-<li><a href="/tasks/index" ><i class="icon-white icon-tasks"></i> Tasks</a></li>
+<li><a href="/userstories/get"><i class="icon-white icon-folder-close"></i> Backlog</a></li>
 </ul>
 <ul class="nav pull-right">
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">

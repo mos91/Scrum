@@ -4,7 +4,12 @@ $form = $this->beginWidget('CActiveForm',
 		'method' => 'POST',
 		'action' => '/project/create'));
 ?>
-<fieldset>    
+<fieldset>
+	<?php 
+		if (isset($id)){
+			echo CHtml::hiddenField('id', $id);
+		} 
+		?>
     <?php echo $form->errorSummary($model,null,null,array('class' => 'alert alert-error')); ?>
     
     <div class="control-group <?php echo isset($model->errors['name'])? 'error':''?>">
@@ -21,17 +26,8 @@ $form = $this->beginWidget('CActiveForm',
       <?php echo $form->labelEx($model, 'description', array('class' => 'control-label', 'for' => 'description'))?>
       
       <div class="controls">
-      <?php echo $form->textArea($model, 'description', array('class' => 'input-xlarge', 'rows' => '3','id' => 'description'))?>
+      <?php echo $form->textArea($model, 'description', array('class' => 'input-xlarge', 'rows' => '10','id' => 'description'))?>
       </div>
     </div>
-    <div class="control-group">   
-      <div class="controls">
-      <label class="checkbox">
-      	<?php echo $form->checkbox($model, 'makeActive', array('id' => 'makeActive'))?>
-      	<?php echo $form->labelEx($model, 'makeActive');?>
-      </label>
-      </div>
-    </div>
-    
 </fieldset>
 <?php $this->endWidget();?>

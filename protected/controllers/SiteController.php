@@ -9,6 +9,11 @@ class SiteController extends Controller
 	}
 	
 	public function actionIndex(){
-		$this->render('index', array('activeTab' => 'main'));
+		if (Yii::app()->user->isGuest){
+			$this->render('index', array('activeTab' => 'main'));
+		}
+		else {
+			$this->forward('project/get');
+		}
 	}
 }
