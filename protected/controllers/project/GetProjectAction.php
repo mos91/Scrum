@@ -11,18 +11,28 @@ class GetProjectAction extends CAction {
 	
 	public function onAjax(){
 		$request = Yii::app()->request;
+		$userId = Yii::app()->user->getState('user-id');
+
 		if (isset($_GET['all'])){
 			$jsonResult = array();
-			$userId = Yii::app()->user->getState('user-id');
+			
 			$result = Project::model()->byUser($userId)->findAll();
 			foreach($result as $id => $record){
 				$jsonResult[$id] = $record->getAttributes();
 			}
 			echo CJSON::encode($jsonResult);
 		}
+		else if (isset($_GET['trashed'])){
+			$jsonResult = array();
+			
+			$result = Project::model()->trashed($userId)->findAll();
+			foreach($result as $id => $record){
+				$jsonResult[$id] = $record->getAttributes();
+			}
+			echo CJSON::encode($jsonResult);	
+		}
 		else if (isset($_GET['id'])){
-			$id = $request->restParams['id'];
-			$result = Project::model()->findByPk($id);
+			$result = Project::model()->findByPk($_GET['id']);
 			echo CJSON::encode($result);
 		}
 		else {
@@ -35,9 +45,7 @@ class GetProjectAction extends CAction {
 		$request = Yii::app()->request;
 		$userId = Yii::app()->user->getState('user-id');
 		if (isset($_GET['all'])){
-			$model = Project::model()->byUser($userId)->findAll();
-			$trashed = Project::model()->trashed($userId)->findAll();
-			$this->controller->render('table', array('model' => $model, 'trashed_projects' => $trashed));
+			$this->controller->render('table');
 		}
 		else {
 			$this->controller->render('dashboard');

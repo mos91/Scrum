@@ -1,0 +1,8 @@
+table tr .active-row { }
+hr {  margin:5px 0px !important;}
+
+.description-col { width:200px;}
+.dropdown-actions { margin-right:10px;}
+.read-more-string {margin-left:5px;}
+.hide,.hide-string { display:none;}
+.row-id {display:none;}

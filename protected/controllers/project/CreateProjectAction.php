@@ -46,7 +46,6 @@ class CreateProjectAction extends CAction {
 			$project = new Project;
 			$project->setAttributes($form->attributes, false);
 			$project->company_id = Yii::app()->user->getState('company-id');
-			$project->create_time = new CDbExpression("NOW()");
 			$project->save();
 			
 			$projectAssign = new ProjectAssign;

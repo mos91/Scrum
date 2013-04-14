@@ -2,13 +2,13 @@
 class UserStory extends CActiveRecord {
 	public $name;
 	public $description;
-	//public $project;
+	
 	public $estimate;
 	public $priority;
 	public $value;
 	public $status;
-	public $sprint;
-	public $type;
+	//public $sprint;
+	//public $type;
 	public $dropped = false;
 	
 	public $team;
@@ -28,7 +28,7 @@ class UserStory extends CActiveRecord {
 	}
 	
 	public function scopes(){
-		return array('byProject');
+		return array('byProject','new', 'accepted');
 	}
 	
 	public function byProject($projectId){
@@ -36,6 +36,20 @@ class UserStory extends CActiveRecord {
 				'condition' => 'project_id=:project_id AND dropped=0', 
 				'params' => array(':project_id' => $projectId)));
 		return $this;
+	}
+
+	public function new(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'status=:status',
+			'params' => array(':status' => UserStoryStatusCodes::NEW)
+		));
+	}
+
+	public function accepted(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'status=:status',
+			'params' => array(':status' => UserStoryStatusCodes::ACCEPTED)
+		));
 	}
 	
 	public function relations(){

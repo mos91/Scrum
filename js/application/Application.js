@@ -7,7 +7,6 @@ Application = Backbone.Object.extend({
 	start : function(){
 		if (!this.alreadyStarted){
 			this.trigger('onStart', this);
-			//
 			this.alreadyStarted = true;
 			Backbone.history.start();
 		}
@@ -20,10 +19,6 @@ Application = Backbone.Object.extend({
 			return;
 		if (!this.behaviours[name]){
 			this.behaviours[name] = behaviour;
-			if (options.bindOnAttach === true){
-				this.binded[name] = true;
-				behaviour.bind();
-			}
 		}
 		return this;
 	},
@@ -42,10 +37,6 @@ Application = Backbone.Object.extend({
 			return;
 		if (this.behaviour[name]){
 			this.behaviour[name] = null;
-			if (this.binded[name]){
-				this.behavours[name].unbind();
-				delete this.binded[name];
-			}
 		}
 		return this;
 	},
@@ -55,47 +46,6 @@ Application = Backbone.Object.extend({
 		_.each(names, function(name){
 			this.detachBehaviour(name);
 		}, this)
-		return this;
-	},
-	_bind : function(names){
-		if (!names || !_.isArray(names)){
-			_.each(this.behaviours, function(behaviour,name){
-				if (!this.binded[name] && behaviour){
-					this.binded[name] = true;
-					behaviour.bind();
-				}
-			}, this)
-		}
-		else {
-			_.each(names, function(name){
-				if (!this.binded[name] && this.behaviours[name]){
-					this.binded[name] = true;
-					this.behaviours[name].behaviour.bind();
-				}
-			},this);
-		}
-		
-		return this;
-	},
-	_unbind : function(names){
-		
-		if (!names || !_.isArray(names)){
-			_.each(this.behaviours, function(behaviour,name){
-				if (this.binded[name] && behaviour){
-					this.binded[name] = false;
-					behaviour.unbind();
-				}
-			}, this);
-		}
-		else {
-			_.each(names, function(name){
-				if (this.binded[name] && this.behaviours[name]){
-					this.binded[name] = false;
-					behaviour.unbind();
-				}
-			},this);
-		}
-		 
 		return this;
 	}
 }, {

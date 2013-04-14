@@ -9,6 +9,7 @@ class ProjectController extends Controller {
 				'change' => 'application.controllers.project.ChangeActiveProjectAction',
 				'update' => 'application.controllers.project.UpdateProjectAction',
 				'drop' => 'application.controllers.project.DropProjectAction',
+				'restore' => 'application.controllers.project.RestoreProjectAction',
 				'delete' => 'application.controllers.project.DeleteProjectAction'
 		);
 	}

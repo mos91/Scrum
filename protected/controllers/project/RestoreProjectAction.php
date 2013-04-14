@@ -1,11 +1,11 @@
 <?php
-class DropProjectAction extends CAction {
+class RestoreProjectAction extends CAction {
 	private function checkIsIdExist(){
 		if (!isset(Yii::app()->request->restParams['id'])){
 			throw new InvalidRestParamsException(500, $this->controller, 'Id doesnt exist');
 		}
 	}
-
+	
 	private function checkIsIdsExist(){
 		if (!isset(Yii::app()->request->restParams['ids'])){
 			throw new InvalidRestParamsException(500, $this->controller, 'Ids doesnt exist');
@@ -24,13 +24,13 @@ class DropProjectAction extends CAction {
 			$this->checkIsIdsExist();
 			$ids = Yii::app()->request->restParams['ids'];
 
-			Project::model()->updateByPk($ids, array('dropped' => true));
+			Project::model()->updateByPk($ids, array('dropped' => false));
 			$projects = Project::model()->findAllByAttributes(array('id' => $ids));
 	
 			echo CJSON::encode(array('projects' => $projects));
 			Yii::app()->end();	
 		}
-		else if ($request->restParams['id']){
+		else if ($request->restParams['id']) {
 			$this->checkIsIdExist();
 			$id = Yii::app()->request->restParams['id'];
 

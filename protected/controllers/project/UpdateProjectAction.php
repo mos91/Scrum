@@ -40,7 +40,6 @@ class UpdateProjectAction extends CAction {
 		
 		$project = Project::model()->findByPk(Yii::app()->request->restParams['id']);
 		$project->setAttributes($form->attributes, false);
-		$project->update_time =  new CDbExpression("NOW()");
 		$project->save();
 		
 		$result = array('project' => $project->getAttributes());
