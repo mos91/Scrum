@@ -14,8 +14,73 @@ Ext.define('Scrum.view.form.RegisterForm', {
         labelWidth: 115,
         msgTarget: 'side'
     },
+    listeners : {
+        afterrender : function(self, e){
+            Ext.create('Ext.util.KeyNav', {
+                target : self,
+                enter : function(){
+                    form = this.getForm();
+                    if (form.isValid)
+                        this.getDockedComponent('register_buttons').
+                        getComponent('submit_registration_form_button').fireEvent('click');
+                },
+                scope : this
+            });  
+        },
+        beforeshow : function(self, e){
+            this.getForm().reset();
+            //clear state
+            (registrationStatus = this.getComponent('registration_status')).update('');
+            registrationStatus.hide();
+        },
+        beforeaction : function(self, e){
+             //show loading
+            this.setLoading({ msg : "Handling request..."});
+            //hide state
+            (registrationStatus = this.getComponent('registration_status')).update('');
+            registrationStatus.hide();
+        },
+        actioncomplete : function(self, action){
+            var result = action.result;
+                                
+            if (result.success){
+                       
+            }
+            this.setLoading(false);
+        },
+        actionfailed : function(self, action){
+            var registrationStatus = this.getComponent('registration_status');
 
-    items: [{
+            //update state
+            registrationStatus.show();
+            registrationStatus.addCls('app-statusbar-error')
+            registrationStatus.update(registrationStatus.tpl.apply(action.result.specific))
+            //hide loading
+            this.setLoading(false);
+        }
+    },
+
+    items: [
+    {
+        xtype : 'component', 
+        cls : 'app-statusbar',
+        shadow : false,
+        id : 'registration_status',
+        hidden : true,
+        flex : 1,
+        tpl : Ext.create('Ext.XTemplate', 
+            '<ul class="' + Ext.plainListCls + '">' + 
+                '<tpl for="email">' + 
+                    '<li>{.}</li>' + 
+                '</tpl>' +
+            '</ul>' + 
+            '<ul class="' + Ext.plainListCls + '">' + 
+                '<tpl for="password">' + 
+                    '<li>{.}</li>' + 
+                '</tpl>' + 
+            '</ul>')
+    },
+    {
         xtype: 'fieldset',
         title: 'User Info',
         defaultType: 'textfield',
@@ -23,9 +88,9 @@ Ext.define('Scrum.view.form.RegisterForm', {
             anchor: '100%'
         },
         items: [
-            { allowBlank:false, fieldLabel: 'Email', name: 'RegisterForm[email]', emptyText: 'type your email', vtype:'email' },
-            { allowBlank:false, fieldLabel: 'Password', name: 'RegisterForm[password]', emptyText: 'password', inputType: 'password' },
-            { allowBlank:false, fieldLabel: 'Verify', name: 'RegisterForm[passwordConfirm]', emptyText: 'password', inputType: 'password' }
+            { allowBlank:false, fieldLabel: 'Email', name: 'RegistrationForm[email]', emptyText: 'type your email', vtype:'email' },
+            { allowBlank:false, fieldLabel: 'Password', name: 'RegistrationForm[password]', emptyText: 'password', inputType: 'password' },
+            { allowBlank:false, fieldLabel: 'Verify', name: 'RegistrationForm[passwordConfirm]', emptyText: 'password', inputType: 'password' }
         ]
     },
     {
@@ -38,13 +103,14 @@ Ext.define('Scrum.view.form.RegisterForm', {
         items: [{
             fieldLabel: 'First Name',
             emptyText: 'First Name',
-            name: 'RegisterForm[firstname]',
-
+            name: 'RegistrationForm[firstname]',
+            allowBlank : false
         },
         {
             fieldLabel: 'Last Name',
             emptyText: 'Last Name',
-            name: 'RegisterForm[lastname]'
+            name: 'RegistrationForm[lastname]',
+            allowBlank : false
         }]
     }],
     dockedItems: [
@@ -65,17 +131,12 @@ Ext.define('Scrum.view.form.RegisterForm', {
                     id  : 'submit_registration_form_button',
                     disabled: true,
                     formBind: true,
-                    handler : function(self, e){
-                        var form = this.up('form').getForm();
-                        if (form.isValid()){
-                            form.submit({
-                                success : function(form, action){
-                                    Ext.Msg.alert('Success', action.result.msg);
-                                },
-                                failure : function(form, action){
-                                    Ext.Msg.alert('Failure', action.result.msg);
-                                }
-                            })
+                    listeners : {
+                        click :  function(self, e){
+                            var form = this.up('form');
+                            if (form.isValid()){
+                                form.submit();
+                            }
                         }
                     }
                 }],

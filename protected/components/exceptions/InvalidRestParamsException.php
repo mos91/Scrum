@@ -1,7 +1,7 @@
 <?php
 class InvalidRestParamsException extends HttpException {
 	protected function composeMessage(){
-		return 'Invalid request params in '.$this->context.".";
+		return 'Invalid request params in '.$this->context.".".$this->composeSpecificMessage();
 	}
 	
 	protected function defineCode(){

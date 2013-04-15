@@ -2,15 +2,13 @@
 class RegistrationAction extends CAction {
 	private function checkFormIsExist(){
 		if (!isset(Yii::app()->request->restParams['RegistrationForm'])){
-			$this->controller->render('registration');
-			Yii::app()->end();
+			throw new InvalidRestParamsException(200, $this->controller, 'Registration Form is not exist');			
 		}	
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			$this->controller->render('registration', array('model' => $form));
-			Yii::app()->end();
+			throw new AuthenticationFailureException(200, $this->controller, $form->errors);
 		}
 	}
 	
@@ -39,5 +37,7 @@ class RegistrationAction extends CAction {
 		$this->checkFormIsValid($form);
 		$userRecord = $this->createUserRecord($form);
 		$userRecord->save();
+
+		echo CJSON::encode(array('success' => true));
 	}
 }

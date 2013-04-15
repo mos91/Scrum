@@ -3,17 +3,16 @@
 class LoginAction extends CAction {
 	private $identity;
 	
+	
 	private function checkFormIsExist(){
 		if (!isset(Yii::app()->request->restParams["LoginForm"])){
-			throw new InvalidRestParamsException(500, $this, 'Login Form is not exist');
-			$this->controller->render('login');
+			throw new InvalidRestParamsException(200, $this->controller, 'Login Form is not exist');
 		}
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			//$this->controller->render('login', array('model' => $form));
-			throw new AuthenticationFailureException(500, $this);
+			throw new AuthenticationFailureException(200, $this->controller, $form->errors);
 		}
 	}
 	
@@ -35,5 +34,7 @@ class LoginAction extends CAction {
 		$cookies->add('login', new CHttpCookie('login', true));
 		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
-	} 
+	}
+
+	
 }

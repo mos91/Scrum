@@ -31,3 +31,32 @@
 .app-login-form,.app-register-form {
 	z-index : 1001;
 }
+/*Ext.ux.statusbar.StatusBar*/
+.app-statusbar {
+	width : 185px !important;
+	border:0px;
+	background-image : none;
+	background-color : transparent;
+}
+
+.app-statusbar > .x-box-inner {
+	width : 185px !important;
+}
+
+.app-statusbar .x-status-text {
+	width : 185px !important;
+	color : green;
+}
+
+.app-statusbar-error li {
+	color:red;
+}
+
+.app-statusbar-success h3 {
+	color : green;
+}
+
+/*Ext.tip.QuickTip*/
+.x-tip-form-invalid, .x-tip-body-form-invalid {
+    width: 200px !important;
+}

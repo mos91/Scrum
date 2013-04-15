@@ -12,7 +12,7 @@ class ErrorAction extends CAction {
 					}
 					else
 					{
-						$result = array('code' => $exception->getCode(), 'message' => $exception->getMessage());
+						$result = array('error' => true, 'code' => $exception->getCode(), 'message' => $exception->getMessage());
 						if ($exception instanceof CHttpException){
 							$result['statusCode'] = $exception->statusCode;
 							if ($exception instanceof HttpException){

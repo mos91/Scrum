@@ -5,7 +5,7 @@ class HttpException extends CHttpException {
 	public $context;
 	public $specific;
 	
-	public function __construct($statusCode = 500, $controller = null, $specific = null)
+	public function __construct($statusCode = 500, $controller = null, $specific = '')
 	{
 		if (!isset($controller)){
 			$this->context = Yii::app()->name;
