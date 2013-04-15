@@ -4,9 +4,6 @@ class GetProjectAction extends CAction {
 		if (Yii::app()->request->isAjaxRequest){
 			$this->onAjax();
 		}
-		else {
-			$this->onGet();
-		}
 	}
 	
 	public function onAjax(){
@@ -38,17 +35,6 @@ class GetProjectAction extends CAction {
 		else {
 			$result = Project::model()->findByPk(Yii::app()->user->getState("project-id"));
 			echo CJSON::encode($result);
-		}
-	}
-	
-	public function onGet(){
-		$request = Yii::app()->request;
-		$userId = Yii::app()->user->getState('user-id');
-		if (isset($_GET['all'])){
-			$this->controller->render('table');
-		}
-		else {
-			$this->controller->render('dashboard');
 		}
 	}
 }

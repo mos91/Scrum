@@ -5,15 +5,15 @@ class LoginAction extends CAction {
 	
 	private function checkFormIsExist(){
 		if (!isset(Yii::app()->request->restParams["LoginForm"])){
+			throw new InvalidRestParamsException(500, $this, 'Login Form is not exist');
 			$this->controller->render('login');
-			Yii::app()->end();
 		}
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			$this->controller->render('login', array('model' => $form));
-			Yii::app()->end();
+			//$this->controller->render('login', array('model' => $form));
+			throw new AuthenticationFailureException(500, $this);
 		}
 	}
 	
@@ -21,13 +21,6 @@ class LoginAction extends CAction {
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			$this->onGet(); 
-		}
-	}
-	
-	private function onGet(){
-		$this->controller->render('login', array('model' => new LoginForm));
 	}
 	
 	private function onSubmit(){
@@ -40,7 +33,7 @@ class LoginAction extends CAction {
 		Yii::app()->user->login($form->identity,$duration);
 		$cookies = Yii::app()->request->getCookies();
 		$cookies->add('login', new CHttpCookie('login', true));
-		$this->controller->redirect('/site/index');
+		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
 	} 
 }

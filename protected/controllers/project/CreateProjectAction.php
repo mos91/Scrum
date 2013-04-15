@@ -27,10 +27,6 @@ class CreateProjectAction extends CAction {
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			if (Yii::app()->request->isAjaxRequest)
-				$this->controller->renderPartial('form', array('model' => new ProjectForm));
-		}
 	}
 	
 	private function onSubmit(){

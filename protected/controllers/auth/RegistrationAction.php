@@ -30,19 +30,6 @@ class RegistrationAction extends CAction {
 		if ($request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			$this->onGet();
-		}
-	}
-	
-	private function onGet(){
-		if (isset($_GET['success']) && Yii::app()->request->urlReferrer == '/auth/registration'){
-			$this->controller->render('success');
-		}
-		else {
-			$this->controller->render('registration', array('model' => new RegistrationForm));
-		}
-				
 	}
 	
 	private function onSubmit(){
@@ -52,6 +39,5 @@ class RegistrationAction extends CAction {
 		$this->checkFormIsValid($form);
 		$userRecord = $this->createUserRecord($form);
 		$userRecord->save();
-		$this->controller->redirect('/auth/registration?success=true');
 	}
 }

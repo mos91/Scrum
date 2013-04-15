@@ -14,20 +14,13 @@ class UpdateProjectAction extends CAction {
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			if (Yii::app()->request->isAjaxRequest){
-				echo CJSON::encode(array('error' => true,
-						'content' => $this->controller->renderPartial('form', array('model' => $form), true)));
-				Yii::app()->end();
-			}
+			throw new InvalidRestParamsException(500, $this->controller, "request params are invalid");		
 		}
 	}
 	
 	public function run(){
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
-		}
-		else {
-			$this->onGet();
 		}
 	}
 	
@@ -45,15 +38,5 @@ class UpdateProjectAction extends CAction {
 		$result = array('project' => $project->getAttributes());
 		echo CJSON::encode($result);
 		Yii::app()->end();
-	}
-	
-	private function onGet(){
-		if (Yii::app()->request->isAjaxRequest){
-			$this->checkIsIdExist();
-			$project = Project::model()->findByPk($_GET['id']);
-			$form = new ProjectForm;
-			$form->setAttributes($project->getAttributes(), false);
-			$this->controller->renderPartial('form', array('model' => $form, 'id' => $project->id));
-		}
 	}
 }

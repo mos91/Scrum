@@ -1,0 +1,33 @@
+/*Ext.Tabpanel*/
+.app-tabpanel .x-tab-bar-body {
+	height:41px;
+}
+
+.app-tabpanel .x-tab-bar-body > .x-box-inner {
+	height:39px !important;
+}
+
+.app-tabpanel .x-tab {
+	padding : 10px 40px;
+	min-height:39px;
+	min-width:140px;
+}
+
+.app-tabpanel .x-tab .x-tab-inner {
+	font-size:14px;
+	height:16px;
+}
+
+/*Ext.menu.Menu*/
+.app-menu { width : 180px !important;}
+.app-menu > .x-menu-body {
+	width : 179px !important;
+}
+.app-menu .x-menu-item {
+	width : 179px !important;
+}
+
+/*Scrum.view.LoginForm*/
+.app-login-form,.app-register-form {
+	z-index : 1001;
+}

@@ -10,10 +10,7 @@ class SiteController extends Controller
 	
 	public function actionIndex(){
 		if (Yii::app()->user->isGuest){
-			$this->render('index', array('activeTab' => 'main'));
-		}
-		else {
-			$this->forward('project/get');
+			$this->render('index');
 		}
 	}
 }
