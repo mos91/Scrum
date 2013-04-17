@@ -24,34 +24,49 @@ class Project extends CActiveRecord {
 	
 	public function scopes(){
 		return array(
-			'byUser',
-			'trashed'
+			'live',
+			'trashed',
+			'favorite'
 		);
 	}
 	
 	public function byUser($userId){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'dropped=0',
-			'with' => array('users' => 
-					array('select' => false, 
-						  'condition'=>'users.id=:id', 
-						  'params' => array(':id' => $userId)
-						)
-			) 		 
+			'with' => array(
+				'users' => array(
+					'select' => false, 
+					'condition' => 'users.id=:id', 
+					'params' => array(':id' => $userId))
+			)
+			));
+		return $this;
+	}
+
+	public function live(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'dropped=0' 		 
 		));
 		return $this;
 	}
 	
-	public function trashed($userId){
+	public function trashed(){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'dropped=1',
+			'condition' => 'dropped=1',
+		));
+		return $this;
+	}
+
+	public function favorite($userId){
+		$this->getDbCriteria()->mergeWith(array(
+				'condition' => 'dropped=0',
 				'with' => array('users' =>
 						array('select' => false,
-								'condition'=>'users.id=:id',
+								'condition'=>'users.id=:id AND favorite=1',
 								'params' => array(':id' => $userId)
 						)
 				)
 		));
+
 		return $this;
 	}
 }

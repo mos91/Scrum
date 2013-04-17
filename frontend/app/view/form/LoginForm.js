@@ -30,11 +30,6 @@ Ext.define('Scrum.view.form.LoginForm', {
             authStatus.hide();
         },
         actioncomplete : function(self, action){
-            var result = action.result;
-                                
-            if (result.success){
-                       
-            }
             this.setLoading(false);
         },
         actionfailed : function(self, action){

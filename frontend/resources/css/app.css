@@ -1,4 +1,4 @@
-/*Ext.Tabpanel*/
+/*Ext.tab.Panel*/
 .app-tabpanel .x-tab-bar-body {
 	height:41px;
 }
@@ -27,10 +27,6 @@
 	width : 179px !important;
 }
 
-/*Scrum.view.LoginForm*/
-.app-login-form,.app-register-form {
-	z-index : 1001;
-}
 /*Ext.ux.statusbar.StatusBar*/
 .app-statusbar {
 	width : 185px !important;
@@ -59,4 +55,37 @@
 /*Ext.tip.QuickTip*/
 .x-tip-form-invalid, .x-tip-body-form-invalid {
     width: 200px !important;
+}
+
+/*Scrum.view.LoginForm*/
+/*Scrum.view.RegisterForm*/
+.app-login-form,.app-register-form {
+	z-index : 1001;
+}
+/*Scrum.feedviewer.view.article.Preview*/
+.app-articlepreview {
+
+}
+
+/*Scrum.feedviewer.view.article.Grid*/
+.app-feed-grid {
+
+}
+
+/*Scrum.feedviewer.view.article.Preview*/
+.app-preview {
+
+}
+
+/*Scrum.feedviewer.view.feed.List*/
+.app-feed-list {
+
+}
+
+.app-feed-list-item {
+
+}
+
+.app-feed-list-item-hover {
+
 }
