@@ -37,5 +37,17 @@ _.mixin({
 		});
 
 		return t;
+	},
+	/*get object like this { handler : <Function>, context : <Object>}*/
+	functor : function(fn, context){
+		var o = {};
+		if (_.isObject(context))
+			o['context'] = context;
+		if (_.isFunction(fn))
+			o['handler'] = fn;
+		else
+			o['handler'] = _.noop();
+		
+		return {handler : fn, context : context}
 	}
 })

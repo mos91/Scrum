@@ -1,5 +1,8 @@
 Popup = Backbone.View.extend({
 	initialize : function(options){
+		var defaults = {url : '', id : 'popup_form', title : 'Popup Form'};
+		options = (_.isUndefined(options))? _.defaults(options, defaults) : defaults;
+
 		this.url = options.url;
 		this.id = options.id;
 		this.title = options.title? options.title:''; 

@@ -30,8 +30,53 @@
 	 (handlerX)<-----* *        | event1
 				     * *<-------|
 				     ***
-*/
 
+	"ClosingReceiver"
+					senderA(listenerA)
+					***---------------------|
+			fire    * *---------|           |
+	(handlerX)<-----* *         | event1    | event2
+					* *<--------|           |
+					* *---------------------|
+					***
+	"ClosingDispatcher" 
+				fire	senderA(listenerA)
+	(handlerY)<-----***---------------------|
+			fire    * *---------|           |
+	(handlerX)<-----* *         | event1    | event2
+					* *<--------|           |
+					* *---------------------|
+					***
+
+	"Receiver"
+	senderA				listenerA
+	***                *******         fire
+	* *      event1    *     * ---------------->(handlerX)
+	* *--------------->*     *
+	* *                *******
+	***				    ^
+    senderB             | event2
+	***                 |
+	* *                 |
+	* *-----------------|
+	* *
+	***
+
+
+	"DispatchingReceiver"
+	senderA				listenerA
+	***                *******         fire
+	* *      event1    *     * ---------------->(handlerX)
+	* *--------------->*     *         fire
+	* *                *******----------------->(handlerY)
+	***				    ^
+    senderB             | event2
+	***                 |
+	* *                 |
+	* *-----------------|
+	* *
+	***	
+*/
 Behaviour = Backbone.Object.extend({
 	initialize: function(attrs, options){
 		Behaviour.__super__.initialize();
@@ -101,7 +146,7 @@ Behaviour = Backbone.Object.extend({
 		}, this);
 
 		if (_.isUndefined(_options.bindOnAttach) || (_options.bindOnAttach === true)){
-			this.bind(_names);
+			this.bindLinks(_names);
 		}
 		
 		return this;
@@ -139,7 +184,7 @@ Behaviour = Backbone.Object.extend({
 		var path,listenerName, linkName;
 		var listener;
 		var links;
-		var fullName;
+		var fullName,fullNames;
 
 		if (_.isUndefined(name) || !_.isString(name))
 			 return;
@@ -152,24 +197,19 @@ Behaviour = Backbone.Object.extend({
 
 		if (linkName === '*'){
 			links = _.keys(listener);
-			_.each(links, function(name, key, list){
+			fullNames = _.map(links, function(name, key, list){
 				fullName = listenerName + '.' + name;
-				this._unbindLink(fullName);
-				listener[linkName] = null;
-				delete this._binds[fullName];
+				return fullName;
 			}, this);
-		}
-		else {
-			if (!(link = this.listeners[listenerName][linkName]))
-				return;	
 
+			this.unbindLinks(fullNames);
+		}
+		else {	
 			this._unbindLink(name);
-			listener[linkName] = null;
-			delete this._binds[name];
 		}
 	},
 	detachLinks : function(linkNames, options){
-		if (_.isUndefined(listenerNames) || !_.isArray(listenerNames))
+		if (_.isUndefined(linkNames) || !_.isArray(linkNames))
 			return;
 
 		_.each(linkNames, function(name, index, list){
@@ -181,8 +221,6 @@ Behaviour = Backbone.Object.extend({
 		var fullname;
 		if (_.isUndefined(name) || !_.isString(name))
 			 return;
-		if (!this.listeners[name])
-			return;
 
 		this.detachLink(name + '.*');
 		
@@ -197,7 +235,7 @@ Behaviour = Backbone.Object.extend({
 		}, this);
 		return this;
 	},
-	bind : function(names, options){
+	bindLinks : function(names, options){
 		var name;
 		if (_.isArray(names)){
 			_.each(names, function(name, index, list){
@@ -211,10 +249,10 @@ Behaviour = Backbone.Object.extend({
 		
 		return this;
 	},
-	unbind : function(names, options){
+	unbindLinks : function(names, options){
 		var name;
 		if (_.isArray(names)){
-			_.each(this.links, function(link, name, list){
+			_.each(names, function(name, index, list){
 				this._unbindLink(name);		
 			}, this);
 		}
@@ -231,7 +269,7 @@ Behaviour = Backbone.Object.extend({
 		var fn;
 		if (!name || !_.isString(name))
 			return;
-		if (!_.isEmpty(this._binds[name]))
+		if (this._binds[name] === true)
 			return;
 
 		path = name.split('.');
@@ -258,12 +296,11 @@ Behaviour = Backbone.Object.extend({
 			}
 		}
 		else {
-			if (link.once === true){
-				link.listener.once(link.event, link.handler, link.context);
-			}
-			else {
-				link.listener.on(link.event, link.handler, link.context);
-			}
+			if (link.once === true)
+				fn = 'once';
+			else
+				fn = 'on';
+			link.listener[fn](link.event, link.handler, link.context);
 		}
 		this._binds[name] = true;
 	},
@@ -293,6 +330,7 @@ Behaviour = Backbone.Object.extend({
 		else {
 			link.listener.off(link.event, link.handler, link.context);
 		}
-		this._binds[name] = false;
-	}
+		delete this._binds[name];
+		listener[linkName] = null;
+ 	}
 });

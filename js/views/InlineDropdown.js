@@ -1,26 +1,42 @@
 InlineDropdown = Backbone.View.extend({
-	initialize : function(attributes, options){
-		this.dropdownTitle  = attributes.dropdownTitle; 
-		this.delegateTo = attributes.delegateTo;
-		this.embedTo = attributes.embedTo;
-		this.triggerOn = attributes.triggerOn;
-		this.items = attributes.items;
+	initialize : function(options){
+		var defaults = { embedTo : 'body', triggerOn : 'body', delegateTo : null, title : 'Dropdown', items : [] };
+		options = (_.isUndefined(options))? _.defaults(options, defaults) : defaults;
+
+		this.dropdownTitle  = options.title; 
+		this.delegateTo = options.delegateTo;
+		this.embedTo = options.embedTo;
+		this.triggerOn = options.triggerOn;
+		this.items = options.items;
 	},
 	embedTo : function(selector){
 		if (selector && _.isString(selector))
 		this.embedTo = selector;
+
+		return this;
 	},
 	triggerOn : function(selector){
 		if (selector && _.isString(selector))
-		this.triggerOn = selector;
+			this.triggerOn = selector;
+
+		return this;
 	},
 	delegateTo: function(selector){
-		if (selector && _.isString(selector))
+		if (_.isString(selector))
 			this.delegateTo = selector;
+
+		return this;
 	},
 	setItems : function(items){
-		if (items && _.isArray(items))
-		this.items = items;
+		if (_.isArray(items))
+			this.items = items;
+
+		return this;
+	},
+	setTitle : function(title){
+		if (_.isString(title))
+			this.dropdownTitle = title;
+		return this;
 	},
 	bind : function(){
 		var self = this;
@@ -41,6 +57,16 @@ InlineDropdown = Backbone.View.extend({
 			}).on('mouseleave', this.delegateTo, function(event){
 				$(self.embedTo, this).empty();
 			});
+		}
+	},
+	unbind : function(){
+		var self = this;
+
+		if (!this.delegateTo){
+			$(this.triggerOn).off('mouseenter,mouseleave');
+		}
+		else {
+			$(this.triggerOn).off('mouseenter,mouseleave', this.delegateTo);	
 		}
 	},
 	render : function($triggerOn){

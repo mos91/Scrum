@@ -11,8 +11,15 @@ class GetProjectAction extends CAction {
 	
 	public function onAjax(){
 		$request = Yii::app()->request;
-	
-		if (isset($_GET['live'])){
+		
+		//fetch html
+		if (isset($_GET['live_projects'])){
+			//NOTE : how to pass layout?
+			$this->controller->renderPartial('live_projects');
+			Yii::app()->end();
+		}
+		//fetch json
+		else if (isset($_GET['live'])){
 			$jsonResult = $this->fetchLive();
 		}
 		else if (isset($_GET['trashed'])){
