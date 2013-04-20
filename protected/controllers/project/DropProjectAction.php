@@ -27,7 +27,7 @@ class DropProjectAction extends CAction {
 			Project::model()->updateByPk($ids, array('dropped' => true));
 			$projects = Project::model()->findAllByAttributes(array('id' => $ids));
 	
-			echo CJSON::encode(array('projects' => $projects));
+			echo CJSON::encode(array('success' => true, 'data' => $projects));
 			Yii::app()->end();	
 		}
 		else if ($request->restParams['id']){
@@ -38,7 +38,7 @@ class DropProjectAction extends CAction {
 			$project->dropped = false;
 			$project->save();
 			
-			echo CJSON::encode(array('project' => $project));
+			echo CJSON::encode(array('success' = true, 'data' => $project));
 			Yii::app()->end();
 		}
 	}

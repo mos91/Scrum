@@ -4,15 +4,24 @@ ProjectsPage = MVCComponent.extend({
 		if (!app || !(app instanceof MVCApplication))
 			return;
 		
+		/*
+			Set empty projects and trashed project collections
+		*/
 		app.setModels({
-			'projects' : new Backbone.Collection(),
-			'trashed_projects' : new Backbone.Collection()
+			'projects' : new Collection(),
+			'trashed_projects' : new Collection()
 		});
-
+		/*
+			Set router aka controller for listening any actions that take place on page
+		*/
 		app.setRouters({
 			'projectsRouter' : new ProjectsRouter()
 		});
-		
+		/*
+			Set up for popup forms - create, update
+			Plugin for inline row actions - both for projects table grid and
+			trashed projects table grid
+		*/
 		app.setViews({
 			'projectEditPopup' : new PopupForm({  
 				url : '/project/update',
@@ -46,38 +55,48 @@ ProjectsPage = MVCComponent.extend({
 				        ]
 			})
 		});
-		
+		/*
+			Set up for behaviour for this page
+		*/
 		models = app.getModels();
 		routers = app.getRouters();
 		views = app.getViews();
 		behaviour = new Behaviour();
 		behaviour.attachLinks({
 			//when we enter table view
+			//1. update project collection counter
+			//2. update table grid for projects
 			'render_projects_table_on_fetch' : { sender : models['projects'], event : 'reset', handler:function(collection){
 				$('#projects_count').html(collection.length);
 				$('#projects_table').dataTable().fnClearTable();
 				$('#projects_table').dataTable().fnAddData(collection.toJSON())
 			}},
+			//1. update project collection counter
+			//2. update table grid for projects
 			'render_trashed_projects_on_fetch' : { sender : models['trashed_projects'], event:'reset', handler:function(collection){
 				$('#trashed_projects_count').html(collection.length);
 				$('#trashed_projects_table').dataTable().fnClearTable();
 				$('#trashed_projects_table').dataTable().fnAddData(collection.toJSON());
 			}},
+			//1.update
+			'render_trashed_projects_counter_on_fetch' : { sender : models['trashed_projects'], event : 'sync:count', handler:function(collection){
+				$('#trashed_projects_count').html(collection.count.get('value'));
+			}},
 			//when we intent to refresh all projects section
 			'render_projects_table_on_refresh' : { sender: routers['projectsRouter'], event:'refreshAllProjects', handler : function(){
-				models['projects'].fetch({url:'/project/get?all=1'});
+				models['projects'].fetch({url:'/project/get?live=1', giveme:{data:true} });
 			}},
 			//when we intent to refresh all trashed section
 			'render_trashed_projects_on_refresh' : { sender: routers['projectsRouter'], event:'refreshTrashedProjects', handler : function(){
-				models['trashed_projects'].fetch({ url:'/project/get?trashed=1'});
+				models['trashed_projects'].fetch({ url:'/project/get?trashed=1', giveme : {data:true}});
 			}},
 			//when we intent to add project
 			'create_popup_on_project_create' : { sender:routers['projectsRouter'], listener:views['projectCreatePopup'], 
 				event:'createProject', handler : function(){
 					this.render();
 				}},
-			'create_project_on_submit' : { sender : views['projectCreatePopup'], event:'submit:popup', handler : function(data){
-				models['projects'].add(data.project);
+			'create_project_on_submit' : { sender : views['projectCreatePopup'], event:'submit:popup', handler : function(response){
+				models['projects'].add(response.data[0]);
 			}},
 			'add_row_on_add_project' : { sender : models['projects'], event: 'add' , handler : function(model, collection){
 				$('#projects_count').html(collection.length);
@@ -86,6 +105,7 @@ ProjectsPage = MVCComponent.extend({
 			//when we intent to drop project
 			'drop_project' : { sender:routers['projectsRouter'], event:'dropProject', handler: function(id){
 				var model = models['projects'].get(id);
+
 				models['projects'].remove(model);
 				$.ajax({ url:'/project/drop', method:"POST", dataType:'json', data:{id:id}}).success(function(data){
 					models['trashed_projects'].add(data.project);	
@@ -180,13 +200,13 @@ ProjectsPage = MVCComponent.extend({
 				$('#trashed_projects_section').show();
 				$('#projects_section').hide();
 
-				models['trashed_projects'].fetch({ url:'/project/get?trashed=1', reset:true});
+				models['trashed_projects'].fetch({ url:'/project/get?trashed=1'});
 			}},
 			'show_all_projects' : { sender:routers['projectsRouter'], event:'getAllProjects', handler : function(){
 				$('#trashed_projects_section').hide();
 				$('#projects_section').show();
 
-				models['trashed_projects'].fetch({ url:'/project/get?trashed=1', reset:true});
+				models['projects'].fetch({ url:'/project/get?live=1'});
 			}}
 		});
 		
@@ -194,10 +214,14 @@ ProjectsPage = MVCComponent.extend({
 		app.attachBehaviour('projectsBehaviour', behaviour);
 
 		app.on('onStart', function(){
+			//bind handlers on rows for projects table
 			this.views['inlineActionForActiveProjects'].bind();
+			//bind handlers on rows for trashed projects table
 			this.views['inlineActionForTrashedProjects'].bind();
-			this.models['projects'].fetch({url:'/project/get?all=1', reset:true});
-			this.models['trashed_projects'].fetch({ url:'/project/get?trashed=1', reset:true});
+			//fetch project collection from server on load
+			this.models['projects'].fetch({url:'/project/get?live=1', giveme: { data:true }});
+			//fetch only count of trashed project collection from server on load
+			this.models['trashed_projects'].fetch({ url:'/project/get?trashed=1', giveme : { count:true}});
 		}, app);
 		
 		$(document).on('click', '.read-more-string', function(){
@@ -232,7 +256,7 @@ ProjectsPage = MVCComponent.extend({
 					}
 					return descriptionHtml;
 				}},
-				{"sDefaultContent" : ''}
+				{"sDefaultContent" : '', 'sClass' : 'actions-col'}
 			]
 		});
 		
@@ -247,7 +271,7 @@ ProjectsPage = MVCComponent.extend({
 			"aoColumns" : [
 				{"sDefaultContent" : '<input type="checkbox">'},
 				{"mData" : "name", "mRender" : function(name){ return '<strong>' + name + '</strong>';}},
-				{"sDefaultContent" : ''}
+				{"sDefaultContent" : '',  'sClass' : 'actions-col'}
 			]
 		});
 	},
@@ -258,6 +282,8 @@ ProjectsPage = MVCComponent.extend({
 
 $(document).ready(function(){
 	app = MVCApplication.getInstance();
-	projects = new ProjectsPage();
+	//page = new ProjectsPage();	
+	projectsComponent = new ProjectsComponent();
+	trashedProjects = new TrashedProjectsComponent();
 	app.setComponent('projects',projects);
 });

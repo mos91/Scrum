@@ -21,7 +21,14 @@ $this->clips['containerCssClass'] = 'container';
 	<script src="/js/routers/ProjectsRouter.js" type="text/javascript"></script>
 <?php $this->endClip('routers')?>
 
-<?php $this->beginClip('script')?>
+<?php $this->beginClip('models')?>
+	<script src="/js/models/Model.js" type="text/javascript"></script>
+	<script src="/js/models/Collection.js" type="text/javascript"></script>
+	<script src="/js/models/Counter.js" type="text/javascript"></script>
+<?php $this->endClip('models');?>
+
+<?php $this->beginClip('script');?>
+	<script src="/js/application/">
 	<script src="/js/projects.js" type="text/javascript"></script>
 <?php $this->endClip('script')?>
 

@@ -30,9 +30,10 @@ $projectName = Yii::app()->name.' project';
   <script src="/assets/jquery/jquery-1.9.1.min.js"></script>
   <script src="<?php echo $bootstrapBase?>/js/bootstrap.min.js"></script>
   <script src="<?php echo $backboneBase?>/underscore.js"></script>
+  <script src="assets/underscore-extensions/mixins.js"></script>
   <script src="<?php echo $backboneBase?>/backbone-dev.1.0.0.js"></script>
   <script src="/assets/backbone-extensions/backboneObject.js"></script>
-  <!--<script src="/assets/less/less.js" type="text/javascript"></script>  -->
+  
   <script src="/assets/jquery.cookies.2.2.0.min.js" type="text/javascript"></script>
   <?php if (isset($this->clips['libs'])) echo $this->clips['libs'];?>
   
@@ -48,9 +49,8 @@ $projectName = Yii::app()->name.' project';
   <!-- routers -->
   <?php if (isset($this->clips['routers'])) echo $this->clips['routers'];?>
   <!-- behaviours -->
-  <script src="/js/behaviours/behaviour.js" type="text/javascript"></script>
-  <?php if (isset($this->clips['behaviours'])) echo $this->clips['behaviours'];?>
-  
+  <script src="/js/application/Behaviour.js" type="text/javascript"></script>
+
   <script src="/js/application/Application.js" type="text/javascript"></script>
   <script src="/js/application/MVCApplication.js" type="text/javascript"></script>
   <script src="/js/main.js" type="text/javascript"></script>
