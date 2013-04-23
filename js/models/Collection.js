@@ -5,9 +5,6 @@
 */
 
 Collection = Backbone.Collection.extend({
-	initialize : function(){
-		this.count = new Counter();
-	},
 	parse : function(resp){
 		return resp.data;
 	}

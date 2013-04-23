@@ -16,7 +16,7 @@
 	<?php
 		echo '<li><a href="/project/get"><i class="icon-search"></i> View Profile</a></li>';
 		echo '<li><a href="/project/get?all=1"><i class="icon-th-list"></i> View all</a></li>';
-		$projects = Project::model()->byUser(Yii::app()->user->getState('user-id'))->findAll();
+		$projects = Project::model()->favorite(Yii::app()->user->getState('user-id'))->findAll();
 			if (count($projects) > 1){
 				echo '<li class="divider"></li>';
 				foreach($projects as $project){

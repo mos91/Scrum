@@ -1,9 +1,9 @@
 InlineDropdown = Backbone.View.extend({
 	initialize : function(options){
 		var defaults = { embedTo : 'body', triggerOn : 'body', delegateTo : null, title : 'Dropdown', items : [] };
-		options = (_.isUndefined(options))? _.defaults(options, defaults) : defaults;
+		options = (_.isUndefined(options))? _.defaults(options, defaults) : options;
 
-		this.dropdownTitle  = options.title; 
+		this.title  = options.title; 
 		this.delegateTo = options.delegateTo;
 		this.embedTo = options.embedTo;
 		this.triggerOn = options.triggerOn;
@@ -45,17 +45,17 @@ InlineDropdown = Backbone.View.extend({
 		
 		if (!this.delegateTo){
 			$(this.triggerOn).hover(function(){
-				self.render(this);
+				self.show(this);
 			}, 
 			function(){
-				$(self.embedTo, this).empty();
+				self.hide(this);
 			})
 		}
 		else {
 			$(this.triggerOn).on('mouseenter', this.delegateTo, function(event){
-				self.render(this);
+				self.show(this);
 			}).on('mouseleave', this.delegateTo, function(event){
-				$(self.embedTo, this).empty();
+				self.hide(this);
 			});
 		}
 	},
@@ -69,10 +69,24 @@ InlineDropdown = Backbone.View.extend({
 			$(this.triggerOn).off('mouseenter,mouseleave', this.delegateTo);	
 		}
 	},
+	show : function($triggerOn){
+		var $embedTo = $(this.embedTo, $triggerOn);
+
+		this.trigger('onBeforeShow', $triggerOn, $embedTo);
+		this.render($triggerOn);
+		this.trigger('onAfterShow', $triggerOn, $embedTo);
+	},
+	hide : function($triggerOn){
+		var	$embedTo = $(this.embedTo, $triggerOn);
+
+		this.trigger('onBeforeHide', $triggerOn, $embedTo);
+		$embedTo.empty();
+		this.trigger('onAfterHide', $triggerOn, $embedTo);
+	},
 	render : function($triggerOn){
 		var html = '<div class="dropdown dropdown-actions pull-right">' + 
   		'<a class="dropdown-toggle" href="#" data-toggle="dropdown" data-target="#"' +  
-  		' role="button">' + this.dropdownTitle + '<b class="caret"></b></a>' + 
+  		' role="button">' + this.title + '<b class="caret"></b></a>' + 
   		'<ul class="dropdown-menu" role="menu" >' + 
   		this.renderItems($triggerOn) +
   		'</ul></div>'
@@ -82,11 +96,7 @@ InlineDropdown = Backbone.View.extend({
 		var items = this.items, html = '', item, href;
 		for(var i = 0;i < this.items.length;i++){
 			item = this.items[i];
-			
-			if (_.isFunction(item.href))
-				href = item.href.apply(this, [$triggerOn]);
-			else
-				href = item.href;
+			href = item.href;
 			
 			html += '<li ' + ((item.id)? ('id="' + item.id + '"'):'') + ((item.id)? (' class="' + item.cssClass + '"'):'') + 
 					'><a href="' + href + '">' +

@@ -1,6 +1,7 @@
 table tr .active-row { }
 hr {  margin:5px 0px !important;}
 
+.check-all {}
 .description-col { width:800px;}
 .actions-col { max-width:175px;min-width:145px;}
 .dropdown-actions { margin-right:10px;}

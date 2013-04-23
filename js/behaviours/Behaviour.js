@@ -79,7 +79,7 @@
 */
 Behaviour = Backbone.Object.extend({
 	initialize: function(attrs, options){
-		Behaviour.__super__.initialize();
+		Behaviour.__super__.initialize.apply(this, arguments);
 		this.bid = _.uniqueId('b');
 		this._binds = {};
 		this.listeners = {};
@@ -98,7 +98,7 @@ Behaviour = Backbone.Object.extend({
 	attachListener : function(name, listener, senders, events, fns, options){
 		var _names = [];
 		var aligned;
-		var _options = (!_.isUndefined(options))? options : { once : false, bindOnAttach : false};
+		var _options = (!_.isUndefined(options))? options : { once : false, bindOnAttach : true};
 
 		if (_.isUndefined(name) || !_.isString(name))
 			return; 
@@ -133,6 +133,9 @@ Behaviour = Backbone.Object.extend({
 		_.each(aligned[2], function(fn, index, list){	
 			if (_.isUndefined(fn)){
 				list[index] = { context : null, handler : _.noop()} ;
+			}
+			else if (_.isFunction(fn)){
+				list[index] = { context : null, handler : fn }
 			}
 		});
 
@@ -170,9 +173,6 @@ Behaviour = Backbone.Object.extend({
 			return;
 		}
 		_.each(listeners, function(listener, name, list){
-			listenerOptions = (!_.isObject(listener.options))? {} : listener.options;
-			listener.options = _.extend(options || {}, listenerOptions);
-
 			args = _.args(listener, ['listener', 'senders', 'events','fns', 'options']);
 			args.unshift(name);
 			this.attachListener.apply(this, args);
@@ -237,6 +237,7 @@ Behaviour = Backbone.Object.extend({
 	},
 	bindLinks : function(names, options){
 		var name;
+
 		if (_.isArray(names)){
 			_.each(names, function(name, index, list){
 				this._bindLink(name);
@@ -265,18 +266,22 @@ Behaviour = Backbone.Object.extend({
 	},
 	_bindLink : function(name){
 		var listener,listenerName, linkName, link;
-		var path;
+		var parts;
 		var fn;
+
 		if (!name || !_.isString(name))
 			return;
 		if (this._binds[name] === true)
 			return;
 
-		path = name.split('.');
-		listenerName = path[0];
+		parts = name.split('.');
+		linkName = parts[parts.length - 1];
+		parts.pop();
+		listenerName = parts.join('.');
+		
 		if (!(listener = this.listeners[listenerName]))
 			return;
-		linkName = path[1];
+		
 		if (!(link = listener[linkName]))
 			return;
 
@@ -312,11 +317,13 @@ Behaviour = Backbone.Object.extend({
 			return;
 		if (this._binds[name] !== true)
 			return;
-		path = name.split('.');
-		listenerName = path[0];
+		parts = name.split('.');
+		linkName = parts[parts.length - 1];
+		parts.pop();
+		listenerName = parts.join('.');
+
 		if (!(listener = this.listeners[listenerName]))
 			return;
-		linkName = path[1];
 		if (!(link = listener[linkName]))
 			return;
 		

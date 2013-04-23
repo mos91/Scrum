@@ -110,8 +110,8 @@ MVCApplication = Application.extend(
 		if (!view || !(view instanceof Backbone.View))
 			return;
 		this.views[name] = view;
-
-		if (_.isUndefined(options.register) || !_.isEmpty(options.register))
+		
+		if (_.isUndefined(options.register) || options.register === true)
 			this._registerViews(name);
 
 		return this;
@@ -210,12 +210,14 @@ MVCApplication = Application.extend(
 MVCComponent = Backbone.Object.extend(
 	_.extend(MVCMixin, {
 		initialize : function(attributes, options){
+			var attributes = (_.isUndefined(attributes))? :
 			var app = attributes.app;
 			var name = attributes.name;
 			var cmpId = this.cmpId = _.uniqueId('cmp');
 
 			this.name = (name && _.isString(name))? name : cmpId;
-			this.app = (app && app instanceof MVCApplication) ? attributes.app : null;
+			this.setApp(app);
+
 			this.names = {};
 			this.indexes = {};
 			this.names['models'] = [];
@@ -227,7 +229,7 @@ MVCComponent = Backbone.Object.extend(
 			this.names['behaviours'] = [];
 			this.indexes['behaviours'] = {};
 		},
-		attach : function(app) {},
+		attach : function(app) { this.name},
 		detach : function(app) {},
 		setApp : function(app) { 
 			if (!app || !(app instanceof MVCApplication))

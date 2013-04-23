@@ -18,12 +18,14 @@ class GetProjectAction extends CAction {
 			$this->controller->renderPartial('live_projects');
 			Yii::app()->end();
 		}
-		//fetch json
 		else if (isset($_GET['live'])){
-			$jsonResult = $this->fetchLive();
+			$jsonResult = $this->fetchCollection('live');
 		}
 		else if (isset($_GET['trashed'])){
-			$jsonResult = $this->fetchTrashed();
+			$jsonResult = $this->fetchCollection('trashed');
+		}
+		else if (isset($_GET['favorite'])){
+			$jsonResult = $this->fetchCollection('favorite');
 		}
 		else if (isset($_GET['id'])){
 			$jsonResult = $this->fetchSingle();
@@ -47,8 +49,33 @@ class GetProjectAction extends CAction {
 		}
 	}
 
+	private function fetchCollection($collectionName){
+		$userId = Yii::app()->user->getState('user-id');
+		$jsonResult = array();
+		$model = Project::model();
+		$scope = call_user_func(array($model, $collectionName), $userId);
 
-	private function fetchTrashed(){
+		if (isset($_GET['data']) && !empty($_GET['data'])){
+			$result = $scope->findAll();
+			$jsonResult['data'] = array();
+			foreach($result as $id => $record){
+				$jsonResult['data'][$id] = $record->getAttributes();
+			}
+		}
+
+		if (isset($_GET['count'])){
+			if (isset($_GET['data']) && isset($result))	
+				$jsonResult['count'] = count($result);
+			else{
+				$jsonResult['count'] = $scope->count();
+
+			}
+		}
+
+		return $jsonResult;
+	}
+
+	/*private function fetchTrashed(){
 		$userId = Yii::app()->user->getState('user-id');
 		$jsonResult = array();
 			
@@ -92,6 +119,22 @@ class GetProjectAction extends CAction {
 		return $jsonResult;
 	}
 
+	private function fetchFavorite(){
+		$userId = Yii::app()->user-getState('user-id');
+		$jsonResult = array();
+
+		if (isset($_GET['data']) && !empty($_GET['data'])){
+			$result = Project::model()->favorite($userId)->findAll();
+			$jsonResult['data'] = array();
+			foreach($result as $id => $record){
+				$jsonResult[$id] = $record->getAttributes();
+			}
+		}
+
+		if (isset($_GET['count']) && !empty($_GET['count'])){
+
+		}
+	}*/
 	/*fetch one model by id*/
 	private function fetchSingle(){
 		$result = Project::model()->findByPk($_GET['id']);

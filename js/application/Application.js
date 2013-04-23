@@ -1,6 +1,6 @@
 Application = Backbone.Object.extend({
 	initialize : function(attributes, options){
-		Application.__super__.initialize.apply(this);
+		Application.__super__.initialize.apply(this, arguments);
 		attributes = attributes || {};
 		var appId = this.appId =  _.uniqueId('app');
 		

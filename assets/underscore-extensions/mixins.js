@@ -11,6 +11,14 @@ _.mixin({
 
 		return arr;
 	},
+	/*fill array with passed value n times*/
+	fill : function(n, value){
+		var arr = [];
+		for(var i = 0;i < n;i++)
+			arr.push(value);
+		
+		return arr;
+	},
 	/*align passed arrays to length of longest passed array*/
 	align : function(){
 		var arrays = _.toArray(arguments); 
@@ -49,5 +57,9 @@ _.mixin({
 			o['handler'] = _.noop();
 		
 		return {handler : fn, context : context}
+	},
+	/*escapes dots,colons,periods and other symbols that are used in CSS3 id selectors notation*/
+	escapedIdSelector : function(Idselector){
+		return "#" + Idselector.replace( /(:|\.|\[|\])/g, "\\$1" );
 	}
 })

@@ -29,7 +29,20 @@ class Project extends CActiveRecord {
 		);
 	}
 	
-	public function byUser($userId){
+	public function favorite($userId){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'dropped=0',
+			'with' => array('users' => 
+				array(
+					'select' => false,
+					'condition' => 'users.id=:id AND favorite=1',
+					'params' => array(':id' => $userId)
+			))
+		));
+		return $this;
+	}
+
+	public function live($userId){
 		$this->getDbCriteria()->mergeWith(array(
 			'condition' => 'dropped=0',
 			'with' => array('users' => 
