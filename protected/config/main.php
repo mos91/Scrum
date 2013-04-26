@@ -77,12 +77,12 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-				// uncomment the following to show log messages on web pages
-				/*array(
-					'class'=>'CWebLogRoute',
+				//uncomment the following to show log messages on web pages
+				array(
+					'class'=>'CFileLogRoute',
 					'categories'=>'system.db.*',
 					'except'=>'system.db.ar.*' // показываем всё, что касается базы данных, но не касается AR
-				)*/
+				)
 			),
 		),
 	),

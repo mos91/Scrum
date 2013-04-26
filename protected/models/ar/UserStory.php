@@ -5,10 +5,7 @@ class UserStory extends CActiveRecord {
 	
 	public $estimate;
 	public $priority;
-	public $value;
 	public $status;
-	//public $sprint;
-	//public $type;
 	public $dropped = false;
 	
 	public $team;

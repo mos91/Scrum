@@ -1,7 +1,8 @@
 Popup = Backbone.View.extend({
 	initialize : function(options){
 		var defaults = {url : '', id : 'popup_form', title : 'Popup Form'};
-		options = (_.isUndefined(options))? _.defaults(options, defaults) : defaults;
+		options = options || defaults;
+		options = _.defaults(options, defaults);
 
 		this.url = options.url;
 		this.id = options.id;
@@ -11,6 +12,7 @@ Popup = Backbone.View.extend({
 	getContent : function(){ 
 		return $.ajax({
 			url : this.url,
+			method : "GET",
 			dataType : 'html'
 		});	
 	},
@@ -30,12 +32,13 @@ Popup = Backbone.View.extend({
 	},
 	render : function(){
 		var self = this;
+		this.trigger('onBeforeShow');
 		this.getContent().success(function(data){
 			if (data) {
 				self._render(data);
 			}
 		}).error(function(){self.trigger('error')});
-		this.trigger('open:popup');
+		this.trigger('onAfterShow');
 	},
 	_render : function(data){
 		$('body').append(this.getHtml(data));
@@ -52,9 +55,11 @@ Popup = Backbone.View.extend({
 	},
 	destroy : function(e){
 		var self = e.data.self;
+
+		self.trigger('onBeforeHide');
 		self.$el.remove();
 		self.unbindActions();
-		self.trigger('close:popup');
+		self.trigger('onAfterHide');
 	},
 	close : function(e){
 		var self = e.data.self;
@@ -85,12 +90,13 @@ PopupForm = Popup.extend({
 		});
 		$('form', this.$el).submit(function(e){
 			e.preventDefault();
+			self.trigger('onBeforeSubmit');
 			var request = self.submit(this).success(
 			function(data){
 				if (!data.error){
 					//notify user about success submit
 					self.$el.modal('hide');
-					self.trigger('submit:popup', data);
+					self.trigger('onAfterSubmit', data);
 				}
 				else {
 					$('.modal-body').html(data.content);

@@ -75,66 +75,6 @@ class GetProjectAction extends CAction {
 		return $jsonResult;
 	}
 
-	/*private function fetchTrashed(){
-		$userId = Yii::app()->user->getState('user-id');
-		$jsonResult = array();
-			
-		if (isset($_GET['data']) && !empty($_GET['data'])){
-			$result = Project::model()->trashed($userId)->findAll();	
-			$jsonResult['data'] = array();
-			foreach($result as $id => $record){
-				$jsonResult['data'][$id] = $record->getAttributes();
-			}
-		}
-
-		if (isset($_GET['count']) && !empty($_GET['data'])){
-			if (isset($_GET['data']) && isset($result))	
-				$jsonResult['count'] = count($result);
-			else
-				$jsonResult['count'] = Project::model()->trashed($userId)->count();
-		}
-
-		return $jsonResult;
-	}
-
-	private function fetchLive(){
-		$userId = Yii::app()->user->getState('user-id');
-		$jsonResult = array();
-			
-		if (isset($_GET['data']) && !empty($_GET['data'])){
-			$result = Project::model()->byUser($userId)->findAll();	
-			$jsonResult['data'] = array();
-			foreach($result as $id => $record){
-				$jsonResult['data'][$id] = $record->getAttributes();
-			}
-		}
-
-		if (isset($_GET['count']) && !empty($_GET['count'])){
-			if (isset($_GET['data']) && !empty($_GET['data']) && isset($result))	
-				$jsonResult['count'] = count($result);
-			else
-				$jsonResult['count'] = Project::model()->byUser($userId)->count();
-		}
-
-		return $jsonResult;
-	}
-
-	private function fetchFavorite(){
-		$userId = Yii::app()->user-getState('user-id');
-		$jsonResult = array();
-
-		if (isset($_GET['data']) && !empty($_GET['data'])){
-			$result = Project::model()->favorite($userId)->findAll();
-			$jsonResult['data'] = array();
-			foreach($result as $id => $record){
-				$jsonResult[$id] = $record->getAttributes();
-			}
-		}
-
-		if (isset($_GET['count']) && !empty($_GET['count'])){
-
-		}
-	}*/
 	/*fetch one model by id*/
 	private function fetchSingle(){
 		$result = Project::model()->findByPk($_GET['id']);

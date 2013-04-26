@@ -1,20 +1,16 @@
 FavoriteProjectsTableView = Tableview.extend({
 	initialize : function(options){
 		FavoriteProjectsTableView.__super__.initialize.apply(this);
-		this.on('onAfterShow', this.onAfterShow, this);
-		this.on('onBeforeShow', this.onBeforeShow, this);
-		this.on('onAfterHide', this.onAfterHide, this);
-		this.on('onBeforeHide', this.onBeforeHide, this);
 
 		var $header = this.$header = $('<h4>Favorite Projects Review</h4></hr>' + 
 			'<div class="btn-group">' + 
 			'<a href="#project/changeGroup?' + $.param({ fromGroup:'favorite', toGroup:'trashed', action:'drop', id:'all'}) + '" class="btn btn-small"><i class="icon-trash"></i> Trash</a>' + 
-			'<a href="#project/changeGroup?' + $.param({ fromGroup:'favorite', toGroup:'live', action:'drop', id:'all'}) + '" class="btn btn-small"><i class="icon-remove"></i> Revoke</a>' + 
+			'<a href="#project/changeGroup?' + $.param({ fromGroup:'favorite', toGroup:'live', action:'revoke', id:'all'}) + '" class="btn btn-small"><i class="icon-remove"></i> Revoke</a>' + 
 		'</div>' + 
 		'<div class="btn-group pull-right">' + 
 			'<a href="#project/refresh" class="btn btn-small pull-right" ><i class="icon-repeat"></i> Refresh</a>' + 
 		'</div><hr/>');
-		var $table = this.$table = $('<table id="favorite_projects_table" class="table table-condensed table-hover"><thead></thead><tbody></tbody></table>');
+		var $table =  $('<div><table id="favorite_projects_table" class="table table-condensed table-hover"><thead></thead><tbody></tbody></table></div>');
 		this.inline = new InlineDropdown({ 
 			title : 'Actions',
 			embedTo : 'td:last', 
@@ -33,7 +29,9 @@ FavoriteProjectsTableView = Tableview.extend({
 	      '<th class="span2">Name</th>' + 
 	      '<th class="span2">Description</th>' + 
 	      '<th class="span2"></th>');
-		this.$table.dataTable({'sDom' : '<"row-fluid"<"span6"l><"span4 pull-right"f>r>t<"row-fluid"<"span6"i><"span5 pull-right"p>>',
+
+		this.$table = $('table',$table).dataTable({
+		'sDom' : '<"row-fluid"<"span6"l><"span4 pull-right"f>r>t<"row-fluid"<"span6"i><"span5 pull-right"p>>',
 		"sPaginationType": "bootstrap",
 		"fnRowCallback" : function(nRow, aData){
 			$(nRow).addClass("active-row");
@@ -54,35 +52,7 @@ FavoriteProjectsTableView = Tableview.extend({
 			}},
 			{"sDefaultContent" : '', 'sClass' : 'actions-col'}
 		]});
-	},
-	onAfterShow : function(){
-		var checkAll = $('input.check-all');
-
-		FavoriteProjectsTableView.__super__.onAfterShow.apply(this);
-		$(this.el).prepend(this.$header);
-		checkAll.on('change', this.checkAll);
-		$('input.check-row').on('change', this.checkRow);
-
-		checkAll[0].checked = false;
-	},
-	onAfterHide : function(){
-		$('input.check-all').off('change');
-		$('input.check-row').off('change');	
-	},
-	checkAll : function(){
-		var checked = $('input.check-row:checked');
-		var notChecked = $('input.check-row:not(:checked)');
-
-		if (!notChecked.length){
-			checked.click();
-		}
-		else {
-			$(this)[0].checked = true;
-			notChecked.click();
-		}
-	},
-	checkRow : function(){
-		var $el = $(this)
-		$el.closest('tr').attr('checked', $el.get(0).checked);
+		
+		this.$container = $table;
 	}
 });

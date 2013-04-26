@@ -11,11 +11,11 @@ Counter = Backbone.Model.extend({
 	},
 	add : function(){
 		var value = this.get('value');
-		this.set({ value: value++});
+		this.set({ value: ++value});
 	},
 	sub : function(){
 		var value = this.get('value');
-		this.set({ value: value--});
+		this.set({ value: --value});
 	},
 	reset : function(collection){
 		this.set({ value : collection.length});

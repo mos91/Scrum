@@ -4,9 +4,9 @@ $(document).ready(function(){
 				'counters.projects.live' : new Counter({},{  name : 'counters.projects.live', url : '/project/get?live=1&count=1'}),
 				'counters.projects.favorite' : new Counter({},{ name: 'counters.projects.favorite', url :'/project/get?favorite=1&count=1' }),
 				'counters.projects.trashed' : new Counter({},{  name: 'counters.projects.trashed', url : '/project/get?trashed=1&count=1'}),
-				'projects.live' : new Collection([], { url : '/project/get?live=1&data=1'}),
-				'projects.favorite' : new Collection([], { url : '/project/get?favorite=1&data=1'}),
-				'projects.trashed' : new Collection([], { url : '/project/get?trashed=1&data=1'})
+				'projects.live' : new Collection([], { name: 'projects.live', url : '/project/get?live=1&data=1'}),
+				'projects.favorite' : new Collection([], { name:'projects.favorite', url : '/project/get?favorite=1&data=1'}),
+				'projects.trashed' : new Collection([], { name:'projects.trashed', url : '/project/get?trashed=1&data=1'})
 			};
 	var views = {
 		'projects.groups' : new ProjectGroups(),
@@ -15,9 +15,9 @@ $(document).ready(function(){
 		'projects.trashed' : new TrashedProjectsTableView(),
 	};
 	var favoriteProjects = models['projects.favorite'];
-	viewBehaviour.bindModelsAndViews(models, views);
-
 	router = new ProjectsRouter({models : models, views : views});
+	viewBehaviour.bindModelsAndViews(models, views);
+	viewBehaviour.bindRoutersAndViews({'projects' : router}, views);
 	
 	$.when(
 		models['counters.projects.live'].fetch(), 

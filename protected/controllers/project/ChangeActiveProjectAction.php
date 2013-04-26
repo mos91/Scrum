@@ -6,7 +6,6 @@ class ChangeActiveProjectAction extends CAction {
 		}
 	}
 	
-	
 	public function run(){
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
@@ -37,6 +36,6 @@ class ChangeActiveProjectAction extends CAction {
 		UserRecord::model()->updateByPk($userId, array('active_project_id' => $projectId));
 		Yii::app()->user->setState('project-id', $projectId);
 		
-		$this->controller->forward('project/get');
+		$this->controller->redirect('/project/get');
 	}
 }

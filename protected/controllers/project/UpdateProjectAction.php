@@ -42,7 +42,7 @@ class UpdateProjectAction extends CAction {
 		$project->setAttributes($form->attributes, false);
 		$project->save();
 		
-		$result = array('project' => $project->getAttributes());
+		$result = array('success' => true,'data' => array($project->getAttributes()));
 		echo CJSON::encode($result);
 		Yii::app()->end();
 	}

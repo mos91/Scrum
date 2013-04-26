@@ -6,5 +6,9 @@ ProjectGroups = Backbone.View.extend({
 	},
 	onCounter : function(counter){
 		$(_.escapedIdSelector(counter.name)).html(counter.get("value"));
+	},
+	onSwitchGroup : function(oldGroup, newGroup){
+		$(_.escapedIdSelector(oldGroup) + '.group-item').removeClass('active');
+		$(_.escapedIdSelector(newGroup) + '.group-item').addClass('active');
 	}
 })

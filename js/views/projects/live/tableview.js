@@ -1,11 +1,7 @@
 LiveProjectsTableView = Tableview.extend({
-
 	initialize : function(options){
 		LiveProjectsTableView.__super__.initialize.apply(this);
-		this.on('onAfterShow', this.onAfterShow, this);
-		this.on('onBeforeShow', this.onBeforeShow, this);
-		this.on('onAfterHide', this.onAfterHide, this);
-		this.on('onBeforeHide', this.onBeforeHide, this);
+		
 		var $header = this.$header = $('<h4>Projects Review</h4></hr>' + 
 			'<div class="btn-group">' + 
 			'<a href="#project/changeGroup?' + $.param({fromGroup: 'live', toGroup : 'trashed', action:'drop', id:'all'}) + '" class="btn btn-small"><i class="icon-trash"></i> Trash</a>' + 
@@ -14,7 +10,7 @@ LiveProjectsTableView = Tableview.extend({
 			'<div class="btn-group pull-right">' + 
 			'<a href="#project/refresh" class="btn btn-small" ><i class="icon-repeat"></i> Refresh</a></div><hr/>');
 
-		var $table = this.$table = $('<table id="live_projects_table" class="table table-condensed table-hover"><thead></thead><tbody></tbody></table>');		
+		var $table =  $('<div><table id="live_projects_table" class="table table-condensed table-hover"><thead></thead><tbody></tbody></table></div>');		
 		this.tblId = _.uniqueId('tbl');
 		this.inline = new InlineDropdown({ 
 			title : 'Actions',
@@ -30,11 +26,11 @@ LiveProjectsTableView = Tableview.extend({
 		});
 
 		$('thead', $table).append(
-		  '<th class="span1"><input class="check-all" type="checkbox"></th>'  +
+		  '<tr><th class="span1"><input class="check-all" type="checkbox"></th>'  +
 	      '<th class="span2">Name</th>' + 
 	      '<th class="span2">Description</th>' + 
-	      '<th class="span2"></th>');
-		this.$table.dataTable({'sDom' : '<"row-fluid"<"span6"l><"span4 pull-right"f>r>t<"row-fluid"<"span6"i><"span5 pull-right"p>>',
+	      '<th class="span2"></th></tr>');
+		this.$table = $('table',$table).dataTable({'sDom' : '<"row-fluid"<"span6"l><"span4 pull-right"f>r>t<"row-fluid"<"span6"i><"span5 pull-right"p>>',
 		"sPaginationType": "bootstrap",
 		"fnRowCallback" : function(nRow, aData){
 			$(nRow).addClass("active-row");
@@ -43,7 +39,7 @@ LiveProjectsTableView = Tableview.extend({
 		},
 		"aoColumns" : [
 			{"sDefaultContent" : '<input class="check-row" type="checkbox">'},
-			{"mData" : "name", "mRender" : function(name){ return '<strong>' + name + '</strong>';}},
+			{"mData" : "name", "sClass" : 'name-col', "mRender" : function(name){ return '<strong>' + name + '</strong>';}},
 			{"mData" : "description", "sClass" : 'description-col', "mRender" : function(description, type, list){
 				descriptionHtml = '<span>' + description.substr(0,144) + '</span>';
 				if (description.length >= 144){
@@ -55,35 +51,7 @@ LiveProjectsTableView = Tableview.extend({
 			}},
 			{"sDefaultContent" : '', 'sClass' : 'actions-col'}
 		]});
-	},
-	onAfterShow : function(){
-		var checkAll = $('input.check-all');
 
-		LiveProjectsTableView.__super__.onAfterShow.apply(this);
-		$(this.el).prepend(this.$header);
-		checkAll.on('change', this.checkAll);
-		$('input.check-row').on('change', this.checkRow);
-
-		checkAll[0].checked = false;
-	},
-	onAfterHide : function(){
-		$('input.check-all').off('change');
-		$('input.check-row').off('change');	
-	},
-	checkAll : function(){
-		var checked = $('input.check-row:checked');
-		var notChecked = $('input.check-row:not(:checked)');
-
-		if (!notChecked.length){
-			checked.click();
-		}
-		else {
-			$(this)[0].checked = true;
-			notChecked.click();
-		}
-	},
-	checkRow : function(){
-		var $el = $(this)
-		$el.closest('tr').attr('checked', $el.get(0).checked);
+		this.$container = $table;
 	}
 });

@@ -1,10 +1,4 @@
-ProjectsBehaviour = Behaviour.extend({
-	bindRoutersAndViews : function(routers, views){
-		this.attachListener('switch.change.project.groups', 
-			views['project.groups'], 
-			routers['projects'], 
-			'switch', views['projects.groups'].onSwitchGroup);
-	},
+BacklogBehaviour = Behaviour.extend({
 	bindModelsAndViews : function(models, views){
 		var listeners = {};
 		var counters = {};	

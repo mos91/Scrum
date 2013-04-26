@@ -45,19 +45,31 @@ ProjectsRouter = Backbone.Router.extend({
 			newTableview.show();
 			//newTableview.listenTo(newCollection, 'add', newTableview.onAdd)	
 		});
+		this.trigger('switch', oldCollection.name, newCollection.name);
 	},
+	/*change group section*/
 	changeGroup : function(fromGroup,toGroup,action,id){
+		if (action === 'restore'){
+			this.restore(id);
+		}
+		else {
+			this.defaultChangeGroup(fromGroup, toGroup, action, id);		
+		}
+	},
+	defaultChangeGroup : function(fromGroup, toGroup, action, id){
 		var tableview;
 		var fromGroup = this.models['projects.' + fromGroup];
-		var toGroup = this.models['projects' + toGroup];
+		var toGroup = this.models['projects.' + toGroup];
 		var project,checkedRows,ids;
 
-		if (_.isNumber(id)){
+		var _id = parseInt(id);
+
+		if (_.isNumber(_id) && !_.isNaN(_id)){
 			model = fromGroup.get(id);
 
-			fromGroup.remove(project);
-			$.ajax({ url:'/project/' + action, method:"POST", dataType:'json', data:{id:id}}).success(function(resp){
-				toGroup.add(row);	
+			fromGroup.remove(model);
+			$.ajax({ url:'/project/' + action, method:"POST", dataType:'json', data:{id:_id}}).success(function(resp){
+				toGroup.add(resp, {parse:true});	
 			}).fail(function(){
 				Backbone.Events.trigger('error');
 			});
@@ -68,9 +80,55 @@ ProjectsRouter = Backbone.Router.extend({
 			ids = tableview.keys(checkedRows);
 			models = _.map(ids, function(id, index){ return fromGroup.get(id)});
 
-			fromGroup.remove(models, {reset : true});
+			fromGroup.remove(models);
 			$.ajax({ url:'/project/' + action, method:"POST", dataType:'json', data:{ids:ids}}).success(function(resp){
-				toGroup.add(resp, {reset : true});	
+				toGroup.add(resp, {parse : true});	
+			}).fail(function(){
+				Backbone.Events.trigger('error');
+			});
+		}
+	},
+	restore : function(id){
+		var tableview;
+		var trashed = this.models['projects.trashed'];
+		var live = this.models['projects.live'];
+		var favorite = this.models['projects.favorite'];
+
+		var project,checkedRows,ids;
+
+		var _id = parseInt(id);
+		if (_.isNumber(_id) && !_.isNaN(_id)){
+			model = trashed.get(id);
+
+			trashed.remove(model);
+			$.ajax({ url : '/project/restore', method:"POST", dataType:'json', data:{id:_id}}).success(function(resp){
+				if (resp.data[0].favorite){
+					favorite.add(resp, {parse:true});
+				}
+				else {
+					live.add(resp, {parse:true});
+				}
+			}).fail(function(){
+				Backbone.Events.trigger('error');
+			});
+		}
+		else if (id === 'all'){
+			tableview = this.currentTableview;
+			checkedRows = tableview.where({ checked : true});
+			ids = tableview.keys(checkedRows);
+			models = _.map(ids, function(id, index){ return trashed.get(id)});
+
+			trashed.remove(models);
+			$.ajax({ url:'/project/restore', method:"POST", dataType:'json', data:{ids:ids}}).success(function(resp){
+				toFavorite = _.filter(resp.data, function(record){ 
+					return record.favorite === '1';
+				});
+				toLive = _.reject(resp.data, function(record){
+					return record.favorite === '1'
+				});
+
+				live.add(toLive);
+				favorite.add(toFavorite);	
 			}).fail(function(){
 				Backbone.Events.trigger('error');
 			});
@@ -83,12 +141,12 @@ ProjectsRouter = Backbone.Router.extend({
 
 		popup.render();
 
-		liveProjects.listenTo(popup, 'popup:submit', function(resp){ 
-			liveProjects.add(resp);
-			liveProjects.stopListening(popup, 'popup:submit');
+		liveProjects.listenTo(popup, 'onAfterSubmit', function(resp){ 
+			this.add(resp, {parse : true});
+			this.stopListening(popup, 'onAfterSubmit');
 		});
-		this.listenTo(popup, 'popup:close', function(){
-			liveProjects.stopListening(popup, 'popup:submit');
+		liveProjects.listenTo(popup, 'onAfterHide', function(){
+			this.stopListening(popup, 'onAfterHide');
 		});
 	},
 	edit : function(group, id){
@@ -97,15 +155,15 @@ ProjectsRouter = Backbone.Router.extend({
 		var popup = new PopupForm({  id : 'editPopup', title : "Project Edit", url : '/project/edit/' + id});
 		popup.url = '/project/update?id=' + id;
 		popup.render();
-		projects.listenTo(popup, 'popup:submit', function(resp){
-			projects.set(resp, { merge : true});
+		projects.listenTo(popup, 'onAfterSubmit', function(resp){
+			this.set(resp, { merge : true, parse:true, add : false, remove:false});
 			project = projects.get(resp.data[0].id);
 			tableview.update(project);
 
-			projects.stopListening(popup, 'popup:submit');
+			projects.stopListening(popup, 'onAfterSubmit');
 		});
-		this.listenTo(popup, 'popup:close', function(){
-			projects.stopListening(popup, 'popup:submit');
+		this.listenTo(popup, 'onAfterHide', function(){
+			projects.stopListening(popup, 'onAfterHide');
 		});
 	},	
 	afterRoute : function(router, route, params){

@@ -4,12 +4,12 @@ $this->clips['containerCssClass'] = 'container';
 ?>
 
 <?php $this->beginClip('styles')?>
-	<link rel="stylesheet" type="text/css" href="/css/projects.css"> 
+	<link rel="stylesheet" type="text/css" href="/css/tableview.css"> 
 	<link rel="stylesheet" type="text/css" href="/assets/jquery.dataTables.extensions/bootstrapped-dataTable.css">
 <?php $this->endClip('styles')?>
 
 <?php $this->beginClip('libs')?>
-	<script src="/assets/jquery.dataTables.1.9.4.min.js" type="text/javascript"></script>
+	<script src="/assets/jquery.dataTables.1.9.4.js" type="text/javascript"></script>
 	<script src="/assets/jquery.dataTables.extensions/bootstrapped-dataTable.js" type="text/javascript"></script>
 <?php $this->endClip('libs')?>
 
@@ -45,13 +45,13 @@ $this->clips['containerCssClass'] = 'container';
 
 <div class="row-fluid">
 <div class="span3">
-	<div class="well sidebar-nav">
+	<div class="well sidebar-nav affix group-panel">
 		<ul class="nav nav-list">
 			<li class="nav-header">Live projects</li>
-			<li><a href="#project/change/favorite">Favorites<span id="counters.projects.favorite" class="pull-right badge badge-info"></span></a></li>
-			<li><a href="#project/change/live">All projects<span id="counters.projects.live" class="pull-right badge badge-info"></span></a></li>
+			<li id="projects.favorite" class="group-item"><a href="#project/change/favorite">Favorites<span id="counters.projects.favorite" class="pull-right badge badge-info"></span></a></li>
+			<li id="projects.live" class="group-item"><a href="#project/change/live">Active projects<span id="counters.projects.live" class="pull-right badge badge-info"></span></a></li>
 			<li class="divider"></li>
-			<li><a href="#project/change/trashed">Trash<span id="counters.projects.trashed" class="pull-right badge"></span></a></li>
+			<li id="projects.trashed" class="group-item"><a href="#project/change/trashed">Trash<span id="counters.projects.trashed" class="pull-right badge"></span></a></li>
 		</ul>
 	</div>
 </div>
