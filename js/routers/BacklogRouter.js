@@ -7,17 +7,20 @@ BacklogRouter = Backbone.Router.extend({
 		this.on('route', this.afterRoute, this);
 	},
 	routes : {
-		'userstories/startup/:group' : 'startup',
-		'userstories/change/:group' : 'switchToGroup',
+		'backlog/startup/:group' : 'startup',
+		'backlog/change/:group' : 'switchToBacklogGroup',
+		'sprint/change/:id' : 'switchToSprint',
+		'userstories/refresh' : 'refresh'
+		/*'userstories/change/:group' : 'switchToGroup',
 		'userstories/changeGroup?fromGroup=:fromGroup&toGroup=:toGroup&action=:action&id=:id' : 'changeGroup',
 		'userstories/refresh' : 'refresh',
 		'userstories/:group/edit/:id' : 'edit',
 		
-		'userstories/create' : 'create'
+		'userstories/create' : 'create'*/
 	},
 	startup : function(group){
-		var newCollection = this.models['projects.' + group];
-		var newTableview = this.views['projects.' + group];
+		var newCollection = this.models['userstories.' + group];
+		var newTableview = this.views['userstories.' + group];
 
 		this.currentCollection = newCollection;
 		this.currentTableview = newTableview;
@@ -28,9 +31,9 @@ BacklogRouter = Backbone.Router.extend({
 	refresh : function(){
 		this.currentCollection.fetch({ reset : true});
 	},
-	switchToGroup : function(group){
-		var newTableview = this.views['projects.' + group];
-		var newCollection = this.models['projects.' + group];
+	switchToBacklogGroup : function(group){
+		var newTableview = this.views['userstories.' + group];
+		var newCollection = this.models['userstories.' + group];
 		var oldTableView = this.currentTableview;
 		var oldCollection = this.currentCollection;
 
@@ -46,7 +49,23 @@ BacklogRouter = Backbone.Router.extend({
 			//newTableview.listenTo(newCollection, 'add', newTableview.onAdd)	
 		});
 	},
-	changeGroup : function(fromGroup,toGroup,action,id){
+	switchToSprint : function(id){
+		var newTableview = this.views['userstories.assigned'];
+		var newCollection = this.views['userstories.assigned'];
+		var oldTableView = this.currentTableview;
+		var oldCollection = this.currentCollection;
+
+		if (oldTableView){
+			oldTableView.hide();
+		}
+		this.currentCollection = newCollection;
+		this.currentTableview = newTableview;
+
+		newCollection.fetch({ reset : true}).done(function(){
+			newTableview.show();
+		});
+	}
+	/*changeGroup : function(fromGroup,toGroup,action,id){
 		var tableview;
 		var fromGroup = this.models['projects.' + fromGroup];
 		var toGroup = this.models['projects.' + toGroup];
@@ -111,5 +130,5 @@ BacklogRouter = Backbone.Router.extend({
 	},	
 	afterRoute : function(router, route, params){
 		this.navigate('',{replace:true});
-	}
+	}*/
 })

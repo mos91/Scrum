@@ -1,7 +1,6 @@
 <?php
 class GetUserStoryAction extends CAction {
 	public function run(){
-
 		if (Yii::app()->request->isAjaxRequest){
 			$this->onAjax();
 		}
@@ -9,38 +8,65 @@ class GetUserStoryAction extends CAction {
 			$this->onGet();
 		}
 	}
-
+	
 	public function onAjax(){
+		$jsonResult = array();
 		$request = Yii::app()->request;
-		$projectId = Yii::app()->user->getState('project-id');
-		if (isset($_GET['id'])){
-			$id = $request->restParams['id'];
-			$result = UserStory::model()->findByPk($id);
-			echo CJSON::encode($result);
+		$groups = array('open','accepted','inprogress', 'completed', 'trashed');
+		
+		if (in_array($_GET['group'], $groups)){
+			$jsonResult = $this->fetchCollection($_GET['group']);
 		}
-		else if ($_GET['new']) {
-			$jsonResult = array();
-			$userstories = UserStory::model()->byProject($projectId)->new()->findAll();
-	
-			foreach($userstories as $id => $record){
-				$jsonResult[$id] = $record->getAttributes();
-			}
-			echo CJSON::encode($jsonResult);
+		else if (isset($_GET['id'])){
+			$jsonResult = $this->fetchSingle();
 		}
-		else if ($_GET['accepted']){
-			$jsonResult = array();
-			$userstories = UserStory::model()->byProject($projectId)->accepted()->findAll();
-	
-			foreach($result as $id => $record){
-				$jsonResult[$id] = $record->getAttributes();
-			}
-			echo CJSON::encode($jsonResult);
-		}
-	}
 
+		$jsonResult = array_merge(array('success' => true), $jsonResult);
+		echo CJSON::encode($jsonResult);
+	}
+	
 	public function onGet(){
+		$request = Yii::app()->request;
+		$userId = Yii::app()->user->getState('user-id');
 		if (isset($_GET['all'])){
 			$this->controller->render('table');
 		}
+		else {
+			$this->controller->render('dashboard');
+		}
+	}
+
+	private function fetchCollection($collectionName){
+		$projectId = Yii::app()->user->getState('project-id');
+		$userId = Yii::app()->user->getState('user-id');
+		$jsonResult = array();
+		$model = UserStory::model();
+		$args = array($projectId);
+		$collections = array('open','accepted','inprogress','trashed');
+		$scope = call_user_func_array(array($model, $collectionName), $args);
+
+		if (isset($_GET['data']) && !empty($_GET['data'])){
+			$result = $scope->findAll();
+			$jsonResult['data'] = array();
+			foreach($result as $id => $record){
+				$jsonResult['data'][$id] = $record->getAttributes();
+			}
+		}
+
+		if (isset($_GET['count'])){
+			if (isset($_GET['data']) && isset($result))	
+				$jsonResult['count'] = count($result);
+			else{
+				$jsonResult['count'] = $scope->count();
+			}
+		}
+
+		return $jsonResult;
+	}
+
+	/*fetch one model by id*/
+	private function fetchSingle(){
+		$result = Project::model()->findByPk($_GET['id']);
+		return array($result);
 	}
 }

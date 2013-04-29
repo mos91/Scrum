@@ -26,7 +26,7 @@ $this->clips['containerCssClass'] = 'container';
 <?php $this->endClip('behaviours');?>
 
 <?php $this->beginClip('views');?>
-	<script src="/js/views/projects/groups.js" type="text/javascript"></script>
+	<script src="/js/views/GroupsPanel.js" type="text/javascript"></script>
 	<script src="/js/views/Tableview.js" type="text/javascript"></script>
 	<script src="/js/views/projects/favorite/tableview.js" type="text/javascript"></script>
 	<script src="/js/views/projects/live/tableview.js" type="text/javascript"></script>

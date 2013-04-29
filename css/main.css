@@ -37,3 +37,9 @@ body {
 	left:30%;
 	position:fixed;
 }
+
+.nav > .disabled > a:hover, .nav > .disabled > a:focus {
+	text-decoration: none !important;
+	cursor: default !important;
+	background-color: transparent !important;
+}

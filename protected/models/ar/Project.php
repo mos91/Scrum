@@ -80,16 +80,10 @@ class Project extends CActiveRecord {
 		));
 		return $this;
 	}
-	//TODO : why 'trashed' filter meant to have an userId argument?
-	public function trashed($userId){
+	
+	public function trashed(){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'dropped=1',
-				'with' => array('assigns' =>
-						array('select' => false,
-								'condition'=>'user_id=:id',
-								'params' => array(':id' => $userId)
-						)
-				)
+				'condition' => 'dropped=1'
 		));
 		return $this;
 	}

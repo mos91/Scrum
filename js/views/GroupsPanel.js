@@ -1,4 +1,4 @@
-ProjectGroups = Backbone.View.extend({
+GroupsPanel = Backbone.View.extend({
 	models : [],
 	initialize : function(options){
 		options = options || {};

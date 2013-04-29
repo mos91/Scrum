@@ -9,7 +9,7 @@ $(document).ready(function(){
 				'projects.trashed' : new Collection([], { name:'projects.trashed', url : '/project/get?trashed=1&data=1'})
 			};
 	var views = {
-		'projects.groups' : new ProjectGroups(),
+		'projects.groups' : new GroupsPanel(),
 		'projects.live' : new LiveProjectsTableView(),
 		'projects.favorite' : new FavoriteProjectsTableView(),
 		'projects.trashed' : new TrashedProjectsTableView(),
@@ -18,13 +18,11 @@ $(document).ready(function(){
 	router = new ProjectsRouter({models : models, views : views});
 	viewBehaviour.bindModelsAndViews(models, views);
 	viewBehaviour.bindRoutersAndViews({'projects' : router}, views);
-	
-	$.when(
-		models['counters.projects.live'].fetch(), 
-		models['counters.projects.trashed'].fetch(),
-		favoriteProjects.fetch({ reset : true})	
-	)
-	.done(function(){
+
+	models['counters.projects.live'].fetch();
+	models['counters.projects.trashed'].fetch();
+
+	favoriteProjects.fetch({ reset : true}).success(function(){
 		router.navigate('#/project/startup/favorite');
 	});
 

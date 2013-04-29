@@ -1,11 +1,17 @@
 BacklogBehaviour = Behaviour.extend({
+	bindRoutersAndViews : function(routers, views){
+		this.attachListener('switch.change.userstories.groups', 
+			views['userstories.groups'], 
+			routers['userstories'], 
+			'switch', views['userstories.groups'].onSwitchGroup);
+	},
 	bindModelsAndViews : function(models, views){
 		var listeners = {};
 		var counters = {};	
 		var collections = {}, collection;
 
 		_.each(models, function(model, name){ 
-			if (name.split('.')[0] === 'projects')
+			if (name.split('.')[0] === 'userstories')
 				collections[name] = model;
 		});
 
@@ -47,7 +53,7 @@ BacklogBehaviour = Behaviour.extend({
 				listener : views['projects.groups'],
 				senders : counter,
 				events : 'change',
-				fns : views['projects.groups'].onCounter
+				fns : views['userstories.groups'].onCounter
 			}
 		});
 

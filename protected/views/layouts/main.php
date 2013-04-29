@@ -35,9 +35,11 @@ $projectName = Yii::app()->name.' project';
   <script src="/assets/backbone-extensions/backboneObject.js"></script>
   
   <script src="/assets/jquery.cookies.2.2.0.min.js" type="text/javascript"></script>
+  <script src="/assets/jquery.cookies.2.2.0-extensions.js" type="text/javascript"></script>
   <?php if (isset($this->clips['libs'])) echo $this->clips['libs'];?>
   
   <script src="/js/Const.js" type="text/javascript"></script>
+  <script src="/js/application/StateManager.js" type="text/javascript"></script>
   <!-- widgets -->
   <script src="/js/views/Alert.js" type="text/javascript"></script>
   <script src="/js/views/Popup.js" type="text/javascript"></script>
@@ -52,6 +54,7 @@ $projectName = Yii::app()->name.' project';
   <script src="/js/behaviours/Behaviour.js" type="text/javascript"></script>
   <?php if (isset($this->clips['behaviours'])) echo $this->clips['behaviours'];?>
 
+  <script src="/js/main.js" type="text/javascript"></script>
   <?php if (isset($this->clips['script'])) echo $this->clips['script'];?>
   <?php if (isset($this->clips['templates'])) echo $this->clips['templates'];?>
   <title><?php echo $pageTitle; ?></title>
