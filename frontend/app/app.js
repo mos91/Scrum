@@ -16,13 +16,49 @@
 Ext.application({
     name: 'Scrum',
     appFolder : '/frontend/app',
-    views: [
-        'Viewport'
+    require : [
+        'Scrum.util.template',
+        'Scrum.state.UserStateProvider'
     ],
     controllers : [
         'TopPanel',
-        'feedviewer.Feeds',
-        'feedviewer.Articles'
+        'ProjectProfile'
     ],
+    views: [
+        'Viewport',
+    ],
+    launch : function(){
+        Ext.state.Manager.setProvider(Ext.create('Scrum.state.UserStateProvider'));
+    },
     autoCreateViewport: true
 });
+
+Ext.namespace('Scrum.util', 'Scrum.util.template');
+Scrum.util.template.getPostDate = function(date){
+    var hours, days, months;
+    var now = Date.now();
+    var date = date.getTime();
+    var string;
+    var diff = now - date;
+
+    if (diff <= 3600*1000){
+        string = 'less an hour ago';
+    }
+    else {
+        hours = Math.floor(diff / (3600*1000));
+        if (hours <= 24){
+            string = hours + ' hour ago';
+        }
+        else {
+            days = Math.floor(hours / 24);
+            if (days <= 30){
+                string = days + ' days ago';
+            }
+            else {
+                months = Math.floor(days / 30);
+                if (months <= 12){
+                    string = months + ' monts ago';
+                }
+        }}}
+    return string;  
+}

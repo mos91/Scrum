@@ -1,58 +1,91 @@
 Ext.define('Scrum.controller.TopPanel', {
-    extend: 'Ext.app.Controller',
+	extend : 'Ext.app.Controller', 
+	views : [
+		'ProjectsDropdown'
+	],
+	stores : [
+		'FavoriteProjects'
+	],
+	models : [
+		'Project'
+	],
+	init : function(){
+		this.control({
+			'scrum-contentpanel' : {
+				render : { fn : this.setContentPanel, scope : this}
+			},
+			'scrum-projects-dropdown' : {
+				render : { fn : this.renderDropdown, scope : this}
+			},
+			'scrum-projectprofile' : {
+				activate : { fn : this.showProjectProfile, scope : this}
+			},
+			'scrum-projects-dropdown > menuitem[action=projectView]' : {
+				click : { fn : this.onDropdownItemClick, scope : this}
+			},
+			'scrum-projects-dropdown > menuitem[action=activeProjectView]' : {
+				click : { fn : this.onDropdownItemClick, scope : this}	
+			}
+		});
+	},
+	setContentPanel : function(panel){
+		this.contentPanel = panel;
+	},
+	renderDropdown : function(dropdown){
+		var menu = dropdown.menu;
+		var items = [];
+		var activeProject = this.getProjectModel();
+		var favoriteProjects = this.getFavoriteProjectsStore();
 
-    requires : [
-        'Scrum.view.feedviewer.feed.Viewer',
-        'Scrum.view.feedviewer.feed.List'
-    ],
-    stores : ['FavoriteProjects'],
-    models : ['Project'],
+		dropdown.setLoading({msg : 'Loading...'});
+		activeProject.load(null,{ 
+			callback : function(record){
+				dropdown.setText(record.get('name'));
+				dropdown.setLoading(false);
+			},
+			scope : this
+		});
 
-    refs : [
-    	{ 
-    		ref : 'favoriteProjectList',
-    		selector : '#projects_tab menu'
-    	}
-    ],
-    init : function(){
-    	this.control({
-    		'#projects_tab' : {
-    			click : this.onProjectsTabClick
-    		},
-            '#view_all_projects_button' : {
-                click : this.onViewAllProjectsClick
-            }
-    	})
-    }, 
-    onProjectsTabClick : function(self, e){
-        var fplist = this.getFavoriteProjectList();
-    	var fpstore = this.getFavoriteProjectsStore();
-        if (!fpstore.count()){
-            fplist.setLoading({ text : 'Fetching...'});
-            fpstore.load(function(){
-                fpstore.each(function(project){
-                    fplist.add({ text : project.get('name')});
-                    fplist.setLoading(false);
-                });    
-            });     
-        }
-    },
-    onViewAllProjectsClick : function(self, e){
-        var projectsTabContent = Ext.getCmp('projects_tab_content');
-        var feedlist, feedviewer;
+		favoriteProjects.load({
+			callback : function(records){
+				items.push('-');
 
-        if (!projectsTabContent.items.length){
-            feedlist = { 
-                width: 225,
-                region : 'west',
-                xtype: 'app-feedlist'
-            };
-            feedviewer = {
-                region : 'center',
-                xtype: 'app-feedviewer'
-            };
-            projectsTabContent.add(feedlist);
-            projectsTabContent.add(feedviewer);
-        }   
-    }
-});
+				Ext.Array.each(records, function(record, index){
+					items.push({ 
+						text : record.get('name'), 
+						action : 'projectView',
+						projectId : record.get('id')
+					});
+				}, this);	
+
+				menu.add(items);		
+			}, 
+			scope : this});	
+	},
+	onDropdownItemClick : function(item){
+		var projectId = item.projectId;
+		var store = this.getFavoriteProjectsStore();
+
+		this.selectedProject = store.findRecord('id', projectId);
+		item.up('scrum-projects-dropdown').setText(this.selectedProject.get('name'));
+		this.contentPanel.layout.setActiveItem(0);
+		this.contentPanel.layout.setActiveItem('project-profile');
+	},
+	showProjectProfile : function(profile){
+		var activeProject;
+
+		if (!this.selectedProject){
+			activeProject = this.getProjectModel(); 
+			activeProject.load(null, {
+				callback : function(record){
+					this.selectedProject = record;
+					profile.fireEvent('viewProject', this.selectedProject);
+				},
+				scope : this
+			})
+		}
+		else {
+			profile.fireEvent('viewProject', this.selectedProject);
+		}
+	}
+})

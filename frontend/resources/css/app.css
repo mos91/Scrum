@@ -1,91 +1,77 @@
-/*Ext.tab.Panel*/
-.app-tabpanel .x-tab-bar-body {
-	height:41px;
+.x-panel-body-default {
+	border:none !important;
+}
+/*toppanel*/
+.scrum-toppanel {
+	border-bottom:1px solid silver;
+	border-top:none;
+	border-width:1px !important;
+}
+/*content-panel*/
+.scrum-contentpanel {
+	padding-top: 10px;
+}
+/*footer*/
+.scrum-footer {
+	border-top:1px solid silver;
+}
+.scrum-commentpanel .x-border-layout-ct {
+	background:none;
 }
 
-.app-tabpanel .x-tab-bar-body > .x-box-inner {
-	height:39px !important;
+/*comment-form*/
+.scrum-comment-form {
+	margin-left : 10px;
 }
 
-.app-tabpanel .x-tab {
-	padding : 10px 40px;
-	min-height:39px;
-	min-width:140px;
+.scrum-comment-form .x-panel-header,
+.scrum-comment-form .x-toolbar-footer {
+	background : none;
+	padding:0px;
+	border : none;
 }
 
-.app-tabpanel .x-tab .x-tab-inner {
-	font-size:14px;
-	height:16px;
+.scrum-comment-content, .scrum-comment-author,
+.scrum-comment-form .x-panel-header-text-container-default
+{
+	color: #484848;
 }
 
-/*Ext.menu.Menu*/
-.app-menu { width : 180px !important;}
-.app-menu > .x-menu-body {
-	width : 179px !important;
-}
-.app-menu .x-menu-item {
-	width : 179px !important;
+/*comment list*/
+.scrum-comments-list {
+	margin-left : 10px;
 }
 
-/*Ext.ux.statusbar.StatusBar*/
-.app-statusbar {
-	width : 185px !important;
-	border:0px;
-	background-image : none;
-	background-color : transparent;
+.scrum-comment {
+	margin-top : 10px;
+	border-bottom:1px solid silver;
 }
 
-.app-statusbar > .x-box-inner {
-	width : 185px !important;
+.scrum-comment-content {
+	padding:5px 10px 5px 0px;
 }
 
-.app-statusbar .x-status-text {
-	width : 185px !important;
-	color : green;
+.scrum-comment-author {
+	display:inline-block;
+	margin:0px 5px 5px 5px;
+	vertical-align:top;
 }
 
-.app-statusbar-error li {
-	color:red;
+.scrum-comment-top-right {
+	display:inline-block;
+	float:right;
+	margin-right:10px;
 }
 
-.app-statusbar-success h3 {
-	color : green;
+.scrum-comment-post-time {
+	color : #999;
 }
 
-/*Ext.tip.QuickTip*/
-.x-tip-form-invalid, .x-tip-body-form-invalid {
-    width: 200px !important;
-}
+/*scrollbars for Chrome and Safari (Webkit Browsers)*/
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment{display:block;height:0;background-color:transparent;}
+::-webkit-scrollbar-track-piece{background-color:#FAFAFA;-webkit-border-radius:0;-webkit-border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;}
+::-webkit-scrollbar-thumb:vertical{height:50px;background-color:#999;-webkit-border-radius:8px;}
+::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#999;-webkit-border-radius:8px;}
 
-/*Scrum.view.LoginForm*/
-/*Scrum.view.RegisterForm*/
-.app-login-form,.app-register-form {
-	z-index : 1001;
-}
-/*Scrum.feedviewer.view.article.Preview*/
-.app-articlepreview {
-
-}
-
-/*Scrum.feedviewer.view.article.Grid*/
-.app-feed-grid {
-
-}
-
-/*Scrum.feedviewer.view.article.Preview*/
-.app-preview {
-
-}
-
-/*Scrum.feedviewer.view.feed.List*/
-.app-feed-list {
-
-}
-
-.app-feed-list-item {
-
-}
-
-.app-feed-list-item-hover {
-
-}

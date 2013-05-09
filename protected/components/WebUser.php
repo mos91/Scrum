@@ -19,4 +19,19 @@ class WebUser extends CWebUser {
 		$userRecord->save();
 		return true;
 	}
+
+	protected function saveToCookie($duration)
+	{
+		$app=Yii::app();
+		$cookie=$this->createIdentityCookie($this->getStateKeyPrefix());
+		$cookie->expire=time()+$duration;
+		$data=array(
+			$this->getId(),
+			$this->getName(),
+			$duration,
+			$this->saveIdentityStates(),
+		);
+		$cookie->value=$app->getSecurityManager()->hashData(CJSON::encode($data));
+		$app->getRequest()->getCookies()->add($cookie->name,$cookie);
+	}
 }

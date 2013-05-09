@@ -1,10 +1,8 @@
 Ext.define('Scrum.view.Viewport', {
     extend: 'Ext.container.Viewport',
     requires:[
+        'Scrum.view.MainPage',
         'Ext.util.Cookies'
-    ],
-    views : [
-        'tab.Panel'
     ],
     layout: 'fit',
     id : 'app_viewport',
@@ -38,7 +36,7 @@ Ext.define('Scrum.view.Viewport', {
             actioncomplete : function(self, e){
                 Ext.destroy(loginForm);
                 Ext.destroy(registerForm);
-                me.showTabPanel();
+                me.showMainPage();
             }
         });
         
@@ -83,15 +81,15 @@ Ext.define('Scrum.view.Viewport', {
             scope : registerForm
         });
     },
-    showTabPanel : function(){
-        this.add(Ext.create('Scrum.view.tab.Panel'));
+    showMainPage : function(){
+        this.add(Ext.create('Scrum.view.MainPage'));
     },
     listeners : {
         afterrender : function(){
             var loginForm,registerForm,tabpanel;
 
             if (Ext.util.Cookies.get('login')){
-                this.showTabPanel();
+                this.showMainPage();
             }
             else {
                 this.showAuthGroup();

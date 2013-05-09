@@ -18,12 +18,15 @@ class Project extends CActiveRecord {
 	public function relations(){
 		return array(
 			'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
-			'users' => array(self::MANY_MANY, 'UserRecord', 'user_projects_table(project_id,user_id)')
+			'users' => array(self::MANY_MANY, 'UserRecord', 'user_projects_table(project_id,user_id)'),
+			'comments' => array(self::HAS_MANY, 'ProjectComment', 'project_id')
 		);
 	}
 	
 	public function scopes(){
 		return array(
+			'byUser',
+			'byCompany',
 			'live',
 			'trashed',
 			'favorite'
@@ -42,6 +45,14 @@ class Project extends CActiveRecord {
 		return $this;
 	}
 
+	public function byCompany($companyId){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'company_id=:id',
+			'params' => array(':id' => $companyId)
+		));
+		return $this;	
+	}
+
 	public function live(){
 		$this->getDbCriteria()->mergeWith(array(
 			'condition' => 'dropped=0' 		 
@@ -56,17 +67,16 @@ class Project extends CActiveRecord {
 		return $this;
 	}
 
-	public function favorite($userId){
+	public function favorite(){
 		$this->getDbCriteria()->mergeWith(array(
 				'condition' => 'dropped=0',
 				'with' => array('users' =>
 						array('select' => false,
-								'condition'=>'users.id=:id AND favorite=1',
-								'params' => array(':id' => $userId)
+							'condition'=>'favorite=1'
 						)
 				)
 		));
 
 		return $this;
-	}
+	}	
 }

@@ -17,14 +17,39 @@ class GetProjectAction extends CAction {
 		else if (isset($_GET['trashed'])){
 			$result = $this->fetchTrashed($userId);
 		}
-		else if (isset($_GET['id'])){
+		else if (isset($_GET['backlogSummary'])){
+			$result = $this->fetchBacklogSummary();
+			$summary = true;
+		}
+		else if (isset($_GET['comments'])){
+			$result = $this->fetchComments();
+			$comments = true;
+		}
+		else if (isset($_GET['sprintSummary'])){
+			$result = $this->fetchSprintSummary();
+			$summary = true;
+		}
+		else if (isset($_GET['id']) && is_numeric($_GET['id'])){
 			$result = $this->fetchSingle();
+			$single = true;			
 		}
 		else {
 			$result = $this->fetchActive();
+			$single = true;
 		}
 
-		echo CJSON::encode(array('success' => true, 'projects' => $result));
+		if (isset($single) && $single === true){
+			echo CJSON::encode(array('success' => true, 'project' => $result));	
+		}
+		else if (isset($comments) && $comments === true){
+			echo CJSON::encode(array('success' => true, 'totalCount' => count($result), 'comments' => $result));
+		}
+		else if (isset($summary) && $summary === true){
+			echo CJSON::encode(array('success' => true, 'summary' => $result));
+		}
+		else {
+			echo CJSON::encode(array('success' => true, 'projects' => $result));	
+		}
 	}
 
 	private function fetchLive($userId){
@@ -55,13 +80,53 @@ class GetProjectAction extends CAction {
 		return $jsonResult;
 	}
 
+	private function fetchComments(){
+		$jsonResult = array();
+
+		$comments = ProjectComment::model()->byProject($_GET['id'])->with('author')->findAll();
+		foreach($comments as $id => $record){
+			$jsonResult[$id] = $record->getAttributes();
+			$author = $record->getRelated('author');
+			$jsonResult[$id]['author'] = $author->firstname.' '.$author->lastname;
+		}
+
+		return $jsonResult;
+	}
+
+	private function fetchBacklogSummary(){
+		$openCount = UserStory::model()->byProject($_GET['id'])->open()->count();
+		$acceptedCount = UserStory::model()->byProject($_GET['id'])->accepted()->count();
+		$closedCount = UserStory::model()->byProject($_GET['id'])->closed()->count();
+		$total = $openCount + $acceptedCount + $closedCount;
+
+		return array(
+			'total' => $total,
+			'open' => $openCount,
+			'accepted' => $acceptedCount,
+			'closed' => $closedCount);
+	}
+
+	private function fetchSprintSummary(){
+		$todoCount = UserStory::model()->bySprint($_GET['id'])->todo()->count();
+		$totestCount = UserStory::model()->bySprint($_GET['id'])->totest()->count();
+		$doneCount = UserStory::model()->bySprint($_GET['id'])->done()->count();
+		$completedCount = UserStory::model()->bySprint($_GET['id'])->completed()->count();
+		$total = $todoCount + $totestCount + $doneCount + $completedCount;
+
+		return array(
+			'total' => $total,
+			'todo' => $todoCount, 'totest' => $totestCount, 
+			'done' => $doneCount, 'completed' => $completedCount
+		);	
+	}
+
 	private function fetchSingle(){
 		$result = Project::model()->findByPk($_GET['id']);
-		return array($result->getAttributes());
+		return $result->getAttributes();
 	}
 
 	private function fetchActive(){
 		$result = Project::model()->findByPk(Yii::app()->user->getState("project-id"));
-		return array($result->getAttributes());
+		return $result->getAttributes();
 	}
 }

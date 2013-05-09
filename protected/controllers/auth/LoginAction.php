@@ -28,10 +28,12 @@ class LoginAction extends CAction {
 		$form->attributes = Yii::app()->request->restParams["LoginForm"];
 		$this->checkFormIsValid($form);
 		
-		$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
+		$duration=$form->rememberMe ? 3600*24*30 : 3600 * 24; // 30 days
 		Yii::app()->user->login($form->identity,$duration);
 		$cookies = Yii::app()->request->getCookies();
 		$cookies->add('login', new CHttpCookie('login', true));
+		$cookies->add('state-cookie', new CHttpCookie('state-cookie', Yii::app()->user->getStateKeyPrefix()));
+
 		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
 	}

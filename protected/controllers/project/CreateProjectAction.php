@@ -30,7 +30,6 @@ class CreateProjectAction extends CAction {
 	}
 	
 	private function onSubmit(){
-		//если в состоянии сессии нет id компании, то проект создать нельзя
 		$this->checkIsCompanyExist();
 		$this->checkIsFormExist();
 		$form = new ProjectForm;
