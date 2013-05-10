@@ -17,7 +17,6 @@ Ext.define('Scrum.state.UserStateProvider', {
 		
 		me.stateCookie = Ext.util.Cookies.get(me.stateCookieToken);
 		me.rawCookieValue = Ext.util.Cookies.get(me.stateCookie);
-		//console.log(me.rawCookieValue);
 		me.rawState = me.rawCookieValue.substr(me.sha1_hash_length, me.rawCookieValue.length);
 		
 		json = JSON.parse(me.rawState);

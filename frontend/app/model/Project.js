@@ -4,6 +4,7 @@ Ext.define('Scrum.model.Project', {
 		{ name : 'name', type:'string'},
 		{ name : 'description', type : 'string'},
 		{ name : 'active_sprint_id ', type : 'int'},
+		//{ name : 'favorite', type : 'boolean'},
 		{ 
 			name : 'update_time',
 			type : 'date',
@@ -13,7 +14,10 @@ Ext.define('Scrum.model.Project', {
 			convert : function(value, record){
 				return new Date(value * 1000);
 			}
-		}
+		}/*,
+		{
+			name : 'is_active', type : 'boolean'
+		}*/
 	],
 	proxy : {
 		type : "ajax",

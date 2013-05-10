@@ -7,6 +7,21 @@ class GetProjectAction extends CAction {
 	public function onAjax(){
 		$request = Yii::app()->request;
 		$userId = Yii::app()->user->getState('user-id');
+		//$result = array('success' => true);
+
+		/*$handleOptions = array(
+			'live' => array('respGroup' => 'projects', ''),
+			'favorite' => 'projects',
+			'trashed' => 'projects',
+			'active' => 'projects',
+			'comments' => 'comments'
+		);
+		foreach($_GET as $key => $value){
+			if (isset($value) && !empty($value) && isset($responseGroup = $handleOptions[$key])){
+				$feederName = 'fetch' + ucfirst($key);
+				$result[$responseGroup] = call_user_func(array($this, $feederName));
+			}
+		}*/
 
 		if (isset($_GET['live'])){
 			$result = $this->fetchLive($userId);
@@ -54,6 +69,7 @@ class GetProjectAction extends CAction {
 
 	private function fetchLive($userId){
 		$jsonResult = array();
+		
 		$result = Project::model()->byUser($userId)->live()->findAll();
 		foreach($result as $id => $record){
 			$jsonResult[$id] = $record->getAttributes();
@@ -63,6 +79,7 @@ class GetProjectAction extends CAction {
 
 	private function fetchFavorites($userId){
 		$jsonResult = array();
+		
 		$result = Project::model()->favorite($userId)->findAll();
 		foreach($result as $id => $record){
 			$jsonResult[$id] = $record->getAttributes();
@@ -70,9 +87,9 @@ class GetProjectAction extends CAction {
 		return $jsonResult;
 	}
 
-	private function fetchTrashed($userId){
+	private function fetchTrashed(){
 		$jsonResult = array();
-			
+		$userId = Yii::app()->request->user->getState('user-id');
 		$result = Project::model()->byUser($userId)->trashed()->findAll();
 		foreach($result as $id => $record){
 			$jsonResult[$id] = $record->getAttributes();

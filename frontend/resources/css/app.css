@@ -7,6 +7,18 @@
 	border-top:none;
 	border-width:1px !important;
 }
+
+.scrum-toppanel {
+	padding:0px;
+	height:40px;
+}
+
+.scrum-toppanel .x-btn {
+	background-image : none;
+	border-radius : 0px;
+	height : 40px;
+}
+
 /*content-panel*/
 .scrum-contentpanel {
 	padding-top: 10px;
@@ -75,3 +87,11 @@
 ::-webkit-scrollbar-thumb:vertical{height:50px;background-color:#999;-webkit-border-radius:8px;}
 ::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#999;-webkit-border-radius:8px;}
 
+/*additional tool icons*/
+.x-tool-profile {
+	background-image : url('/frontend/resources/images/common/16/profile.png');
+}
+
+.x-tool-edit{
+    background-image: url('/frontend/resources/images/common/16/edit_2.png') !important;
+}

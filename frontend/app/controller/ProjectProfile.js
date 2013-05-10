@@ -12,7 +12,13 @@ Ext.define('Scrum.controller.ProjectProfile', {
 				render : {fn : this.setProjectProfile , scope : this},
 				viewProject : { fn : this.fillProjectProfile, scope : this}
 			},
-			'.scrum-projectform button[action=submit]' : {
+			'scrum-projectprofile tool[action=edit]' : {
+				click : { fn : this.showProjectForm, scope : this}
+			},
+			'scrum-projectprofile tool[action=view]' : {
+				click : { fn : this.hideProjectForm, scope : this}
+			},
+			'scrum-projectform button[action=submit]' : {
 				click : { fn : this.submitProjectForm, scope : this}
 			},
 			'scrum-commentpanel'  : {
@@ -20,9 +26,6 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			},
 			'scrum-commentpanel button[action=submit]' : {
 				click : { fn : this.submitCommentForm, scope : this}
-			},
-			'scrum-projectsummary' : {
-				activate : { fn : this.fillProjectSummary, scope : this}
 			}
 		});
 	},
@@ -34,13 +37,14 @@ Ext.define('Scrum.controller.ProjectProfile', {
 	},
 	fillProjectProfile : function(project){
 		var profile = this.profile;
-		var form = profile.down('scrum-projectform > form');
-		this.project = project;
-		profile.down('panel').update(project.getData());
-		profile.down('tabpanel').layout.setActiveItem(profile.down('scrum-projectform'));
+		var summary = profile.down('scrum-projectsummary');
+		var descriptionPanel = profile.down('panel');
 
-		form.loadRecord(project);
-		form.down('hiddenfield[name=id]').setRawValue(project.get('id'));
+		this.project = project;
+		descriptionPanel.down('panel').update(project.getData());
+		descriptionPanel.layout.setActiveItem(0);
+
+		this.fillProjectSummary(summary);
 	},
 	fillProjectSummary : function(summary){
 		var project = this.project;
@@ -114,39 +118,55 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			this.redrawComments(commentPanel, comments);
 		}
 	},
+	showProjectForm : function(tool){
+		var descriptionPanel = tool.up('panel');
+		var project = this.project;
+		var form = descriptionPanel.layout.setActiveItem(1);
+		
+		form.loadRecord(project);
+		descriptionPanel.tools.edit.hide();
+		descriptionPanel.tools.profile.show();
+		form.down('hiddenfield[name=id]').setRawValue(project.get('id'));
+	},
+	hideProjectForm : function(tool){
+		var descriptionPanel = tool.up('panel');
+		descriptionPanel.tools.edit.show();
+		descriptionPanel.tools.profile.hide();
+
+		descriptionPanel.layout.setActiveItem(0);
+	},
 	submitProjectForm : function(button){
 		var dropdown = this.dropdown;
 		var profile = this.profile;
 		var form = button.up('form').getForm();
 		var favoriteProjects = Ext.StoreManager.lookup('FavoriteProjects');
-		var projectCard = profile.down('panel');
+		var descriptionPanel = profile.down('panel');
+		var profileTool = descriptionPanel.tools.profile;
 
 		if (form.isValid()){
-			projectCard.setLoading({ msg : 'Please wait...'});
 			form.owner.setLoading({ msg : 'Please wait...'});
 			form.submit({
 				success : function(form, action){
 					var id = action.result.project.id;
+					var updateTime = action.result.project.update_time;
 					var project = favoriteProjects.findRecord('id', id);
 					var values = form.getValues();
 
+					values['update_time'] = updateTime;
 					project.set(values);
-					projectCard.update(values);
+					descriptionPanel.down('panel').update(project.getData());
 
 					dropdown.setText(values.name);
 					dropdown.menu.down('menuitem[projectId=' + id + ']').setText(values.name);
 
-					projectCard.setLoading(false);
-					form.owner.setLoading(false);
+					form.owner.setLoading(false);					
+					profileTool.fireEvent('click',profileTool);
+					form.reset(true);
+					//form.loadRecord(project);
 				}
 			})
 		}
 	},
-	/*highLightAddedComment : function(record, index, node){
-		var profile = this.profile;
-
-		profile.down('scrum-commentpanel > dataview').highlightItem(node);
-	},*/
 	submitCommentForm : function(button){
 		var commentPanel = button.up('scrum-commentpanel');
 		var form = button.up('form').getForm();

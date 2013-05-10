@@ -11,20 +11,38 @@ Ext.define('Scrum.view.project.Profile', {
 		align : 'stretch'
 	},
 	items : [
-		{ 
-			xtype :'panel', 
-			flex : 2, 
+		{
+			xtype : 'panel',
+			flex : 2,
 			resizable : true,
 			collapsible : true,
 			title : 'Description',
-			collapseDirection : 'left',
-			bodyCls : 'project-card',
-			tpl : new Ext.XTemplate('<span class="update-time">Update time - {[this.formatPostDate(values.update_time)]}</span><h2>{name}</h2></hr><div>{description}</div>', {
-				formatPostDate : function(date){
-					return Scrum.util.template.getPostDate(date);
+			layout : 'card',
+			tools : [
+				{
+					type : 'refresh', tooltip : 'Refresh Profile', tooltipType : 'title'
+				},
+				{
+					type : 'edit', tooltip : 'Edit Profile', tooltipType : 'title', action : 'edit'
+				},
+				{
+					type : 'profile', tooltip : 'Show description', tooltipType : 'title', action : 'view', hidden : true
 				}
-			}),
-			autoScroll : true
+			],
+			collapseDirection : 'left',
+			items :  [
+				Ext.create('Ext.panel.Panel', 
+				{ 
+					bodyCls : 'project-card', 
+					overflowY : 'scroll',
+					tpl : new Ext.XTemplate('<span class="update-time">Update time - {[this.formatPostDate(values.update_time)]}</span><h2>{name}</h2></hr><div>{description}</div>', {
+						formatPostDate : function(date){
+							return Scrum.util.template.getPostDate(date);
+						}
+					})
+				}),
+				Ext.create('Scrum.view.project.Form', { itemId : 'form'})
+			]
 		},
 		{ 
 			xtype :'tabpanel', 
@@ -32,7 +50,6 @@ Ext.define('Scrum.view.project.Profile', {
 			flex : 4,
 			layout : { type : 'fit'},
 			items : [
-				Ext.create('Scrum.view.project.Form', { title :'Edit', itemId : 'form'}),
 				Ext.create('Scrum.view.project.summary.Summary', { title :'Summary', itemId:'summary'}),
 				Ext.create('Scrum.view.project.CommentPanel', { title : 'Comments', itemId : 'comments'})
 			]
