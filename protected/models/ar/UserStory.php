@@ -23,7 +23,7 @@ class UserStory extends CActiveRecord {
 	}
 	
 	public function scopes(){
-		return array('byProject','bySprint', 'open', 'accepted', 'closed');
+		return array('byProject','bySprint', 'open', 'accepted', 'closed', 'todo', 'totest', 'done', 'completed');
 	}
 	
 	public function byProject($projectId){
@@ -107,8 +107,9 @@ class UserStory extends CActiveRecord {
 
 	public function relations(){
 		return array(
-			'project' => array(self::BELONGS_TO, 'Project', 'project_id')
-			//'team' => array(self::MANY_MANY, 'UserRecord', 'user_issues_table(issue_id,user_id)')
+			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
+			'sprint' => array(self::BELONGS_TO, 'Sprint', 'sprint_id'),
+			'comments' => array(self::HAS_MANY, 'UserStoryComment', 'userstory_id')
 		);
 	}
 }

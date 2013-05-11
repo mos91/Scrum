@@ -1,9 +1,13 @@
-Ext.define('Scrum.model.Project', {
+Ext.define('Scrum.model.UserStory', {
 	extend : 'Ext.data.Model',
 	fields : [
 		{ name : 'name', type:'string'},
 		{ name : 'description', type : 'string'},
-		{ name : 'active_sprint_id ', type : 'int'},
+		{ name : 'estimate', type : 'int'},
+		{ name : 'priority', type : 'int'},
+		{ name : 'project_id', type : 'int'},
+		{ name : 'sprint_id', type : 'int'},
+		{ name : 'status', type : 'int'},
 		{ 
 			name : 'update_time',
 			type : 'date',
@@ -17,10 +21,10 @@ Ext.define('Scrum.model.Project', {
 	],
 	proxy : {
 		type : "ajax",
-		url: '/project/get',
+		url: '/userstory/get',
 		reader : {
 			type: 'json',
-	        root: 'project',
+	        root: 'userstory',
 	        successProperty: 'success'
 		}
 	}

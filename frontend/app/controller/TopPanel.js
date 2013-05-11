@@ -4,7 +4,7 @@ Ext.define('Scrum.controller.TopPanel', {
 		'ProjectsDropdown'
 	],
 	stores : [
-		'FavoriteProjects'
+		'Projects'
 	],
 	models : [
 		'Project'
@@ -20,11 +20,17 @@ Ext.define('Scrum.controller.TopPanel', {
 			'scrum-projectprofile' : {
 				activate : { fn : this.showProjectProfile, scope : this}
 			},
-			'scrum-projects-dropdown > menuitem[action=projectView]' : {
-				click : { fn : this.onDropdownItemClick, scope : this}
+			'scrum-userstory-overview' : {
+				activate : { fn : this.showBacklog, scope : this}
 			},
-			'scrum-projects-dropdown > menuitem[action=activeProjectView]' : {
-				click : { fn : this.onDropdownItemClick, scope : this}	
+			'scrum-projects-dropdown > menuitem[action=projectView]' : {
+				click : { fn : this.onProjectClick, scope : this}
+			},
+			'scrum-toppanel button[action=backlog]' : {
+				click : { fn : this.onBacklogClick, scope : this}
+			},
+			'scrum-toppanel button[action=sprints]' : {
+				click : { fn : this.onSprintsClick, scope : this}
 			}
 		});
 	},
@@ -34,58 +40,58 @@ Ext.define('Scrum.controller.TopPanel', {
 	renderDropdown : function(dropdown){
 		var menu = dropdown.menu;
 		var items = [];
-		var activeProject = this.getProjectModel();
-		var favoriteProjects = this.getFavoriteProjectsStore();
-
+		var projects = this.getProjectsStore();
 		dropdown.setLoading({msg : 'Loading...'});
-		activeProject.load(null,{ 
-			callback : function(record){
-				dropdown.setText(record.get('name'));
-				dropdown.setLoading(false);
-			},
-			scope : this
-		});
 
-		favoriteProjects.load({
+		projects.load({
+			url : '/project/get?favorite=1',
 			callback : function(records){
-				items.push('-');
+				var activeProjectId = Ext.state.Manager.getProvider().get('project-id');
+				var activeProject = projects.getById(activeProjectId);
+				var activeProjectItem;
 
 				Ext.Array.each(records, function(record, index){
-					items.push({ 
-						text : record.get('name'), 
-						action : 'projectView',
-						projectId : record.get('id')
-					});
+					if (record.get('id') !== activeProjectId){
+						items.push({ 
+							text : record.get('name'), 
+							action : 'projectView',
+							projectId : record.get('id')
+						});	
+					}
 				}, this);	
 
-				menu.add(items);		
+				activeProjectItem = menu.add({ 
+					text : activeProject.get('name'), 
+					action : 'projectView', 
+					projectId : activeProject.get('id')
+				});
+				menu.add(['-']);
+				menu.add(items);	
+
+				dropdown.setLoading(false);	
+				activeProjectItem.fireEvent('click', activeProjectItem);
 			}, 
 			scope : this});	
 	},
-	onDropdownItemClick : function(item){
+	onProjectClick : function(item){
 		var projectId = item.projectId;
-		var store = this.getFavoriteProjectsStore();
+		var store = this.getProjectsStore();
 
-		this.selectedProject = store.findRecord('id', projectId);
-		item.up('scrum-projects-dropdown').setText(this.selectedProject.get('name'));
+		this.selectedProject = store.getById(projectId);
 		this.contentPanel.layout.setActiveItem(0);
 		this.contentPanel.layout.setActiveItem('project-profile');
 	},
+	onBacklogClick : function(){
+		this.contentPanel.layout.setActiveItem(0);
+		this.contentPanel.layout.setActiveItem('userstory-overview');
+	},
+	onSprintsClick : function(){
+		return true;
+	},
 	showProjectProfile : function(profile){
-		var activeProject;
-
-		if (!this.selectedProject){
-			activeProject = this.getProjectModel(); 
-			activeProject.load(null, {
-				callback : function(record){
-					this.selectedProject = record;
-					profile.fireEvent('viewProject', this.selectedProject);
-				},
-				scope : this
-			})
-		}
-		else {
-			profile.fireEvent('viewProject', this.selectedProject);
-		}
+		profile.fireEvent('viewProject', this.selectedProject);
+	},
+	showBacklog : function(backlog){
+		backlog.fireEvent('viewBacklog', this.selectedProject);
 	}
 })

@@ -8,10 +8,12 @@ Ext.define('Scrum.view.TopPanel' , {
 	items : [
 		Ext.create('Scrum.view.ProjectsDropdown'),
 		{
-			text : 'Backlog'
+			text : 'Backlog',
+			action : 'backlog'
 		},
 		{
-			text : 'Sprints'
+			text : 'Sprints',
+			action : 'sprints'
 		}
 	],
 	height:40

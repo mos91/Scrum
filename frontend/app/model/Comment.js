@@ -1,4 +1,4 @@
-Ext.define('Scrum.model.project.Comment', {
+Ext.define('Scrum.model.Comment', {
 	extend : 'Ext.data.Model',
 	fields : [
 		{ name : 'id', type : 'int'},

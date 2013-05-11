@@ -2,7 +2,7 @@ Ext.define('Scrum.view.project.Profile', {
 	xtype : 'scrum-projectprofile',
 	extend : 'Ext.panel.Panel',
 	require : [
-		'Scrum.view.project.CommentPanel',
+		'Scrum.view.CommentPanel',
 		'Scrum.view.project.summary.Summary',
 		'Scrum.view.project.Form'
 	],
@@ -16,6 +16,7 @@ Ext.define('Scrum.view.project.Profile', {
 			flex : 2,
 			resizable : true,
 			collapsible : true,
+			collapseDirection : 'left',
 			title : 'Description',
 			layout : 'card',
 			tools : [
@@ -29,7 +30,6 @@ Ext.define('Scrum.view.project.Profile', {
 					type : 'profile', tooltip : 'Show description', tooltipType : 'title', action : 'view', hidden : true
 				}
 			],
-			collapseDirection : 'left',
 			items :  [
 				Ext.create('Ext.panel.Panel', 
 				{ 
@@ -51,7 +51,14 @@ Ext.define('Scrum.view.project.Profile', {
 			layout : { type : 'fit'},
 			items : [
 				Ext.create('Scrum.view.project.summary.Summary', { title :'Summary', itemId:'summary'}),
-				Ext.create('Scrum.view.project.CommentPanel', { title : 'Comments', itemId : 'comments'})
+				Ext.create('Scrum.view.CommentPanel', { 
+					title : 'Comments',
+					itemId : 'comments',
+					commentableEntity : {
+					 	url : '/project/comment',
+					 	idField : 'project_id'
+					}
+				})
 			]
 		}
 	]

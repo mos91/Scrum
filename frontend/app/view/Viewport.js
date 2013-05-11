@@ -82,6 +82,7 @@ Ext.define('Scrum.view.Viewport', {
         });
     },
     showMainPage : function(){
+        Ext.state.Manager.setProvider(Ext.create('Scrum.state.UserStateProvider'));
         this.add(Ext.create('Scrum.view.MainPage'));
     },
     listeners : {
@@ -89,6 +90,7 @@ Ext.define('Scrum.view.Viewport', {
             var loginForm,registerForm,tabpanel;
 
             if (Ext.util.Cookies.get('login')){
+
                 this.showMainPage();
             }
             else {

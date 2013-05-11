@@ -17,14 +17,6 @@
 	left : auto;
 }
 
-.scrum-projectform-bottom-bar {
-	border : none;
-}
-
-.scrum-projectform-bottom-bar + .xtoolbar-footer {
-	background:none;
-}
-
 .summary-bar {
 	height : 25px;
 	width : 200px;

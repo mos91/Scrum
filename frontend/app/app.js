@@ -22,26 +22,39 @@ Ext.application({
     ],
     controllers : [
         'TopPanel',
+        'Backlog',
         'ProjectProfile'
     ],
     views: [
         'Viewport',
     ],
-    launch : function(){
-        Ext.state.Manager.setProvider(Ext.create('Scrum.state.UserStateProvider'));
-    },
     autoCreateViewport: true
 });
 
-Ext.namespace('Scrum.util', 'Scrum.util.template');
+Ext.namespace('Scrum.util', 'Scrum.util.template', 'Scrum.util.template.date');
+Scrum.util.template.date.MS_IN_WEEK = 3600*1000*24*7;
+Scrum.util.template.PRIORITY_DISPLAY_VALUES = { 0 : 'Low', 1 : 'Medium', 2 : 'High'};
+Scrum.util.template.USER_STORY_STATUS_DISPLAY_VALUES  = {
+    0x0000 : 'Open',
+    0x0002 : 'Accepted',
+    0x0003 : 'Todo',
+    0x0005 : 'To test',
+    0x0007 : 'Done',
+    0x0008 : 'Completed',
+    0x0007 : 'Closed'
+}
+
 Scrum.util.template.getPostDate = function(date){
     var hours, days, months;
     var now = Date.now();
-    var date = date.getTime();
+    var value = date.getTime();
     var string;
-    var diff = now - date;
+    var diff = now - value;
 
-    if (diff <= 3600*1000){
+    if (diff >= Scrum.util.template.date.MS_IN_WEEK){
+        string = Ext.Date.format(date, 'F j, Y, g:i a');
+    }
+    else if (diff <= 3600*1000){
         string = 'less an hour ago';
     }
     else {
@@ -51,14 +64,18 @@ Scrum.util.template.getPostDate = function(date){
         }
         else {
             days = Math.floor(hours / 24);
-            if (days <= 30){
+            if (days <= 7){
                 string = days + ' days ago';
             }
-            else {
-                months = Math.floor(days / 30);
-                if (months <= 12){
-                    string = months + ' monts ago';
-                }
-        }}}
+        }}
+
     return string;  
+}
+
+Scrum.util.template.getPriorityDisplayValue = function(value){
+    return Scrum.util.template.PRIORITY_DISPLAY_VALUES[value];
+}
+
+Scrum.util.template.getUserStoryDisplayValue = function(value){
+    return Scrum.util.template.USER_STORY_STATUS_DISPLAY_VALUES[value];
 }

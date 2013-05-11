@@ -13,11 +13,11 @@
 	height:40px;
 }
 
-.scrum-toppanel .x-btn {
+/*.scrum-toppanel .x-btn {
 	background-image : none;
 	border-radius : 0px;
 	height : 40px;
-}
+}*/
 
 /*content-panel*/
 .scrum-contentpanel {
@@ -79,6 +79,29 @@
 	color : #999;
 }
 
+/*forms */
+.scrum-form-top-status-bar.ok {
+	background-color : rgb(208, 243, 206);
+	border-color : rgb(208, 243, 206);
+}
+
+.scrum-form-top-status-bar.error {
+	background-color : rgb(235, 199, 199);
+	border-color : rgb(235, 199, 199);
+}
+
+.scrum-form-top-status-bar .status-string {
+	margin-left : 20px;
+}
+
+.scrum-form-bottom-bar {
+	border : none;
+}
+
+.scrum-form-bottom-bar + .xtoolbar-footer {
+	background:none;
+}
+
 /*scrollbars for Chrome and Safari (Webkit Browsers)*/
 ::-webkit-scrollbar{width:9px;height:9px;}
 ::-webkit-scrollbar-button:start:decrement,
@@ -87,6 +110,25 @@
 ::-webkit-scrollbar-thumb:vertical{height:50px;background-color:#999;-webkit-border-radius:8px;}
 ::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#999;-webkit-border-radius:8px;}
 
+/*status-icons*/
+.x-status-ok  {
+	background-image : url('/frontend/resources/images/common/16/ok.png');
+	background-repeat : repeat-y;
+}
+
+.x-status-ok .status-string {
+
+}
+
+.x-status-error {
+	background-image : url('/frontend/resources/images/common/16/error.png');
+	background-repeat : repeat-y;	
+}
+
+.x-status-error .status-string {
+	color : rgb(131, 9, 9);
+}
+
 /*additional tool icons*/
 .x-tool-profile {
 	background-image : url('/frontend/resources/images/common/16/profile.png');
@@ -94,4 +136,8 @@
 
 .x-tool-edit{
     background-image: url('/frontend/resources/images/common/16/edit_2.png') !important;
+}
+
+.x-tool-table {
+	background-image : url('/frontend/resources/images/common/16/table.png');
 }
