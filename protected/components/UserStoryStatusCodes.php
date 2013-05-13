@@ -15,5 +15,5 @@ interface UserStoryStatusCodes {
 
 	const COMPLETED = 0x0008;
 
-	const CLOSED = 0x000B;
+	const CLOSED = 0x000C;
 }

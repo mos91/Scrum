@@ -28,7 +28,7 @@ class UserStory extends CActiveRecord {
 	
 	public function byProject($projectId){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'project_id=:project_id AND dropped=0', 
+				'condition' => '`t`.`project_id`=:project_id AND `t`.`dropped`=0', 
 				'params' => array(':project_id' => $projectId)
 		));
 

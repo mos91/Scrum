@@ -1,6 +1,6 @@
 Ext.define('Scrum.store.Userstories', {
 	extend : 'Ext.data.Store',
-	require : ['Scrum.model.UserStory'],
+	requires : ['Scrum.model.UserStory'],
 	model : 'Scrum.model.UserStory', 
 	proxy : {
 		type: 'ajax',

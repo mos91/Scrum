@@ -7,8 +7,27 @@ Ext.define('Scrum.view.userstory.EditForm', {
 	require : [
 		'Ext.ux.statusbar.StatusBar'
 	],
+	tbar : Ext.create('Ext.ux.statusbar.StatusBar', {
+		hidden : true,
+		cls : 'scrum-form-top-status-bar'
+	}),
+	onInvalidFields : function(){
+		var statusBar = this.down('statusbar');
+
+		statusBar.addCls('error').show();
+		statusBar.setStatus( { iconCls : 'x-status-error', text : '<span class="status-string">Fill required fields or correct invalids</span>'});
+		statusBar.show();
+	},
 	items : [
-		{ xtype : 'hiddenfield', name : 'project_id'},	
+		{ xtype : 'hiddenfield', name : 'id'},
+		{ 
+			xtype : 'textfield',
+			name : 'name',
+			width : 200,
+			allowBlank : false,
+			fieldLabel : 'Name', 
+			labelAlign : 'top'
+		},
 		{
 			xtype : 'container',
 			layout : { type : 'hbox', defaultMargins : '0 10 0 0'},

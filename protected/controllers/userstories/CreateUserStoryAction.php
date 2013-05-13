@@ -35,7 +35,7 @@ class CreateUserStoryAction extends CAction {
 		$userstory->save();
 		
 		echo CJSON::encode(array('success' => true, 
-			'userstory' => array('id' => $userstory->getPrimaryKey(), 'update_time' => $userstory->update_time)));
+			'userstory' => array('id' => $userstory->getPrimaryKey(), 'update_time' => $userstory->update_time, 'status' => $userstory->status)));
 
 		Yii::app()->end();
 	}

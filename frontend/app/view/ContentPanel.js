@@ -2,7 +2,7 @@ Ext.define('Scrum.view.ContentPanel', {
 	xtype : 'scrum-contentpanel',
 	extend : 'Ext.panel.Panel',
 	require : [
-		'Scrum.view.userstory.Overview',
+		'Scrum.view.userstory.Backlog',
 		'Scrum.view.project.Profile'
 	],
 	layout : {
@@ -16,8 +16,8 @@ Ext.define('Scrum.view.ContentPanel', {
 		Ext.create('Scrum.view.project.Profile',{
 			itemId : 'project-profile'
 		}),
-		Ext.create('Scrum.view.userstory.Overview', {
-			itemId : 'userstory-overview'
+		Ext.create('Scrum.view.userstory.Backlog', {
+			itemId : 'userstory-backlog'
 		})
 	]
 });

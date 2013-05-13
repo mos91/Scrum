@@ -13,11 +13,17 @@
 // DO NOT DELETE - this directive is required for Sencha Cmd packages to work.
 //@require @packageOverrides
 
+//including my own field data types in Ext.data.Types
+//get from http://docs.sencha.com/extjs/4.2.0/#!/api/Ext.data.Types
+Ext.Loader.require('Ext.data.Types', function(){
+    Ext.Loader.require('Scrum.types.UserStoryStatus');
+    // ... other custom Ext.data.Types bootstrap refs 
+});
+
 Ext.application({
     name: 'Scrum',
     appFolder : '/frontend/app',
     require : [
-        'Scrum.util.template',
         'Scrum.state.UserStateProvider'
     ],
     controllers : [
@@ -34,15 +40,6 @@ Ext.application({
 Ext.namespace('Scrum.util', 'Scrum.util.template', 'Scrum.util.template.date');
 Scrum.util.template.date.MS_IN_WEEK = 3600*1000*24*7;
 Scrum.util.template.PRIORITY_DISPLAY_VALUES = { 0 : 'Low', 1 : 'Medium', 2 : 'High'};
-Scrum.util.template.USER_STORY_STATUS_DISPLAY_VALUES  = {
-    0x0000 : 'Open',
-    0x0002 : 'Accepted',
-    0x0003 : 'Todo',
-    0x0005 : 'To test',
-    0x0007 : 'Done',
-    0x0008 : 'Completed',
-    0x0007 : 'Closed'
-}
 
 Scrum.util.template.getPostDate = function(date){
     var hours, days, months;
@@ -74,8 +71,4 @@ Scrum.util.template.getPostDate = function(date){
 
 Scrum.util.template.getPriorityDisplayValue = function(value){
     return Scrum.util.template.PRIORITY_DISPLAY_VALUES[value];
-}
-
-Scrum.util.template.getUserStoryDisplayValue = function(value){
-    return Scrum.util.template.USER_STORY_STATUS_DISPLAY_VALUES[value];
 }

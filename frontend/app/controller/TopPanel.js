@@ -20,7 +20,7 @@ Ext.define('Scrum.controller.TopPanel', {
 			'scrum-projectprofile' : {
 				activate : { fn : this.showProjectProfile, scope : this}
 			},
-			'scrum-userstory-overview' : {
+			'scrum-backlog' : {
 				activate : { fn : this.showBacklog, scope : this}
 			},
 			'scrum-projects-dropdown > menuitem[action=projectView]' : {
@@ -83,7 +83,7 @@ Ext.define('Scrum.controller.TopPanel', {
 	},
 	onBacklogClick : function(){
 		this.contentPanel.layout.setActiveItem(0);
-		this.contentPanel.layout.setActiveItem('userstory-overview');
+		this.contentPanel.layout.setActiveItem('userstory-backlog');
 	},
 	onSprintsClick : function(){
 		return true;

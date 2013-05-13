@@ -35,6 +35,7 @@ Ext.define('Scrum.view.userstory.CreateForm', {
 				{ 
 					xtype : 'textfield',
 					name : 'name',
+					width : 200,
 					allowBlank : false,
 					fieldLabel : 'Name', 
 					labelAlign : 'top'

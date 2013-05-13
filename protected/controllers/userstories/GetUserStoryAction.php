@@ -11,19 +11,24 @@ class GetUserStoryAction extends CAction {
 		$projectId = Yii::app()->user->getState('project-id');
 
 		if (isset($_GET['id'])){
-			$id = $request->restParams['id'];
-			$userstory = UserStory::model()->findByPk($id);
+			$userstory = UserStory::model()->findByPk($_GET['id']);
 			$jsonResult = $userstory->getAttributes();
+			$single = true;
 		}
-		else if ($_GET['open']) {
+		else if ($_GET['all']) {
 			$jsonResult = array();
 			if (isset($_GET['project_id']))
 				$projectId = $_GET['project_id'];
 			
-			$userstories = UserStory::model()->byProject($projectId)->open()->findAll();
+			$userstories = UserStory::model()->byProject($projectId)->with(array('sprint' => array('select' => 'id,name')))->findAll();
 	
 			foreach($userstories as $id => $record){
 				$jsonResult[$id] = $record->getAttributes();
+				$sprint = $record->getRelated('sprint');
+				if (isset($sprint))
+					$jsonResult[$id]['sprint'] = $sprint->getAttributes(array('id', 'name'));
+				else 
+					$jsonResult[$id]['sprint'] = null;
 			}
 		}
 		/*else if ($_GET['accepted']){

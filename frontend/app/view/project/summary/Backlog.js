@@ -20,7 +20,7 @@ Ext.define('Scrum.view.project.summary.Backlog', {
 	items : [
 		{
 			tpl : '<div class="summary-header">Total items in backlog - {total}</div>' + 
-				  '<div class="summary-header">New items in backlog - {open}, ' + 
+				  '<div class="summary-header">Open items in backlog - {open}, ' + 
 				  'accepted - {accepted} </div>' + 
 				  '<div class="summary-header">closed - {closed}</div>',
 			border : false,
