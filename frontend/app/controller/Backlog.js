@@ -1,4 +1,5 @@
 Ext.define('Scrum.controller.Backlog', {
+	id : 'backlogController',
 	extend : 'Ext.app.Controller', 
 	views : ['userstory.Backlog'],
 	stores : ['Userstories'],
@@ -6,63 +7,34 @@ Ext.define('Scrum.controller.Backlog', {
 	init : function(){
 		this.control({
 			'scrum-backlog' : {
-				viewBacklog : { fn : this.drawBacklog, scope : this },
-				render : { fn : this.setBacklog ,  scope : this}
+				viewBacklog : { fn : function(project){
+					this.drawBacklogOverview(project);
+					this.backlog.fireEvent('viewSprint');
+					this.backlog.fireEvent('viewUserStoryProfile');
+				}, scope : this },
+				render : { fn : this.setComponents ,  scope : this}
 			},
-			'scrum-userstory-overview grid' : {
+			'scrum-userstory-backlog-overview' : {
 				itemclick : { fn : this.showUserstoryProfile, scope : this},
 				onCompleteEditStatus : { fn : this.changeUserStoryStatus, scope : this}
 			}, 
+			'scrum-userstory-overview gridview' : {
+				detachFromSprint : { fn : this.detachFromSprint, scope : this}
+			},
 			'scrum-userstory-overview tool[action=create]' : {
 				click : { fn : this.showUserstoryCreateForm , scope : this}
 			},
 			'scrum-userstory-overview tool[action=refresh]'	: {
 				click : { fn : this.onRefreshGridClick, scope : this }
-			},
-			'scrum-userstory-card tool[action=refresh]' : {
-				click : { fn : this.onRefreshProfileClick, scope : this}
-			},
-			'scrum-userstory-card tool[action=edit]' : {
-				click : { fn : this.showUserStoryEditForm , scope : this}
-			},
-			'scrum-userstory-create-form button[action=submit]' : {
-				click : { fn : this.submitUserstoryCreateForm, scope : this}
-			},
-			'scrum-userstory-create-form tool[action=close]' : {
-				click : { fn : this.closeUserStoryForm, scope : this}
-			},
-			'scrum-userstory-edit-form button[action=submit]' : {
-				click : { fn : this.submitUserstoryEditForm, scope : this}
-			},
-			'scrum-userstory-edit-form tool[action=close]' : {
-				click : { fn : this.closeUserStoryForm, scope : this}
 			}
 		});
 	},
-	setBacklog : function(backlog){
+	setComponents : function(backlog){
 		this.backlog = backlog;
-		this.userstoryCard = backlog.down('scrum-userstory-card');
-		this.overview = backlog.down('scrum-userstory-overview');
+		this.grid = backlog.down('scrum-userstory-backlog-overview');
 	},
 	onRefreshGridClick : function(){
 		this.drawBacklog(null, { redraw : true});
-	},
-	onRefreshProfileClick : function(){
-		var userstory = this.getModel('UserStory');
-		var currentUserStory = this.userstory;
-		var profile = this.userstoryCard.down('panel');
-		var userstories = this.getUserstoriesStore();
-
-		profile.setLoading({ msg : 'Loading...'});
-		Scrum.model.UserStory.load(currentUserStory.get('id'), {
-			url : '/userstories/get',
-			success : function(record, op){
-				this.userstory.set(record.getData());
-				profile.setLoading(false);
-				this.showUserstoryProfile(null, this.userstory);
-			},
-			scope : this
-		})
 	},
 	showUserstoryOverview : function(){
 		var overview = this.overview;
@@ -78,23 +50,6 @@ Ext.define('Scrum.controller.Backlog', {
 		form.down('statusbar').hide();
 		profileTab.setText('Create userstory');
 	},
-	showUserStoryEditForm : function(){
-		var card = this.userstoryCard;
-		var rightTabPanel = this.backlog.down('tabpanel');
-		var profileTab = rightTabPanel.down('header').down(0);
-		var form = card.layout.setActiveItem('scrum-userstory-edit-form');
-		var project = this.project;
-
-		form.down('hiddenfield[name=id]').setRawValue(this.userstory.get('id'));
-		form.down('statusbar').hide();
-		profileTab.setText('Edit');
-		form.loadRecord(this.userstory); 
-	},
-	closeUserStoryForm : function(){
-		var grid = this.overview.down('grid');
-
-		grid.fireEvent('itemclick', grid, this.userstory);
-	},
 	showUserstoryProfile : function(grid, record){
 		var card = this.userstoryCard;
 		var rightTabPanel = this.backlog.down('tabpanel');
@@ -104,78 +59,12 @@ Ext.define('Scrum.controller.Backlog', {
 		profileTab = rightTabPanel.down('header').down(0);
 		profileTab.setText('Profile');
 		card.layout.setActiveItem(0);
-		card.down('panel').update(record.getData());
 
-		this.userstory = record;
-	},
-	submitUserstoryCreateForm : function(button){
-		var overview = this.overview;
-		var userstoryCard = this.userstoryCard;
-		var grid = overview.down('grid');
-		var form = this.userstoryCard.down('form').getForm();
-		var userstories = this.getUserstoriesStore();
-		var statusBar = form.owner.down('statusbar');
+		userstoryController = this.getController('userstoryController');
+		userstoryController.fireEvent('viewProfile', record);
+		//card.down('panel').update(record.getData());
 
-		if (form.isValid()){
-			form.owner.setLoading({ msg : 'Please wait...'});
-			form.submit({
-				scope : this,
-				success : function(form, action){
-					var userstory = Ext.create('Scrum.model.UserStory');
-					var continueCreateCheckbox = form.owner.down('checkbox[action=continue_create]'); 
-					var continueCreate;
-
-					userstory.set(form.getValues());
-					userstory.setId(action.result.userstory.id);
-					userstory.set('update_time', action.result.userstory.update_time);
-					userstory.set('status', action.result.userstory.status);
-					userstories.add(userstory);			
-					grid.reconfigure(userstories);
-
-					form.owner.setLoading(false);
-					if (continueCreate = continueCreateCheckbox.getRawValue()){
-						form.owner.onSuccessfulCreation(userstory);
-					}
-					else {
-						statusBar.hide();
-						grid.fireEvent('itemclick', grid, userstory);	
-					}
-
-					form.reset();
-					form.owner.down('checkbox[action=continue_create]').setRawValue(continueCreate);
-				}
-			})
-		}
-		else {
-			form.owner.onInvalidFields();
-		}
-	},
-	submitUserstoryEditForm : function(button){
-		var userstories = this.getUserstoriesStore();
-		var grid = this.overview.down('grid');
-		var form = this.userstoryCard.down('scrum-userstory-edit-form').getForm();
-
-		if (form.isValid()){
-			form.owner.setLoading({ msg : 'Please wait...'});
-			form.submit({
-				scope : this,
-				success : function(form, action){
-					var id = action.result.userstory.id;
-					var updateTime = action.result.userstory.update_time;
-					var userstory = userstories.findRecord('id', id);
-					var values = form.getValues();
-
-					values['update_time'] = updateTime;
-					userstory.set(values);
-				
-					form.owner.setLoading(false);
-					grid.fireEvent('itemclick', grid, userstory);					
-				}
-			})
-		}
-		else {
-			form.owner.onInvalidFields();
-		}
+		//this.userstory = record;
 	},
 	changeUserStoryStatus : function(grid, event){
 		var record = event.record;
@@ -187,15 +76,43 @@ Ext.define('Scrum.controller.Backlog', {
 			params : { id : record.get('id') , oldStatus: oldStatus, newStatus : newStatus}
 		});
 	},
-	drawBacklog : function(project, options){
-		var fn;
+	
+	detachFromSprint : function(model){
+		model.save({
+			url : '/userstories/changeSprint',
+			params : { id : model.get('id'), detach : true},
+			scope : this,
+			callback : function(record, op){
+				return true;
+			}
+		})
+	},
+	drawBacklogOverview : function(project, options){
+		var backlog = this.backlog;
 		var store = this.getUserstoriesStore();
-		var grid = this.overview.down('grid');
-		var userstoryCard = this.userstoryCard;
+		var grid = this.backlogGrid;
 
+		options = options || {};
+		partially = options.partially;
 		if (project)
 			this.project = project;
-		if (options.redraw){
+	
+		if (Ext.isEmpty(partially)){
+			this.fullRedrawBacklog(options)	
+		}
+		else {
+			grid.reconfigure(store);
+		}
+	},
+	fullRedrawBacklog : function(options){
+		var grid = this.grid;
+		var store = this.getUserstoriesStore();
+		//var userstoryCard = this.userstoryCard;
+		var fn;
+		var redraw;
+
+		options = (options)? options : {};
+		if (redraw = options.redraw){
 			fn = 'reload';
 		}
 		else {
@@ -204,32 +121,25 @@ Ext.define('Scrum.controller.Backlog', {
 
 		grid.setLoading({ msg : 'Refresh...'});
 		store[fn].apply(store,[{
-			url : '/userstories/get' ,
+			url : '/userstories/get',
 			params : {
 				project_id : this.project.get('id'),
-				all : true
+				fromBacklog : true
 			},
 			scope : this,
 			callback : function(records){
-				store.group({ property : 'sprint', 
-					//fix : as i can't find how to group by nested fields in objects, i replace 'sprint' object field
-					//by 'nested sprint.name' field
-					transform : function(value){
-						if (Ext.isObject(value)){
-							value = value.name;
-						}
-					}
-				});
-				if (store.count()){
-					grid.fireEvent('itemclick', grid, store.getAt(0));
-				}
-				else {
-					this.showUserstoryCreateForm();
-					userstoryCard.down('scrum-userstory-create-form tool[action=close]').hide();
-				}
-
+				grid.setLoading(false);	
 				grid.reconfigure(store);
-				grid.setLoading(false);
+
+				if (Ext.isEmpty(redraw)){
+					if (store.count()){
+						grid.fireEvent('itemclick', grid, store.getAt(0));	
+					}
+					else {
+						this.showUserstoryCreateForm();
+						userstoryCard.down('scrum-userstory-create-form tool[action=close]').hide();	
+					}	
+				}
 			}
 		}])
 	}

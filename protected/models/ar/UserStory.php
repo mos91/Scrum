@@ -42,6 +42,30 @@ class UserStory extends CActiveRecord {
 		return $this;
 	}
 
+	public function fromBacklog(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => '(status=:status_open OR status=:status_accepted)',
+			'params' => array(
+					':status_open' => UserStoryStatusCodes::OPEN, 
+					':status_accepted' => UserStoryStatusCodes::ACCEPTED
+				)
+		));
+
+		return $this;
+	}
+
+	public function fromSprints(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => '(status<>:status_open AND status<>:status_accepted)',
+			'params' => array(
+				':status_open' => UserStoryStatusCodes::OPEN, 
+				':status_accepted' => UserStoryStatusCodes::ACCEPTED
+			)
+		));
+
+		return $this;
+	}
+
 	public function open(){
 		$this->getDbCriteria()->mergeWith(array(
 			'condition' => 'status=:status',

@@ -3,30 +3,32 @@ Ext.define('Scrum.view.userstory.Backlog', {
 	xtype : 'scrum-backlog',
 	layout : 'hbox',
 	require : [
-		'Scrum.view.userstory.Overview',
-		'Scrum.view.userstory.Card',
+		'Scrum.view.userstory.BacklogOverview',
+		'Scrum.view.userstory.SprintOverview',
+		'Scrum.view.userstory.RightPart'
 	],
 	items : [
-		Ext.create('Scrum.view.userstory.Overview'),
 		{
-			xtype :'tabpanel', 
-			tabBar : { cls : 'scrum-tabbar'},
-			flex : 2,
-			layout : { type : 'fit'},
+			xtype : 'panel',
+			flex : 1,
+			layout : { type : 'vbox', align : 'stretch'},
 			items : [
-				Ext.create('Scrum.view.userstory.Card', {
-					title : 'Profile',
-					itemId : 'profile'
-				})
-				/*Ext.create('Scrum.view.CommentPanel', {
-					title : 'Comments',
-					itemId : 'comments',
-					commentableEntity : {
-					 	url : '/userstory/comment',
-					 	idField : 'userstory_id'
-					}
-				})*/
+				Ext.create('Scrum.view.userstory.BacklogOverview', {
+					flex : 1,
+					resizable : true,
+					collapsible : true,
+					collapseDirection : 'top'
+				}),
+				Ext.create('Scrum.view.userstory.SprintOverview', {
+					flex : 1,
+					resizable : true,
+					collapsible : true,
+					collapseDirection : 'bottom'
+				})	
 			]
-		}
+		},
+		Ext.create('Scrum.view.userstory.RightPart', {
+			flex : 1
+		})
 	]
 })

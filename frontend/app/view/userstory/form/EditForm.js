@@ -1,4 +1,4 @@
-Ext.define('Scrum.view.userstory.EditForm', {
+Ext.define('Scrum.view.userstory.form.EditForm', {
 	extend : 'Ext.form.Panel',
 	xtype : 'scrum-userstory-edit-form',
 	layout : { type : 'anchor'},

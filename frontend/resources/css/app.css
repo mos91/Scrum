@@ -110,6 +110,10 @@
 .scrum-form-bottom-bar + .xtoolbar-footer {
 	background:none;
 }
+
+.scrum-create-form-header {
+	top : 0px !important;
+}
 /*profiles*/
 .project-card,.userstory-card {
 	padding : 0px 5px 5px 10px;

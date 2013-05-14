@@ -5,6 +5,7 @@ class UserstoriesController extends Controller {
 			'index' => 'application.controllers.userstories.GetUserStoryAction',
 			'get' => 'application.controllers.userstories.GetUserStoryAction',
 			'changeStatus' => 'application.controllers.userstories.ChangeUserStoryStatus',
+			'changeSprint' => 'application.controllers.userstories.ChangeSprint',
 			'create' => 'application.controllers.userstories.CreateUserStoryAction',
 			'update' => 'application.controllers.userstories.UpdateUserStoryAction',
 			'drop' => 'application.controllers.userstories.DropUserStoryAction',

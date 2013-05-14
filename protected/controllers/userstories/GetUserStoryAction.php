@@ -15,32 +15,24 @@ class GetUserStoryAction extends CAction {
 			$jsonResult = $userstory->getAttributes();
 			$single = true;
 		}
-		else if ($_GET['all']) {
+		else if ($_GET['fromBacklog']){
 			$jsonResult = array();
 			if (isset($_GET['project_id']))
 				$projectId = $_GET['project_id'];
 			
-			$userstories = UserStory::model()->byProject($projectId)->with(array('sprint' => array('select' => 'id,name')))->findAll();
+			$userstories = UserStory::model()->byProject($projectId)->fromBacklog()->findAll();
 	
 			foreach($userstories as $id => $record){
 				$jsonResult[$id] = $record->getAttributes();
-				$sprint = $record->getRelated('sprint');
-				if (isset($sprint))
-					$jsonResult[$id]['sprint'] = $sprint->getAttributes(array('id', 'name'));
-				else 
-					$jsonResult[$id]['sprint'] = null;
 			}
 		}
-		/*else if ($_GET['accepted']){
+		else if ($_GET['fromSprints']){
 			$jsonResult = array();
-			$userstories = UserStory::model()->byProject($projectId)->accepted()->findAll();
-	
-			foreach($result as $id => $record){
-				$jsonResult[$id] = $record->getAttributes();
-			}
-			echo CJSON::encode($jsonResult);
-		}*/
+			if (isset($_GET['project_id']))
+				$projectId = $GET['project_id'];
 
+			$userstories = UserStory::model()->byProject($projectId)->fromSprints()->findAll();
+		}
 
 		if (isset($single) && !empty($single)){
 			echo CJSON::encode(array('success' => true, 'userstory' => $jsonResult));

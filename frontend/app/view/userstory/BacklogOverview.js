@@ -1,10 +1,16 @@
-Ext.define('Scrum.view.userstory.Grid', {
+Ext.define('Scrum.view.userstory.BacklogOverview', {
 	extend : 'Ext.grid.Panel',
+	xtype : 'scrum-userstory-backlog-overview', 
 	forceFit : true,
 	require : [
 		'Ext.form.field.ComboBox',
 		'Ext.grid.plugin.CellEditing',
 		'Scrum.store.UserStoryStatuses'
+	],
+	title : 'Backlog Overview',
+	tools : [
+		{ type : 'plus', action : 'create', tooltipType : 'title', tooltip : 'Add new userstory'},
+		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
 	],
 	getAvailableUserStoryStatuses : function(cellEditing, event){
 		var activeEditor = event.column.getEditor();
@@ -17,31 +23,11 @@ Ext.define('Scrum.view.userstory.Grid', {
 			return Ext.data.Types.USER_STORY_STATUS.isNeighbour(userstoryStatus, status);
 		}, this);
 	},
-	disableGrouping : function(button){
-		var toolbar = button.up('toolbar');
-		button.hide();
-		toolbar.down('button[action=enable_grouping]').show();
-
-		this.groupingFeature.disable();
-	},
-	enableGrouping : function(button){
-		var toolbar = button.up('toolbar');
-		button.hide();
-		toolbar.down('button[action=disable_grouping]').show();
-
-		this.groupingFeature.enable();
-	},
 	onBeforeUserStoryDrop : function(node, data, overModel){
 		var sprint; 
 		var draggedModel = data.records[0];
 
-		if (overModel.get('sprint')){
-			sprint = overModel.get('sprint');
-			data.view.fireEvent('attachToSprint', draggedModel, sprint);
-		}
-		else if (Ext.isEmpty(overModel.sprint) && !Ext.isEmpty(draggedModel)){
-			data.view.fireEvent('detachFromSprint', draggedModel)
-		}
+		data.view.fireEvent('detachFromSprint', draggedModel);
 	},
 	onBeforeEdit : function(cellEditing, event){
 		if (event.field === 'status'){
@@ -71,29 +57,7 @@ Ext.define('Scrum.view.userstory.Grid', {
 		);
 	},
 	initComponent : function(){
-		this.groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-			collapsible : true,
-			groupHeaderTpl : '<tpl if="name">{columnName}: {name}<tpl else>Not currently in any sprint</tpl>'
-		});
-
 		Ext.apply(this, {
-			groupField : 'sprint_group_field',
-			features: [this.groupingFeature],
-			tbar : {
-				items : [{
-					text:'Show all',
-					action : 'disable_grouping',
-                	scope: this,
-                	handler: this.disableGrouping
-                },
-                {
-                	text : 'Show by sprints',
-                	hidden : true,
-                	action : 'enable_grouping',
-                	scope : this,
-                	handler : this.enableGrouping
-                }]	
-			},
 			viewConfig : {
 				plugins : [
 					{
@@ -156,16 +120,6 @@ Ext.define('Scrum.view.userstory.Grid', {
 						store : Ext.data.Types.USER_STORY_STATUS.getPairs(),
 						valueField : 'value',
 						displayField : 'display'
-					}
-				},
-				{
-					hidden : true,
-					text : "In Sprint", dataIndex : 'sprint_group_field',
-					renderer : function(value){
-						if (Ext.isObject(value))
-							return value.name;
-
-						return '';
 					}
 				},
 				{ 

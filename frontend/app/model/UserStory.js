@@ -15,7 +15,6 @@ Ext.define('Scrum.model.UserStory', {
 				}
 			}
 		},
-		/*{ name : 'status', type : 'int'},*/
 		{
 			name : 'status', type : Ext.data.Types.USER_STORY_STATUS
 		},

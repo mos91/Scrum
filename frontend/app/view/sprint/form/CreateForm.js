@@ -1,9 +1,9 @@
-Ext.define('Scrum.view.userstory.CreateForm', {
+Ext.define('Scrum.view.sprint.form.CreateForm', {
 	extend : 'Ext.form.Panel',
-	xtype : 'scrum-userstory-create-form',
+	xtype : 'scrum-sprint-create-form',
 	layout : { type : 'anchor'},
 	padding : 10,
-	url : '/userstories/create',
+	url : '/sprint/create',
 	require : [
 		'Ext.ux.statusbar.StatusBar'
 	],
@@ -24,7 +24,7 @@ Ext.define('Scrum.view.userstory.CreateForm', {
 		statusBar.setStatus( 
 		{ 
 			iconCls : 'x-status-ok', 
-			text : Ext.String.format('<span class="status-string">Userstory "{0}" have successfully created</span>', userstory.get('name')) 
+			text : Ext.String.format('<span class="status-string">Sprint "{0}" have successfully created</span>', sprint.get('name')) 
 		});
 		statusBar.show();
 	},
@@ -35,42 +35,10 @@ Ext.define('Scrum.view.userstory.CreateForm', {
 				{ 
 					xtype : 'textfield',
 					name : 'name',
-					width : 200,
+					width : 250,
 					allowBlank : false,
 					fieldLabel : 'Name', 
 					labelAlign : 'top'
-				},
-				{
-					xtype : 'container',
-					layout : { type : 'hbox', defaultMargins : '0 10 0 0'},
-					items : [
-						{
-							xtype : 'numberfield',
-							name: 'estimate',
-							labelAlign : 'top',
-							fieldLabel: 'Estimate',
-							allowBlank : false,
-							maxValue: 99,
-							minValue: 0
-						},
-						{
-							xtype : 'combo',
-							name : 'priority',
-							fieldLabel : 'Priority',
-							labelAlign : 'top',
-							allowBlank : false,
-							displayField : 'name',
-							valueField : 'value',
-							store : Ext.create('Ext.data.Store', {
-								fields : ['value', 'name'],
-								data : [
-									{ name : 'Low', value : 0},
-									{ name : 'Medium', value : 1},
-									{ name : 'High', value : 2} 
-								]
-							})
-						}		
-					]
 				},
 				{ 
 					xtype : 'htmleditor',
