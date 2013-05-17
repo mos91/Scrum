@@ -5,7 +5,8 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 	require : [
 		'Ext.form.field.ComboBox',
 		'Ext.grid.plugin.CellEditing',
-		'Scrum.store.UserStoryStatuses'
+		'Scrum.store.UserStoryStatuses',
+		'Ext.grid.plugin.DragDrop'
 	],
 	title : 'Backlog Overview',
 	tools : [
@@ -31,10 +32,18 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 		}, this);
 	},
 	onBeforeUserStoryDrop : function(node, data, overModel){
-		var sprint; 
 		var draggedModel = data.records[0];
 
-		data.view.fireEvent('detachFromSprint', draggedModel);
+		if ((Ext.isEmpty(overModel) || !overModel.get('sprint')) && draggedModel.get('sprint')){
+			return true;
+		}
+
+		return false;
+	},
+	onAfterUserStoryDrop : function(node, data, overModel){
+		var draggedModel = data.records[0];
+
+		this.down('gridview').fireEvent('detachFromSprint', draggedModel);
 	},
 	onBeforeEdit : function(cellEditing, event){
 		if (event.field === 'status'){
@@ -66,13 +75,14 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 	initComponent : function(){
 		Ext.apply(this, {
 			viewConfig : {
-				plugins : [
-					{
-	            		ptype: 'gridviewdragdrop',
-	            		dragText: 'Drag and drop to reorganize'
-	        		}
-				],
+				plugins : {
+		    		ptype: 'gridviewdragdrop',
+		    		dropGroup: 'sprintlogGridDDGroup',
+		            dragGroup: 'backlogGridDDGroup',
+		    		dragText: 'Drag and drop to attach sprint'
+		    	},
 				listeners : {
+					drop : { fn : this.onAfterUserStoryDrop , scope : this},
 					beforedrop : { fn : this.onBeforeUserStoryDrop , scope : this}
 				}
 			},

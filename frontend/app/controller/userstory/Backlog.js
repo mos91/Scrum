@@ -2,7 +2,6 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 	id : 'backlogController',
 	extend : 'Ext.app.Controller', 
 	views : ['userstory.Backlog'],
-	//stores : ['Userstories'],
 	models : ['UserStory'],
 	getBacklogStore : function(){
 		if (!this.backlogStore){
@@ -45,9 +44,18 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 				viewBacklog : { fn : function(project){
 					if (project instanceof Scrum.model.Project){
 						this.project = project;
-						this.activeSprint = project.get('active_sprint');
 					}
-					
+
+					if (project.get('active_sprint')){
+						this.activeSprint = Ext.create('Scrum.model.Sprint');
+						this.activeSprint.set(project.get('active_sprint'));
+					}
+					else {
+						this.sprintlogGrid.down('gridview').disable();
+					}
+
+					this.sprintlogGrid.down('combobox[action=get_sprints]').clearValue();
+					this.getSprintsStore().removeAll();
 					this.drawGrid(this.backlogGrid, this.getBacklogStore());
 					this.drawGrid(this.sprintlogGrid, this.getSprintlogStore());
 				}, scope : this },
@@ -91,7 +99,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 				onCompleteEditStatus : { fn : this.changeUserStoryStatus, scope : this}
 			},
 			'scrum-userstory-sprint-overview combobox[action=get_sprints]' : {
-				expand : { fn : this.loadSprintList, scope : this},
+				expand : { fn : this.loadSprints, scope : this},
 				select : { fn : function(combobox, record){
 					this.activeSprint = record[0];
 					this.drawGrid(this.sprintlogGrid, this.getSprintlogStore(), { redraw : true});
@@ -123,16 +131,18 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 		}, this);
 		sprintlogStore.addListener('beforeload', function(store, options){
 			var activeSprint = this.activeSprint;
-			if (!activeSprint || !activeSprint.id){
+			if (!activeSprint || !activeSprint.get('id')){
 				this.sprintlogGrid.setLoading(false);
 				return false;
 			}
-			store.proxy.extraParams = { sprint_id : activeSprint.id };
+			store.proxy.extraParams = { sprint_id : activeSprint.get('id') };
 		}, this);
 		this.backlogStore.addListener('load', this.onLoadBacklog, this);
+		this.sprintlogStore.addListener('load', this.onLoadSprintlog, this);
+
 		this.backlogGrid.reconfigure(backlogStore);
 		this.sprintlogGrid.reconfigure(sprintlogStore);
-		this.sprintlogGrid.down('comboxbox[action=get_sprints]').bindStore(this.getSprintsStore());
+		this.sprintlogGrid.down('combobox[action=get_sprints]').bindStore(this.getSprintsStore());
 	},
 	onRefreshBacklogGrid : function(tool){
 		this.drawGrid(tool.up('grid'), this.getBacklogStore(), { redraw : true});
@@ -140,10 +150,6 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 	onRefreshSprintlogGrid : function(tool){
 		this.drawGrid(tool.up('grid'), this.getSprintlogStore(), { redraw : true});
 	},
-	/*showUserstoryOverview : function(){
-		var overview = this.overview;
-		overview.layout.setActiveItem('scrum-userstory-grid');
-	},*/
 	showUserstoryCreateForm : function(){
 		var form = this.rightPart.layout.setActiveItem('scrum-userstory-create-form');
 		var project = this.project;
@@ -239,26 +245,36 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 			params : { id : model.get('id'), detach : true},
 			scope : this,
 			callback : function(record, op){
-				return true;
+				var sprintlogStore = this.getSprintlogStore();
+				var backlogStore = this.getBacklogStore();
+				model.set('sprint', null);
+
+				sprintlogStore.remove(model);
 			}
 		})
 	},
-	attachToSprint : function(model, sprint){
+	attachToSprint : function(model){
 		model.save({
 			url : '/userstories/changeSprint', 
-			params : { id: model.get('id'), sprint_id : sprint.id },
+			params : { id: model.get('id'), sprint_id : this.activeSprint.get('id') },
 			scope : this,
 			callback : function(record, op){
-				return true;
+				var sprintlogStore = this.getSprintlogStore();
+				var backlogStore = this.getBacklogStore();
+
+				backlogStore.remove(model);
 			}
 		})
 	},
 	loadSprints : function(combobox){
 		var store = this.getSprintsStore();
-		if (!store.count()){
+		if (store.count() === 0){
 			combobox.setLoading({ msg : 'Loading...'});
 			store.load({
-				params : { project_id : this.project.get('id')}
+				params : { project_id : this.project.get('id')},
+				callback : function(){
+					combobox.setLoading(false);
+				}
 			})
 		}
 	},
@@ -302,5 +318,9 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 		else {
 			this.showUserstoryCreateForm();
 		}
+	},
+	onLoadSprintlog : function(){
+		var sprints = this.getSprintsStore();
+		this.sprintlogGrid.down('combobox[action=get_sprints]').select(this.activeSprint.get('name'));
 	}
 });

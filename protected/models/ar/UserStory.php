@@ -37,7 +37,7 @@ class UserStory extends CActiveRecord {
 
 	public function bySprint($sprintId){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'sprint_id=:sprint_id AND dropped=0', 
+				'condition' => 'sprint_id=:sprint_id AND `t`.`dropped`=0', 
 				'params' => array(':sprint_id' => $sprintId)));
 		return $this;
 	}

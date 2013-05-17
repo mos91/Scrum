@@ -34,12 +34,14 @@ class GetUserStoryAction extends CAction {
 			$jsonResult = array();
 			$sprintId = $_GET['sprint_id'];
 			
-			$total = UserStory::model()->bySprint($sprintId)->count();
-			$userstories = UserStory::model()->bySprint($sprintId)->findAll();
+			$total = UserStory::model()->bySprint($sprintId)->with('sprint')->count();
+			$userstories = UserStory::model()->bySprint($sprintId)->with('sprint')->findAll();
 			$page = true;
 
 			foreach($userstories as $id => $record){
 				$jsonResult[$id] = $record->getAttributes();
+
+				$jsonResult[$id]['sprint'] = $record->getRelated('sprint')->getAttributes(array('name', 'description'));
 			}	
 		}
 

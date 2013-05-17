@@ -1,0 +1,3 @@
+class CreateSprintAction extends CAction {
+	
+}

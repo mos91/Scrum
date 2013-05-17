@@ -3,12 +3,15 @@ Ext.define('Scrum.view.userstory.SprintOverview', {
 	xtype : 'scrum-userstory-sprint-overview', 
 	title : 'Sprint Overview',
 	forceFit : true,
+	require : [
+		'Ext.grid.plugin.DragDrop'
+	],
 	tools : [
 		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
 	],
 	tbar : {
 		items : [
-			{ xtype : 'combobox' , store : [['value1', 'value1'], ['value2', 'value2'], ['value3', 'value3']]}
+			{ xtype : 'combobox' , action : 'get_sprints', displayField : 'name', valueField : 'id', queryMode : 'local'}
 		]
 	},
 	bbar : {
@@ -18,17 +21,6 @@ Ext.define('Scrum.view.userstory.SprintOverview', {
         displayMsg: 'Displaying userstories {0} - {1} of {2}',
         emptyMsg: "No userstories to display",
 	},
-	initComponent : function(){
-		
-		Ext.apply(this, {
-			tbar : {
-				items : [
-					{ xtype : 'combobox', action : 'get_sprints', displayField : 'name', valueField : 'id'}
-				]	
-			}
-		});
-		this.callParent();
-	}
 	columns : [
 		{ 
 			text : 'Name', dataIndex : 'name', 
@@ -54,23 +46,13 @@ Ext.define('Scrum.view.userstory.SprintOverview', {
 			},
 			editor : {
 				xtype : "combobox",
-				queryModel : 'local',
+				queryMode : 'local',
 				typeAhead : true, 
 				triggerAction : 'all',
 				selectOnTab : true,
 				store : Ext.data.Types.USER_STORY_STATUS.getPairs(),
 				valueField : 'value',
 				displayField : 'display'
-			}
-		},
-		{
-			hidden : true,
-			text : "In Sprint", dataIndex : 'sprint_group_field',
-			renderer : function(value){
-				if (Ext.isObject(value))
-					return value.name;
-
-				return '';
 			}
 		},
 		{ 
@@ -80,5 +62,41 @@ Ext.define('Scrum.view.userstory.SprintOverview', {
 				return Scrum.util.template.getPostDate(value);
 			}
 		}
-	]
+	],
+	onBeforeUserStoryDrop : function(node, data, overModel){
+		var draggedModel = data.records[0];
+
+		if (Ext.isEmpty(this.down('combobox').getRawValue()))
+			return false;
+		
+		if ((Ext.isEmpty(overModel) || overModel.get('sprint')) && !draggedModel.get('sprint')){
+			return true;	
+		}
+
+		return false;
+	},
+	onAfterUserStoryDrop : function(node, data, overModel){
+		var sprint;
+		var draggedModel = data.records[0];
+
+		this.view.fireEvent('attachToSprint', draggedModel);
+	},
+	initComponent : function(){
+		Ext.apply(this, {
+			viewConfig : {
+				plugins : {
+            		ptype: 'gridviewdragdrop',
+            		dragGroup: 'sprintlogGridDDGroup',
+            		dropGroup: 'backlogGridDDGroup',
+            		dragText: 'Drag and drop to detach from sprint'
+	        	},
+				listeners : {
+					beforedrop : { fn : this.onBeforeUserStoryDrop  , scope : this},
+					drop : { fn : this.onAfterUserStoryDrop, scope : this}
+				}
+			}
+		});
+
+		this.callParent();
+	}
 })

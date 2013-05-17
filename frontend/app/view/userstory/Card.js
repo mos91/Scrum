@@ -1,7 +1,6 @@
 Ext.define('Scrum.view.userstory.Card', {
 	extend : "Ext.panel.Panel",
 	xtype : 'scrum-userstory-card',
-	//flex : 2,
 	require : [
 		'Scrum.view.userstory.form.EditForm'
 	],

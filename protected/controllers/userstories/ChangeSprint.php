@@ -36,8 +36,8 @@ class ChangeSprint extends CAction {
 			'userstory' => array(
 				'id' => $userstory->id,
 				'status' => $status, 
-				'update_time' => $update_time,
-				'sprint_group_field' => ''
+				'sprint' => null,
+				'update_time' => $update_time->getTimestamp()
 			)));
 	}
 
@@ -55,8 +55,8 @@ class ChangeSprint extends CAction {
 		echo CJSON::encode(array('success' => true, 'userstory' => array(
 			'id' => $userstory->id, 
 			'sprint' => $sprint->getAttributes(array('id', 'name')), 
-			'status' => $status, 'update_time' => $userstory->update_time,
-			'sprint_group_field' => $sprint->name
+			'status' => $status, 
+			'update_time' => $update_time->getTimestamp()
 			)));
 	}
 }
