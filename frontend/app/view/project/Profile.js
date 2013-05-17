@@ -55,7 +55,7 @@ Ext.define('Scrum.view.project.Profile', {
 					title : 'Comments',
 					itemId : 'comments',
 					commentableEntity : {
-					 	url : '/project/comment',
+					 	url : '/comments/create',
 					 	idField : 'project_id'
 					}
 				})

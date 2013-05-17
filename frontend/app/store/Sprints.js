@@ -1,15 +1,15 @@
-Ext.define('Scrum.store.Comments', {
+Ext.define('Scrum.store.Sprints', {
 	require : [
-		'Scrum.model.Comment'
+		'Scrum.model.Sprint'
 	],
 	extend : 'Ext.data.Store',
-	model : 'Scrum.model.Comment',
+	model : 'Scrum.model.Sprint',
 	proxy : {
 		type : 'ajax',
-		url : '/comments/get',
+		url : '/sprints/get',
 		reader : {
 			type : 'json',
-			root : 'comments',
+			root : 'sprints',
 			successProperty: 'success',
 			totalProperty : 'total'
 		}

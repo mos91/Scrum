@@ -21,10 +21,6 @@ class GetProjectAction extends CAction {
 			$result = $this->fetchBacklogSummary();
 			$summary = true;
 		}
-		else if (isset($_GET['comments'])){
-			$result = $this->fetchComments();
-			$comments = true;
-		}
 		else if (isset($_GET['sprintSummary'])){
 			$result = $this->fetchSprintSummary();
 			$summary = true;
@@ -40,9 +36,6 @@ class GetProjectAction extends CAction {
 
 		if (isset($single) && $single === true){
 			echo CJSON::encode(array('success' => true, 'project' => $result));	
-		}
-		else if (isset($comments) && $comments === true){
-			echo CJSON::encode(array('success' => true, 'totalCount' => count($result), 'comments' => $result));
 		}
 		else if (isset($summary) && $summary === true){
 			echo CJSON::encode(array('success' => true, 'summary' => $result));
@@ -65,10 +58,14 @@ class GetProjectAction extends CAction {
 	private function fetchFavorites($userId){
 		$jsonResult = array();
 		
-		$result = Project::model()->favorite($userId)->findAll();
+		$result = Project::model()->favorite($userId)->with('active_sprint')->findAll();
 		foreach($result as $id => $record){
-			$jsonResult[$id] = $record->getAttributes();
+			$jsonResult[$id] = $record->getAttributes(array('id', 'name','description', 'update_time'));
+			$activeSprint = $record->getRelated('active_sprint');
+			if (isset($activeSprint))
+				$jsonResult[$id]['active_sprint'] = $activeSprint->getAttributes(array('id', 'name'));
 		}
+
 		return $jsonResult;
 	}
 
@@ -79,19 +76,6 @@ class GetProjectAction extends CAction {
 		foreach($result as $id => $record){
 			$jsonResult[$id] = $record->getAttributes();
 		}
-		return $jsonResult;
-	}
-
-	private function fetchComments(){
-		$jsonResult = array();
-
-		$comments = ProjectComment::model()->byProject($_GET['id'])->with('author')->findAll();
-		foreach($comments as $id => $record){
-			$jsonResult[$id] = $record->getAttributes();
-			$author = $record->getRelated('author');
-			$jsonResult[$id]['author'] = $author->firstname.' '.$author->lastname;
-		}
-
 		return $jsonResult;
 	}
 

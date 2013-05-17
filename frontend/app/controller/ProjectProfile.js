@@ -1,9 +1,19 @@
 Ext.define('Scrum.controller.ProjectProfile', {
 	extend : 'Ext.app.Controller', 
+	requires : [
+		'Scrum.store.Comments'
+	],
 	views : ['project.Profile'],
-	stores : ['Comments'],
+	//stores : ['Comments'],
 	models : ['Project','BacklogSummary', 'SprintSummary'],
+	getCommentsStore : function(){
+		return Ext.StoreManager.lookup('ProjectComments');
+	},
 	init : function(){
+		Ext.StoreManager.register(Ext.create('Scrum.store.Comments', {
+			storeId : 'ProjectComments'
+		}));
+
 		this.control({
 			'scrum-projects-dropdown' : {
 				render : {fn : this.setDropdown, scope : this}
@@ -24,13 +34,17 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			'scrum-projectform button[action=submit]' : {
 				click : { fn : this.submitProjectForm, scope : this}
 			},
-			'scrum-commentpanel'  : {
+			'scrum-projectprofile scrum-commentpanel'  : {
+				render : { fn : this.setCommentsPanel, scope : this},
 				activate : { fn : this.startDrawComments, scope : this}
 			},
-			'scrum-commentpanel button[action=submit]' : {
-				click : { fn : this.submitCommentForm, scope : this}
+			'scrum-projectprofile scrum-commentpanel button[action=submit]' : {
+				click : { fn : this.submitCommentForm , scope : this}
 			}
 		});
+	},
+	setCommentsPanel : function(commentPanel){
+		this.commentPanel = commentPanel;
 	},
 	setDropdown : function(dropdown){
 		this.dropdown = dropdown;
@@ -80,10 +94,9 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			sprintSummaryGroup.hide();
 		}
 	},
-	//NOTE : replace to CommentPanel class
-	drawComments : function(commentPanel, comments, options){
+	drawComments : function(comments, options){
 		var project = this.project;
-		var commentsList = commentPanel.down('dataview');
+		var commentsList = this.commentPanel.down('dataview');
 		var fn;
 
 		if (options && options.redraw){
@@ -94,35 +107,63 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			fn = 'load';
 		}
 
-		comments[fn].apply(comments, [
-			{
-				url : '/project/get?comments=1',
-				params : { id : project.get('id')},
+		comments[fn].apply(comments, [{
+				params : { project_id : project.get('id')},
 				callback : function(records){
 					comments.sort({ property : 'post_date', direction : 'DESC'});
 					commentsList.refresh();		
 				},
 				scope : this
-			}
-		]);
+			}]);
 	},
-	startDrawComments : function(commentPanel){
-		var project = this.project;
-		var comments = this.getStore('Comments');
-		var commentForm = commentPanel.down('form');
+	startDrawComments : function(){
+		var comments = this.getCommentsStore();
+		var commentForm = this.commentPanel.down('form');
 		var commentScopeId;
+		var options;
+		var project;
 
 		if (comments.lastOptions && comments.lastOptions.params){
 			commentScopeId = comments.lastOptions.params.id;
+			options = { redraw : true};
 		}
-
+		project = this.project;
 		commentForm.down('hiddenfield[name=author_id]').setRawValue(Ext.state.Manager.getProvider().get('user-id'));
 		commentForm.down('hiddenfield[name=project_id]').setRawValue(project.get('id'));
-		if (!commentScopeId){
-			this.drawComments(commentPanel, comments);
-		}
-		else {
-			this.drawComments(commentPanel, comments, {redraw : true});
+		this.drawComments(comments, options);
+	},
+	submitCommentForm : function(button){
+		var commentPanel = button.up('scrum-commentpanel');
+		var form = button.up('form').getForm();
+		var comments = this.getCommentsStore();
+		var stateProvider = Ext.state.Manager.getProvider();
+
+		if (form.isValid()){
+			form.owner.setLoading({msg : 'Please wait...'});
+			form.submit({
+				success : function(form, action){
+					var commentsList = commentPanel.down('dataview');
+					var id = action.result.comment.id;
+					var post_date = action.result.comment.post_date;
+
+					var comment = Ext.create('Scrum.model.Comment', {
+						id : id,
+						author : stateProvider.get('firstname') + ' ' + stateProvider.get('lastname'),
+						content : form.owner.down('textarea[name=content]').getRawValue(),
+						post_date : post_date
+					});
+					
+					comments.add(comment);
+					commentsList.refresh();
+
+					form.owner.down('textarea[name=content]').reset();
+					form.owner.setLoading(false);
+				},
+				failure : function(){
+					console.log('comment adding error');
+				},
+				scope : this
+			})
 		}
 	},
 	showProjectForm : function(tool){
@@ -170,40 +211,6 @@ Ext.define('Scrum.controller.ProjectProfile', {
 					form.owner.setLoading(false);					
 					profileTool.fireEvent('click', profileTool);
 				}
-			})
-		}
-	},
-	submitCommentForm : function(button){
-		var commentPanel = button.up('scrum-commentpanel');
-		var form = button.up('form').getForm();
-		var comments = this.getStore('Comments');
-		var stateProvider = Ext.state.Manager.getProvider();
-
-		if (form.isValid()){
-			form.owner.setLoading({msg : 'Please wait...'});
-			form.submit({
-				success : function(form, action){
-					var commentsList = commentPanel.down('dataview');
-					var id = action.result.comment.id;
-					var post_date = action.result.comment.post_date;
-
-					var comment = Ext.create('Scrum.model.Comment', {
-						id : id,
-						author : stateProvider.get('firstname') + ' ' + stateProvider.get('lastname'),
-						content : form.owner.down('textarea[name=content]').getRawValue(),
-						post_date : post_date
-					});
-					
-					comments.add(comment);
-					commentsList.refresh();
-
-					form.owner.down('textarea[name=content]').reset();
-					form.owner.setLoading(false);
-				},
-				failure : function(){
-					console.log('comment adding error');
-				},
-				scope : this
 			})
 		}
 	}

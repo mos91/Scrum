@@ -1,12 +1,34 @@
 Ext.define('Scrum.view.userstory.SprintOverview', {
 	extend : 'Ext.grid.Panel',
 	xtype : 'scrum-userstory-sprint-overview', 
-	title : 'Overview',
+	title : 'Sprint Overview',
 	forceFit : true,
-	/*tools : [
-		{ type : 'plus', action : 'create', tooltipType : 'title', tooltip : 'Add new userstory'},
+	tools : [
 		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
-	]*/
+	],
+	tbar : {
+		items : [
+			{ xtype : 'combobox' , store : [['value1', 'value1'], ['value2', 'value2'], ['value3', 'value3']]}
+		]
+	},
+	bbar : {
+		xtype : 'pagingtoolbar',
+		itemId : 'paging-toolbar',
+		displayInfo: true,
+        displayMsg: 'Displaying userstories {0} - {1} of {2}',
+        emptyMsg: "No userstories to display",
+	},
+	initComponent : function(){
+		
+		Ext.apply(this, {
+			tbar : {
+				items : [
+					{ xtype : 'combobox', action : 'get_sprints', displayField : 'name', valueField : 'id'}
+				]	
+			}
+		});
+		this.callParent();
+	}
 	columns : [
 		{ 
 			text : 'Name', dataIndex : 'name', 

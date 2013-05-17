@@ -16,7 +16,10 @@ Ext.define('Scrum.model.UserStory', {
 			}
 		},
 		{
-			name : 'status', type : Ext.data.Types.USER_STORY_STATUS
+			name : 'status', type : Ext.data.Types.USER_STORY_STATUS,
+			sortType : function(status){
+				return status.value;
+			}
 		},
 		{ 
 			name : 'update_time',

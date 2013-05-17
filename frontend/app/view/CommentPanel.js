@@ -1,6 +1,6 @@
  commentRenderingTemplate = new Ext.XTemplate(
  '<tpl for="."><div class="scrum-comment" id="{id}">' + 
-//TODO : change src from gravar ... to custom identicon src
+//TODO : change src from gravatar ... to custom identicon src
   '<div class="scrum-comment-meta">' + 
   	'<span><img class="avatar" width="25" height="25" src="http://www.gravatar.com/avatar/3dea782e580e0d4b8c733e4ec2d3a9c7?s=25&amp;r=PG&amp;d=identicon"/></span>' + 
   	'<div class="scrum-comment-author"><b>{author}</b></div>' + 
@@ -21,22 +21,15 @@
 	extend : 'Ext.panel.Panel',
 	xtype : 'scrum-commentpanel',
 	cls : 'scrum-commentpanel',
-	require : [ 'Scrum.store.Comments'],
-	layout : { type : 'border'},
+	require : ['Scrum.store.Comments'],
+	//layout : { type : 'border'},
+	layout : { type : 'vbox'},
 	initComponent : function(){
 		Ext.apply(this, {
 			items : [
-				Ext.create('Ext.view.View', {
-					width : 900,
-					region : 'center',
-					cls : 'scrum-comments-list',
-					overflowY : 'scroll',
-					emptyText : '<span>There are no comments yet</span>',
-					itemSelector : '.scrum-comment-content',
-					tpl : commentRenderingTemplate
-				}),	
 				Ext.create('Ext.form.Panel', {
-					region : 'north',
+					//region : 'north',
+					flex : 1,
 					title : 'Leave a comment',
 					url : this.commentableEntity.url,
 					cls : 'scrum-comment-form',
@@ -56,10 +49,20 @@
 							xtype : 'textarea', name : 'content',
 							allowBlank : false,
 							minLength : 1,
-							width : 700,
+							width : 900,
 							height : 100
 						}
 					]
+				}),
+				Ext.create('Ext.view.View', {
+					width : 900,
+					flex : 4,
+					//region : 'center',
+					cls : 'scrum-comments-list',
+					overflowY : 'scroll',
+					emptyText : '<span>There are no comments yet</span>',
+					itemSelector : '.scrum-comment-content',
+					tpl : commentRenderingTemplate
 				})
 			]
 		});

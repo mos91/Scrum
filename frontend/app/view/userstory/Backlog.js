@@ -15,12 +15,14 @@ Ext.define('Scrum.view.userstory.Backlog', {
 			items : [
 				Ext.create('Scrum.view.userstory.BacklogOverview', {
 					flex : 1,
+					height : 450,
 					resizable : true,
 					collapsible : true,
 					collapseDirection : 'top'
 				}),
 				Ext.create('Scrum.view.userstory.SprintOverview', {
 					flex : 1,
+					height : 430,
 					resizable : true,
 					collapsible : true,
 					collapseDirection : 'bottom'

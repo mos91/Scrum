@@ -28,9 +28,9 @@ Ext.application({
     ],
     controllers : [
         'TopPanel',
-        'Backlog',
-        //'Sprint',
-        'ProjectProfile'
+        'ProjectProfile',
+        'userstory.Backlog',
+        'userstory.UserStoryProfile'
     ],
     views: [
         'Viewport',

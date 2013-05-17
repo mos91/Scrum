@@ -129,6 +129,15 @@ class UserStory extends CActiveRecord {
 		return $this;
 	}	
 
+	public function page($offset, $limit){	
+		$this->getDbCriteria()->mergeWith(array(
+			'limit' => $limit,
+			'offset' => $offset
+		));
+
+		return $this;
+	}
+
 	public function relations(){
 		return array(
 			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),

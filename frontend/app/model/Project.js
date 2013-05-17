@@ -3,7 +3,14 @@ Ext.define('Scrum.model.Project', {
 	fields : [
 		{ name : 'name', type:'string'},
 		{ name : 'description', type : 'string'},
-		{ name : 'active_sprint_id ', type : 'int'},
+		{ 
+			name : 'active_sprint',
+			convert : function(value, record){
+				if (Ext.isObject(value)){
+					return value;
+				}
+			}
+		},
 		{ 
 			name : 'update_time',
 			type : 'date',

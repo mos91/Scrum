@@ -15,30 +15,45 @@ class GetUserStoryAction extends CAction {
 			$jsonResult = $userstory->getAttributes();
 			$single = true;
 		}
-		else if ($_GET['fromBacklog']){
+		else if (isset($_GET['fromBacklog'])){
 			$jsonResult = array();
 			if (isset($_GET['project_id']))
 				$projectId = $_GET['project_id'];
 			
-			$userstories = UserStory::model()->byProject($projectId)->fromBacklog()->findAll();
-	
+			if (isset($_GET['start']) && isset($_GET['limit'])){
+				$total = UserStory::model()->byProject($projectId)->fromBacklog()->count();
+				$userstories = UserStory::model()->byProject($projectId)->fromBacklog()->page($_GET['start'], $_GET['limit'])->findAll();	
+				$page = true;
+			}
+			
 			foreach($userstories as $id => $record){
 				$jsonResult[$id] = $record->getAttributes();
 			}
 		}
-		else if ($_GET['fromSprints']){
+		else if ($_GET['sprint_id']){
 			$jsonResult = array();
-			if (isset($_GET['project_id']))
-				$projectId = $GET['project_id'];
+			$sprintId = $_GET['sprint_id'];
+			
+			$total = UserStory::model()->bySprint($sprintId)->count();
+			$userstories = UserStory::model()->bySprint($sprintId)->findAll();
+			$page = true;
 
-			$userstories = UserStory::model()->byProject($projectId)->fromSprints()->findAll();
+			foreach($userstories as $id => $record){
+				$jsonResult[$id] = $record->getAttributes();
+			}	
 		}
 
+		$payload = array('success' => true);
 		if (isset($single) && !empty($single)){
-			echo CJSON::encode(array('success' => true, 'userstory' => $jsonResult));
+			$payload['userstory'] = $jsonResult;
+			echo CJSON::encode($payload);
 		}
 		else {
-			echo CJSON::encode(array('success' => true, 'userstories' => $jsonResult));
+			$payload['userstories'] = $jsonResult;
+			if (isset($page) && !empty($page))
+				$payload['total'] = $total;
+
+			echo CJSON::encode($payload);
 		}
 	}
 }

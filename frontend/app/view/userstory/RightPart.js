@@ -11,19 +11,27 @@ Ext.define('Scrum.view.userstory.RightPart', {
 	items : [
 		{
 			xtype :'tabpanel', 
+			itemId : 'scrum-userstory-tabpanel',
 			tabBar : { cls : 'scrum-tabbar'},
 			flex : 2,
-			layout : { type : 'fit'},
+			layout : { type : 'fit' },
 			items : [
+				{
+					itemId : 'empty-panel',
+					hidden :  true,
+				},
 				Ext.create('Scrum.view.userstory.Card', {
 					title : 'Profile',
-					itemId : 'profile'
+					itemId : 'profile',
+					tabConfig : {
+						itemId : 'profile-tab'
+					}
 				}),
 				Ext.create('Scrum.view.CommentPanel', {
 					title : 'Comments',
 					itemId : 'comments',
 					commentableEntity : {
-					 	url : '/userstory/comment',
+					 	url : '/comments/create',
 					 	idField : 'userstory_id'
 					}
 				})

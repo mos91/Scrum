@@ -1,7 +1,7 @@
 Ext.define('Scrum.view.userstory.Card', {
 	extend : "Ext.panel.Panel",
 	xtype : 'scrum-userstory-card',
-	flex : 2,
+	//flex : 2,
 	require : [
 		'Scrum.view.userstory.form.EditForm'
 	],
@@ -9,6 +9,7 @@ Ext.define('Scrum.view.userstory.Card', {
 	bodyCls : 'userstory-card', 
 	items :  [
 		Ext.create('Ext.panel.Panel', { 
+			itemId : 'scrum-userstory-profile',
 			overflowY : 'scroll',
 			header : {
 				titleAlign : 'right',
@@ -30,8 +31,10 @@ Ext.define('Scrum.view.userstory.Card', {
 		Ext.create('Scrum.view.userstory.form.EditForm', { 
 			itemId : 'scrum-userstory-edit-form',
 			header : {
-				titleAlign : 'right',
 				tooltipType : 'title',
+				titleAlign : 'left',
+				title : 'Edit Userstory',
+				titlePosition : 0,
 				items : [
 					{ type : 'close', title : 'Close', action : 'close'},
 				]

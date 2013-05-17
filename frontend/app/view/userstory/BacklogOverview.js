@@ -12,6 +12,13 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 		{ type : 'plus', action : 'create', tooltipType : 'title', tooltip : 'Add new userstory'},
 		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
 	],
+	bbar : {
+		xtype : 'pagingtoolbar',
+		itemId : 'paging-toolbar',
+		displayInfo: true,
+        displayMsg: 'Displaying userstories {0} - {1} of {2}',
+        emptyMsg: "No userstories to display",
+	},
 	getAvailableUserStoryStatuses : function(cellEditing, event){
 		var activeEditor = event.column.getEditor();
 		var userstoryStatus = event.value;
@@ -74,7 +81,7 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 					{ 
 						ptype : 'cellediting', 
 						pluginId : 'cellediting',
-						clicksToEdit : 2,
+						clicksToEdit : 1,
 						listeners : {
 							beforeedit : { 
 								fn : this.onBeforeEdit, scope : this
