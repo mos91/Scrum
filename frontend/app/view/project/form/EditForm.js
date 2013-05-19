@@ -1,6 +1,6 @@
-Ext.define('Scrum.view.project.Form', {
+Ext.define('Scrum.view.project.form.EditForm', {
 	extend : 'Ext.form.Panel',
-	xtype : 'scrum-projectform',
+	xtype : 'scrum-project-edit-form',
 	url : '/project/update',
 	layout : { type : 'anchor'},
 	padding : 10,

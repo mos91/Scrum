@@ -4,6 +4,7 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	title : 'Sprint Overview',
 	forceFit : true,
 	require : [
+		'Ext.grid.plugin.CellEditing',
 		'Ext.grid.plugin.DragDrop'
 	],
 	tools : [
@@ -81,8 +82,64 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 
 		this.view.fireEvent('attachToSprint', draggedModel);
 	},
+	getAvailableUserStoryStatuses : function(cellEditing, event){
+		var activeEditor = event.column.getEditor();
+		var userstoryStatus = event.value;
+
+		activeEditor.store.clearFilter();
+		activeEditor.store.filterBy(function(status){
+			var userstoryStatus = event.value.value; 
+			var status = parseInt(status.raw[0]);
+			return Ext.data.Types.USER_STORY_STATUS.isNeighbour(userstoryStatus, status);
+		}, this);
+	},
+	onBeforeEdit : function(cellEditing, event){
+		if (event.field === 'status'){
+			this.getAvailableUserStoryStatuses.apply(this, arguments);
+			//fix : replace UserStoryStatus type object by value.display for valide view of cell edit
+			event.value = event.value.display;
+		}
+	},
+	onValidateEdit : function(cellEditing, event){
+		var value = parseInt(event.value);
+		if (event.field === 'status'){
+			event.value = Ext.data.Types.USER_STORY_STATUS.getFromValue(value);
+		}
+	},
+	onCancelEdit : function(cellEditing, event){
+		if (event.field === 'status'){
+			event.value = this.oldStatus;
+		}
+	},
+	onCompleteEdit : function(cellEditing, event){
+		this.fireEvent('onCompleteEditStatus', event.grid, 
+			{ 
+				record : event.record,
+				oldStatus : event.originalValue,
+			 	newStatus : event.value
+			}
+		);
+	},
 	initComponent : function(){
 		Ext.apply(this, {
+			plugins : [
+				{ 
+					ptype : 'cellediting', 
+					pluginId : 'cellediting',
+					clicksToEdit : 1,
+					listeners : {
+						beforeedit : { 
+							fn : this.onBeforeEdit, scope : this
+						},
+						validateedit : {
+							fn : this.onValidateEdit, scope : this
+						},
+						edit : {
+							fn : this.onCompleteEdit, scope : this
+						}
+					}
+				}
+			],
 			viewConfig : {
 				plugins : {
             		ptype: 'gridviewdragdrop',

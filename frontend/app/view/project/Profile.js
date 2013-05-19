@@ -4,7 +4,7 @@ Ext.define('Scrum.view.project.Profile', {
 	require : [
 		'Scrum.view.CommentPanel',
 		'Scrum.view.project.summary.Summary',
-		'Scrum.view.project.Form'
+		'Scrum.view.project.form.EditForm'
 	],
 	layout : {
 		type : 'hbox',
@@ -21,7 +21,7 @@ Ext.define('Scrum.view.project.Profile', {
 			layout : 'card',
 			tools : [
 				{
-					type : 'refresh', tooltip : 'Refresh Profile', tooltipType : 'title'
+					type : 'refresh', tooltip : 'Refresh Profile', tooltipType : 'title', action : 'refresh'
 				},
 				{
 					type : 'edit', tooltip : 'Edit Profile', tooltipType : 'title', action : 'edit'
@@ -41,7 +41,7 @@ Ext.define('Scrum.view.project.Profile', {
 						}
 					})
 				}),
-				Ext.create('Scrum.view.project.Form', { itemId : 'form'})
+				Ext.create('Scrum.view.project.form.EditForm', { itemId : 'form'})
 			]
 		},
 		{ 

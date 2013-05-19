@@ -20,7 +20,8 @@ Ext.define('Scrum.view.sprint.summary.SprintSummary', {
 					' for test - {totest}, done by user - {done},' + 
 					' completed - {completed}</div>',
 					border : false,
-					height : 16
+					margin : '5 5 5 10',
+					height : 48
 				},
 				Ext.create('Scrum.view.ProgressBar', {
 					itemId : 'todo',

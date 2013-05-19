@@ -7,18 +7,10 @@ class CreateProjectAction extends CAction {
 		}	
 	}
 	
-	private function checkIsFormExist(){
-		if (!isset(Yii::app()->request->restParams["ProjectForm"])){
-			throw new InvalidRestParamsException(500, $this->controller, "request params doesnt exist");
-		}	
-	}
-	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
 			if (Yii::app()->request->isAjaxRequest){
-				echo CJSON::encode(array('error' => true, 
-						'content' => $this->controller->renderPartial('form', array('model' => $form), true)));
-				Yii::app()->end();
+				throw new InvalidRestParamsException(500, $this->controller, "request params are invalid");	
 			}
 		}
 	}
@@ -31,9 +23,9 @@ class CreateProjectAction extends CAction {
 	
 	private function onSubmit(){
 		$this->checkIsCompanyExist();
-		$this->checkIsFormExist();
+		
 		$form = new ProjectForm;
-		$form->setAttributes(Yii::app()->request->restParams["ProjectForm"],false);
+		$form->setAttributes(Yii::app()->request->restParams, false);
 		$this->checkFormIsValid($form);
 		
 		$transaction = Yii::app()->db->beginTransaction();
@@ -54,9 +46,10 @@ class CreateProjectAction extends CAction {
 			throw TransactionFailureException(500, $this->controller);
 		}
 
-		$result = array('project' => $project->getAttributes());
+		echo CJSON::encode(array('success' => true, 
+			'project' => array('id' => $project->getPrimaryKey(), 
+			'update_time' => $project->update_time)));
 
-		echo CJSON::encode($result);
 		Yii::app()->end();
 	}
 }

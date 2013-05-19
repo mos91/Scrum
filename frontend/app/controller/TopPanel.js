@@ -14,6 +14,9 @@ Ext.define('Scrum.controller.TopPanel', {
 			'scrum-contentpanel' : {
 				render : { fn : this.setContentPanel, scope : this}
 			},
+			'scrum-toppanel' : {
+				render : { fn : this.setToppanel, scope : this}
+			},
 			'scrum-projects-dropdown' : {
 				render : { fn : this.renderDropdown, scope : this}
 			},
@@ -29,8 +32,14 @@ Ext.define('Scrum.controller.TopPanel', {
 			'scrum-projects-dropdown > menuitem[action=projectView]' : {
 				click : { fn : this.onProjectClick, scope : this}
 			},
+			'scrum-projects-dropdown > menuitem[action=create]' : {
+				click : { fn : this.showCreateForm, scope : this}
+			},
 			'scrum-toppanel button[action=backlog]' : {
 				click : { fn : this.onBacklogClick, scope : this}
+			},
+			'scrum-project-create-form button[action=submit]'  : {
+				click : { fn : this.submitProjectCreateForm , scope : this}
 			},
 			'scrum-toppanel button[action=sprints]' : {
 				click : { fn : this.onSprintsClick, scope : this}
@@ -40,14 +49,25 @@ Ext.define('Scrum.controller.TopPanel', {
 	setContentPanel : function(panel){
 		this.contentPanel = panel;
 	},
+	setToppanel : function(toppanel){
+		var projects = this.getStore('Projects');
+		var menu = toppanel.down('menu');
+
+		this.toppanel = toppanel;
+
+		projects.addListener('add', function(store, records){
+			var project = records[0];
+			menu.add({ text : project.get('name'), action : 'projectView', projectId : project.get('id')})
+		}, this);
+	},
 	renderDropdown : function(dropdown){
 		var menu = dropdown.menu;
 		var items = [];
-		var projects = this.getProjectsStore();
+		var projects = this.getStore('Projects');
 		dropdown.setLoading({msg : 'Loading...'});
 
 		projects.load({
-			url : '/project/get?favorite=1',
+			url : '/project/get?live=1',
 			callback : function(records){
 				var activeProjectId = Ext.state.Manager.getProvider().get('project-id');
 				var activeProject = projects.getById(activeProjectId);
@@ -69,12 +89,72 @@ Ext.define('Scrum.controller.TopPanel', {
 					projectId : activeProject.get('id')
 				});
 				menu.add(['-']);
-				menu.add(items);	
-
+				menu.add(items);
+			
 				dropdown.setLoading(false);	
 				activeProjectItem.fireEvent('click', activeProjectItem);
 			}, 
 			scope : this});	
+	},
+	showCreateForm : function(){
+		var form;
+
+		if (!this.win){
+			this.createProjectWindow = Ext.create('Ext.window.Window', {
+				title: 'Create Project',
+				closable: true,
+	            closeAction: 'hide',
+	            width: 600,
+	            minWidth: 350,
+	            height: 600,
+	            items : [
+	            	Ext.create('Scrum.view.project.form.CreateForm')
+	            ],
+	            listeners : {
+	            	close : { fn : function(){
+	            		this.contentPanel.show();
+	            		this.toppanel.show();
+	            	}, scope : this}
+	            }
+			});
+
+			this.createProjectWindow.show();
+		}
+
+		this.createProjectWindow.show();
+		form = this.createProjectWindow.down('form').getForm();
+		form.reset();
+		
+		this.contentPanel.hide();
+		this.toppanel.hide();
+	},
+	submitProjectCreateForm : function(button){
+		var form = button.up('scrum-project-create-form').getForm();
+		var projects = this.getProjectsStore();
+
+		if (form.isValid()){
+			form.owner.setLoading({ msg : 'Please wait...'});
+			form.submit({
+				scope : this,
+				success : function(form, action){
+					var id = action.result.project.id;
+					var updateTime = action.result.project.update_time;
+					var project = Ext.create('Scrum.model.Project');
+					var values = form.getValues();
+
+					values['update_time'] = updateTime;
+					project.setId(action.result.project.id);
+					project.set(values);
+					projects.add(project);
+
+					form.owner.setLoading(false);
+					this.createProjectWindow.close();			
+				}
+			})
+		}
+		else {
+			form.owner.onInvalidFields();
+		}
 	},
 	onProjectClick : function(item){
 		var projectId = item.projectId;

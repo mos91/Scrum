@@ -31,7 +31,7 @@ Ext.define('Scrum.controller.ProjectProfile', {
 			'scrum-projectprofile tool[action=view]' : {
 				click : { fn : this.hideProjectForm, scope : this}
 			},
-			'scrum-projectform button[action=submit]' : {
+			'scrum-project-edit-form button[action=submit]' : {
 				click : { fn : this.submitProjectForm, scope : this}
 			},
 			'scrum-projectprofile scrum-commentpanel'  : {
@@ -54,7 +54,19 @@ Ext.define('Scrum.controller.ProjectProfile', {
 	},
 	//TODO : complete refreshProjectProfile
 	refreshProjectProfile : function(){
-		return true;
+		var project = this.getModel('Project');
+		var profile = this.profile;
+
+		profile.setLoading({ msg : 'Loading...'});
+		Scrum.model.Project.load(this.project.get('id'), {
+			url : '/project/get',
+			success : function(record, op){
+				this.project.set(record.getData());
+				profile.setLoading(false);
+				this.fillProjectProfile();
+			},
+			scope : this
+		})
 	},
 	fillProjectProfile : function(project){
 		var profile = this.profile;

@@ -4,7 +4,7 @@ Ext.define('Scrum.view.ProjectsDropdown', {
 	text : 'Projects',
 	menu : { 
 		items : [
-			{ text : 'View all'}
+			{ text : "Create a new one", action : 'create'}
 		]
 	}
 });
