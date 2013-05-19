@@ -50,19 +50,6 @@ Ext.define('Scrum.view.userstory.RightPart', {
 					{ type : 'close', title : 'Close', action : 'close'},
 				]
 			}
-		}),	
-		Ext.create('Scrum.view.sprint.form.CreateForm', {
-			itemId : 'scrum-sprint-create-form',
-			header : {
-				titleAlign : 'left',
-				tooltipType : 'title',
-				cls : 'scrum-create-form-header',
-				title : 'Create sprint',
-				titlePosition : 0,
-				items : [
-					{ type : 'close', title : 'Close', action : 'close'},	
-				]
-			}
-		})
+		})	
 	]
 })

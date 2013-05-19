@@ -30,7 +30,9 @@ Ext.application({
         'TopPanel',
         'ProjectProfile',
         'userstory.Backlog',
-        'userstory.UserStoryProfile'
+        'userstory.UserStoryProfile',
+        'sprint.SprintManager',
+        'sprint.SprintProfile'
     ],
     views: [
         'Viewport',

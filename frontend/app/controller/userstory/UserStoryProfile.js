@@ -17,7 +17,7 @@ Ext.define('Scrum.controller.userstory.UserStoryProfile', {
 
 		this.control({
 			'scrum-backlog' : {
-				viewUserStoryProfile : { fn : this.drawUserStoryProfile, scope : this },
+				//viewUserStoryProfile : { fn : this.drawUserStoryProfile, scope : this },
 				render : { fn : this.setComponents ,  scope : this}
 			},
 			'scrum-userstory-card tool[action=refresh]' : {

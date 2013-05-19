@@ -26,15 +26,15 @@ Ext.define('Scrum.view.project.summary.Backlog', {
 			border : false,
 			height : 48
 		},
-		Ext.create('Scrum.view.project.ProgressBar', {
+		Ext.create('Scrum.view.ProgressBar', {
 			itemId : 'open',
 			text : 'Open'
 		}),
-		Ext.create('Scrum.view.project.ProgressBar', {
+		Ext.create('Scrum.view.ProgressBar', {
 			itemId : 'accepted',
 			text : 'Accepted'
 		}),
-		Ext.create('Scrum.view.project.ProgressBar', {
+		Ext.create('Scrum.view.ProgressBar', {
 			itemId : 'closed',
 			text : 'Closed'
 		})

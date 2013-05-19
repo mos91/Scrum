@@ -34,6 +34,9 @@ class CreateCommentAction extends CAction {
 		else if (isset($rest['userstory_id'])){
 			$comment = $this->saveUserStoryComment($form);
 		}
+		else if (isset($rest['sprint_id'])){
+			$comment = $this->saveSprintComment($form);
+		}
 		else {
 			throw new InvalidRestParamsException(500, $this->controller, 'commentable entity id doesnt exist');
 		}
@@ -70,6 +73,20 @@ class CreateCommentAction extends CAction {
 		$comment = new UserStoryComment;
 		$comment->author_id = $rest['author_id'];
 		$comment->userstory_id = $rest['userstory_id'];
+		$comment->post_date = $post_date->getTimestamp();
+		$comment->setAttributes($form->attributes, false);
+		$comment->save();
+
+		return $comment;
+	}
+
+	private function saveSprintComment($form){
+		$rest = Yii::app()->request->restParams;
+		$post_date = new DateTime();
+
+		$comment = new SprintComment;
+		$comment->author_id = $rest['author_id'];
+		$comment->sprint_id = $rest['sprint_id'];
 		$comment->post_date = $post_date->getTimestamp();
 		$comment->setAttributes($form->attributes, false);
 		$comment->save();

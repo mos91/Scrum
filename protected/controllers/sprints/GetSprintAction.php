@@ -17,8 +17,8 @@ class GetSprintAction extends CAction {
 				$jsonResult[$id] = $record->getAttributes(array('id', 'name','description', 'update_time'));
 			}
 		}
-		else if (isset($_GET['sprint_id'])){
-			$sprint = Sprint::model()->findByPk($_GET['sprint_id']);
+		else if (isset($_GET['id'])){
+			$sprint = Sprint::model()->findByPk($_GET['id']);
 			$jsonResult = $sprint->getAttributes();
 			$single = true;
 		}

@@ -13,6 +13,10 @@ class GetCommentsAction extends CAction {
 			$result = $this->fetchUserStoryComments();
 			echo CJSON::encode(array('success' => true, 'total' => count($result), 'comments' => $result));
 		}
+		else if (isset($_GET['sprint_id'])){
+			$result = $this->fetchSprintComments();
+			echo CJSON::encode(array('success' => true, 'total' => count($result), 'comments' => $result));
+		}
 	}
 
 	private function fetchProjectComments(){
@@ -32,6 +36,19 @@ class GetCommentsAction extends CAction {
 		$jsonResult = array();
 
 		$comments = UserStoryComment::model()->byUserstory($_GET['userstory_id'])->with('author')->findAll();
+		foreach($comments as $id => $record){
+			$jsonResult[$id] = $record->getAttributes();
+			$author = $record->getRelated('author');
+			$jsonResult[$id]['author'] = $author->firstname.' '.$author->lastname;
+		}
+
+		return $jsonResult;
+	}
+
+	private function fetchSprintComments(){
+		$jsonResult = array();
+
+		$comments = SprintComment::model()->bySprint($_GET['sprint_id'])->with('author')->findAll();
 		foreach($comments as $id => $record){
 			$jsonResult[$id] = $record->getAttributes();
 			$author = $record->getRelated('author');

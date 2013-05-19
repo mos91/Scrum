@@ -1,4 +1,4 @@
-Ext.define('Scrum.view.project.ProgressBar', {
+Ext.define('Scrum.view.ProgressBar', {
 	extend : "Ext.ProgressBar",
 	xtype :'scrum-progressbar',
 	width : 256,

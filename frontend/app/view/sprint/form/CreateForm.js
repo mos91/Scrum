@@ -3,7 +3,7 @@ Ext.define('Scrum.view.sprint.form.CreateForm', {
 	xtype : 'scrum-sprint-create-form',
 	layout : { type : 'anchor'},
 	padding : 10,
-	url : '/sprint/create',
+	url : '/sprints/create',
 	require : [
 		'Ext.ux.statusbar.StatusBar'
 	],
@@ -18,7 +18,7 @@ Ext.define('Scrum.view.sprint.form.CreateForm', {
 		statusBar.setStatus( { iconCls : 'x-status-error', text : '<span class="status-string">Fill required fields or correct invalids</span>'});
 		statusBar.show();
 	},
-	onSuccessfulCreation : function(userstory){
+	onSuccessfulCreation : function(sprint){
 		var statusBar = this.down('statusbar');
 		statusBar.removeCls('error').addCls('ok').show();
 		statusBar.setStatus( 

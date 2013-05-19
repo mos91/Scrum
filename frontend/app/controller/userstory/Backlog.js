@@ -17,7 +17,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 	},
 	getSprintsStore : function(){
 		if (!this.sprintsStore){
-			this.sprintsStore = Ext.StoreManager.lookup('sprints');
+			this.sprintsStore = Ext.StoreManager.lookup('active_sprints');
 		}
 		return this.sprintsStore;	
 	},
@@ -28,14 +28,11 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 		this.sprintlogStore = Ext.create('Scrum.store.Userstories', {
 			storeId : 'sprintlog'
 		});
-		
-		if (!(this.sprintsStore = Ext.StoreManager.lookup('sprints'))){
-			this.sprintsStore = Ext.create('Scrum.store.Sprints', {
-				storeId : 'sprints'
-			});
-			Ext.StoreManager.register(this.sprintsStore);
-		}
-
+		this.sprintsStore = Ext.create('Scrum.store.Sprints', {
+			storeId : 'active_sprints'
+		});
+			
+		Ext.StoreManager.register(this.sprintsStore);
 		Ext.StoreManager.register(this.backlogStore);
 		Ext.StoreManager.register(this.sprintlogStore);
 
@@ -84,7 +81,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 			},
 			'scrum-userstory-create-form tool[action=close]' : {
 				click : { fn : function(){
-					this.grid.fireEvent('itemclick', this.grid);
+					this.backlogGrid.fireEvent('itemclick', this.grid);
 				}, scope : this}
 			},
 			'scrum-userstory-backlog-overview tool[action=create]' : {
@@ -94,32 +91,32 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 				click : { fn : this.onRefreshBacklogGrid, scope : this }
 			},
 			//bindings for sprint overview
-			'scrum-userstory-sprint-overview' : {
+			'scrum-userstory-sprintlog-overview' : {
 				itemClick : { fn : this.showUserstoryProfile, scope : this},
 				onCompleteEditStatus : { fn : this.changeUserStoryStatus, scope : this}
 			},
-			'scrum-userstory-sprint-overview combobox[action=get_sprints]' : {
+			'scrum-userstory-sprintlog-overview combobox[action=get_sprints]' : {
 				expand : { fn : this.loadSprints, scope : this},
 				select : { fn : function(combobox, record){
 					this.activeSprint = record[0];
 					this.drawGrid(this.sprintlogGrid, this.getSprintlogStore(), { redraw : true});
 				}, scope : this}
 			},
-			'scrum-userstory-sprint-overview gridview' : {
+			'scrum-userstory-sprintlog-overview gridview' : {
 				attachToSprint : { fn : this.attachToSprint, scope : this}
 			},
-			'scrum-userstory-sprint-overview tool[action=refresh]' : {
+			'scrum-userstory-sprintlog-overview tool[action=refresh]' : {
 				click : { fn : this.onRefreshSprintlogGrid, scope : this}
 			}
 		});
 	},
 	setComponents : function(backlog){
-		var backlogStore = this.backlogStore;
-		var sprintlogStore = this.sprintlogStore;
+		var backlogStore = this.getBacklogStore();
+		var sprintlogStore = this.getSprintlogStore();
 
 		this.backlog = backlog;
 		this.backlogGrid = backlog.down('scrum-userstory-backlog-overview');
-		this.sprintlogGrid = backlog.down('scrum-userstory-sprint-overview');
+		this.sprintlogGrid = backlog.down('scrum-userstory-sprintlog-overview');
 
 		this.createForm = backlog.down('scrum-userstory-create-form');
 		this.rightPart = backlog.down('scrum-backlog-right-part');
@@ -152,13 +149,6 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 	},
 	showUserstoryCreateForm : function(){
 		var form = this.rightPart.layout.setActiveItem('scrum-userstory-create-form');
-		var project = this.project;
-
-		form.down('hiddenfield[name=project_id]').setRawValue(project.get('id'));
-		form.down('statusbar').hide();
-	},
-	showSprintCreateForm : function(){
-		var form = this.rightPart.layout.setActiveItem('scrum-sprint-create-form');
 		var project = this.project;
 
 		form.down('hiddenfield[name=project_id]').setRawValue(project.get('id'));

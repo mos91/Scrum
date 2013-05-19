@@ -115,17 +115,17 @@
 	top : 0px !important;
 }
 /*profiles*/
-.project-card,.userstory-card {
+.project-card,.userstory-card,.sprint-card {
 	padding : 0px 5px 5px 10px;
 }
 
-.project-card .update-time,.userstory-card .update-time {
+.project-card .update-time,.userstory-card .update-time,.sprint-card .update-time {
 	float: right;
 	color: #999;
 	margin: 17px 10px 0px 0px;
 }
 
-.userstory-card .tag {
+.userstory-card .tag, .sprint-card .tag {
 	float : right;
 	margin: 17px 10px 0px 0px;	
 }
@@ -154,6 +154,10 @@
 
 .summary-header {
 	margin-left : 8px;
+}
+
+.scrum-sprint-summary {
+	padding-left : 8px;
 }
 
 /*scrollbars for Chrome and Safari (Webkit Browsers)*/

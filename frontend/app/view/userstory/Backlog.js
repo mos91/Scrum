@@ -4,7 +4,7 @@ Ext.define('Scrum.view.userstory.Backlog', {
 	layout : 'hbox',
 	require : [
 		'Scrum.view.userstory.BacklogOverview',
-		'Scrum.view.userstory.SprintOverview',
+		'Scrum.view.userstory.SprintlogOverview',
 		'Scrum.view.userstory.RightPart'
 	],
 	items : [
@@ -20,7 +20,7 @@ Ext.define('Scrum.view.userstory.Backlog', {
 					collapsible : true,
 					collapseDirection : 'top'
 				}),
-				Ext.create('Scrum.view.userstory.SprintOverview', {
+				Ext.create('Scrum.view.userstory.SprintlogOverview', {
 					flex : 1,
 					height : 430,
 					resizable : true,

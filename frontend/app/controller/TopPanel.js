@@ -23,6 +23,9 @@ Ext.define('Scrum.controller.TopPanel', {
 			'scrum-backlog' : {
 				activate : { fn : this.showBacklog, scope : this}
 			},
+			'scrum-sprint-manager' : {
+				activate : { fn : this.showSprintManager , scope : this}
+			},
 			'scrum-projects-dropdown > menuitem[action=projectView]' : {
 				click : { fn : this.onProjectClick, scope : this}
 			},
@@ -86,12 +89,16 @@ Ext.define('Scrum.controller.TopPanel', {
 		this.contentPanel.layout.setActiveItem('userstory-backlog');
 	},
 	onSprintsClick : function(){
-		return true;
+		this.contentPanel.layout.setActiveItem(0);
+		this.contentPanel.layout.setActiveItem('sprint-manager');	
 	},
 	showProjectProfile : function(profile){
 		profile.fireEvent('viewProject', this.selectedProject);
 	},
 	showBacklog : function(backlog){
 		backlog.fireEvent('viewBacklog', this.selectedProject);
+	},
+	showSprintManager : function(sprintManager){
+		sprintManager.fireEvent('viewSprintManager', this.selectedProject);
 	}
 })

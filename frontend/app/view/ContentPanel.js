@@ -3,14 +3,14 @@ Ext.define('Scrum.view.ContentPanel', {
 	extend : 'Ext.panel.Panel',
 	require : [
 		'Scrum.view.userstory.Backlog',
-		'Scrum.view.project.Profile'
+		'Scrum.view.project.Profile',
+		'Scrum.view.sprint.SprintManager'
 	],
 	layout : {
 		type : 'card'
 	},
 	border : false,
 	cls : 'scrum-contentpanel',
-	activeItem : 0,
 	items : [
 		Ext.create('Ext.panel.Panel'),
 		Ext.create('Scrum.view.project.Profile',{
@@ -18,6 +18,9 @@ Ext.define('Scrum.view.ContentPanel', {
 		}),
 		Ext.create('Scrum.view.userstory.Backlog', {
 			itemId : 'userstory-backlog'
+		}),
+		Ext.create('Scrum.view.sprint.SprintManager', {
+			itemId : 'sprint-manager'
 		})
 	]
 });

@@ -5,7 +5,7 @@ Ext.define('Scrum.controller.ProjectProfile', {
 	],
 	views : ['project.Profile'],
 	//stores : ['Comments'],
-	models : ['Project','BacklogSummary', 'SprintSummary'],
+	models : ['Project','BacklogSummary'],
 	getCommentsStore : function(){
 		return Ext.StoreManager.lookup('ProjectComments');
 	},
@@ -70,29 +70,15 @@ Ext.define('Scrum.controller.ProjectProfile', {
 	},
 	fillProjectSummary : function(summary){
 		var project = this.project;
-		var backlogSummaryGroup,sprintSummaryGroup;
+		var backlogSummaryGroup;
 		var backlogSummary = this.getBacklogSummaryModel();
-		var sprintSummary = this.getSprintSummaryModel();
-
+		
 		backlogSummaryGroup = summary.down('#backlogSummary');
-		sprintSummaryGroup = summary.down('#sprintSummary')
-
 		backlogSummary.load(project.get('id'),{
 			callback : function(record){
 				backlogSummaryGroup.fill(record);
 			}
 		});
-
-		if (project.get('active_sprint_id')){
-			sprintSummary.load(project.get('active_sprint_id'),{
-				callback : function(record){
-					sprintSummaryGroup.fill(record);	
-				}
-			});	
-		}
-		else {
-			sprintSummaryGroup.hide();
-		}
 	},
 	drawComments : function(comments, options){
 		var project = this.project;

@@ -1,6 +1,6 @@
-Ext.define('Scrum.view.userstory.SprintOverview', {
+Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	extend : 'Ext.grid.Panel',
-	xtype : 'scrum-userstory-sprint-overview', 
+	xtype : 'scrum-userstory-sprintlog-overview', 
 	title : 'Sprint Overview',
 	forceFit : true,
 	require : [
