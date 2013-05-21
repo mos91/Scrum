@@ -58,11 +58,6 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 			event.value = Ext.data.Types.USER_STORY_STATUS.getFromValue(value);
 		}
 	},
-	onCancelEdit : function(cellEditing, event){
-		if (event.field === 'status'){
-			event.value = this.oldStatus;
-		}
-	},
 	onCompleteEdit : function(cellEditing, event){
 		this.fireEvent('onCompleteEditStatus', event.grid, 
 			{ 

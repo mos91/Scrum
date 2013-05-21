@@ -6,7 +6,8 @@ class SprintsController extends Controller {
 				'index' => 'application.controllers.sprints.GetSprintAction',
 				'get' => 'application.controllers.sprints.GetSprintAction',
 				'create' => 'application.controllers.sprints.CreateSprintAction',
-				'update' => 'application.controllers.sprints.UpdateSprintAction'
+				'update' => 'application.controllers.sprints.UpdateSprintAction',
+				'changeStatus' => 'application.controllers.sprints.ChangeSprintStatusAction'
 				//'drop' => 'application.controllers.project.DropProjectAction',
 				//'restore' => 'application.controllers.project.RestoreProjectAction',
 				//'delete' => 'application.controllers.project.DeleteProjectAction'

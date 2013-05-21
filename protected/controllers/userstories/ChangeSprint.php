@@ -12,6 +12,22 @@ class ChangeSprint extends CAction {
 		}
 	}
 
+	/*private function checkIsValidStatus(){
+		$requestPayload = CJSON::decode(array_keys(Yii::app()->request->restParams)[0]);
+		$valid = true;
+		
+		if (!isset($requestPayload['status']))
+			$valid = false;
+
+		$statusValue = $requestPayload['status']['value'];
+
+		if (!empty($valid) || !isset($statusValue) || !($statusValue === UserStoryStatusCodes::ACCEPTED)){
+			throw new InvalidRestParamsException(500, $this->controller, "userstory have invalid status");
+
+			Yii::app()->end();
+		}
+	}*/
+
 	private function onAjax(){
 		$this->checkIsIdExist();
 		if (isset($_GET['detach'])){
@@ -45,6 +61,7 @@ class ChangeSprint extends CAction {
 		$update_time = new DateTime();
 
 		$id = $_GET['id'];
+		//$this->checkIsValidStatus();
 		$userstory = UserStory::model()->findByPk($id);
 		$userstory->status = $status = UserStoryStatusCodes::TODO;
 		$userstory->sprint_id = $_GET['sprint_id'];

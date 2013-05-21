@@ -41,6 +41,20 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
                 },
                 render : { fn : this.setComponents ,  scope : this}
             },
+            'scrum-sprint-manager scrum-sprint-grid' : {
+                startSprint : {
+                    fn : this.startSprint,
+                    scope : this
+                },
+                stopSprint : {
+                    fn : this.stopSprint,
+                    scope : this
+                },
+                completeSprint : {
+                    fn : this.completeSprint, 
+                    scope : this
+                }
+            },
             'scrum-sprint-manager scrum-sprint-card' : {
                 activate : { fn : function(card){
                     this.activeTab = card;
@@ -59,6 +73,9 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
             'scrum-sprint-grid' : {
                 itemclick : { fn : this.showSprintProfile, scope : this}
                 //onCompleteEditStatus : { fn : this.changeUserStoryStatus, scope : this}
+            },
+            'scrum-sprint-grid tool[action=refresh]' : {
+                click : { fn : this.onRefreshSprintGrid, scope : this }
             }, 
             'scrum-sprint-grid tool[action=create]' : {
                 click : { fn : this.showSprintCreateForm , scope : this}
@@ -97,7 +114,62 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
         sprintsStore.addListener('load', this.onLoadSprints, this);
         this.sprintsGrid.reconfigure(sprintsStore);
     },
+    startSprint : function(sprint, activeSprint){
+        var sprintsGrid = this.sprintsGrid;
+        var oldStatus = sprint.get('status').value;
 
+        sprint.set('status', Ext.data.Types.SPRINT_STATUS.CURRENT);
+        if (!Ext.isEmpty(activeSprint)){
+            activeSprint.set('status', Ext.data.Types.SPRINT_STATUS.PLANNED);
+        }
+
+        sprintsGrid.setLoading({ msg : 'Please wait...'});
+        sprint.save({
+            url : '/sprints/changeStatus',
+            params : { id : sprint.get('id'), oldStatus: oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.CURRENT},
+            callback : function(){
+                sprintsGrid.getView().refresh();
+                sprintsGrid.setLoading(false);
+            },
+            scope : this
+        });
+    },
+    stopSprint : function(sprint){
+        var sprintsGrid = this.sprintsGrid;
+        var oldStatus = sprint.get('status').value;
+
+        sprint.set('status', Ext.data.Types.SPRINT_STATUS.PLANNED);
+        sprintsGrid.setLoading({ msg : 'Please wait...'});
+        sprint.save({
+            url : '/sprints/changeStatus',
+            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.PLANNED},
+            callback : function(){
+                sprintsGrid.getView().refresh();
+                sprintsGrid.setLoading(false);
+            },
+            scope : this
+        });
+    },
+    completeSprint : function(sprint){
+        var sprintsGrid = this.sprintsGrid;
+        var oldStatus = sprint.get('status').value;
+
+        sprint.set('status', Ext.data.Types.SPRINT_STATUS.COMPLETED);
+        sprintsGrid.setLoading({ msg : 'Please wait...'});
+        sprint.save({
+            url : '/sprints/changeStatus',
+            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.COMPLETED},
+            callback : function(sprint){
+                if (sprint.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
+                     Ext.MessageBox.alert('Status', 'You must complete all userstories in this sprint before you can complete it!');
+                }
+
+                sprintsGrid.getView().refresh();
+                sprintsGrid.setLoading(false);
+            },
+            scope : this
+        });
+    },
     onLoadSprints: function(store) {
         if (store.count()){
             this.sprintsGrid.fireEvent('itemclick', this.sprintsGrid, store.getAt(0));
@@ -177,6 +249,9 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
             })
         }
     },
+    onRefreshSprintGrid : function(tool){
+        this.drawGrid(tool.up('grid'), this.getSprintsStore(), { redraw : true});
+    },
     drawGrid : function(grid, store, options){
         //var paging;
         var partially,redraw;
@@ -199,7 +274,7 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
                 //paging = grid.getDockedComponent('paging-toolbar');
                 //paging.bind(store); 
                 store.load({
-                    callback : function(){
+                    callback : function(records){
                         grid.setLoading(false);
                     },
                     scope : this

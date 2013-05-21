@@ -44,7 +44,7 @@ class UserStory extends CActiveRecord {
 
 	public function fromBacklog(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => '(status=:status_open OR status=:status_accepted)',
+			'condition' => '(status=:status_open OR status=:status_accepted) AND `t`.dropped=0',
 			'params' => array(
 					':status_open' => UserStoryStatusCodes::OPEN, 
 					':status_accepted' => UserStoryStatusCodes::ACCEPTED
@@ -56,7 +56,7 @@ class UserStory extends CActiveRecord {
 
 	public function fromSprints(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => '(status<>:status_open AND status<>:status_accepted)',
+			'condition' => '(status<>:status_open AND status<>:status_accepted) AND `t`.dropped=0',
 			'params' => array(
 				':status_open' => UserStoryStatusCodes::OPEN, 
 				':status_accepted' => UserStoryStatusCodes::ACCEPTED
@@ -68,7 +68,7 @@ class UserStory extends CActiveRecord {
 
 	public function open(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::OPEN)
 		));
 
@@ -77,7 +77,7 @@ class UserStory extends CActiveRecord {
 
 	public function accepted(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::ACCEPTED)
 		));
 
@@ -86,7 +86,7 @@ class UserStory extends CActiveRecord {
 
 	public function closed(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::CLOSED)
 		));
 
@@ -95,7 +95,7 @@ class UserStory extends CActiveRecord {
 	
 	public function todo(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::TODO)
 		));
 
@@ -104,7 +104,7 @@ class UserStory extends CActiveRecord {
 
 	public function totest(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::TO_TEST)
 		));
 
@@ -113,7 +113,7 @@ class UserStory extends CActiveRecord {
 
 	public function done(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::DONE)
 		));
 
@@ -122,7 +122,7 @@ class UserStory extends CActiveRecord {
 
 	public function completed(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status',
+			'condition' => 'status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::COMPLETED)
 		));
 

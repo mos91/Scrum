@@ -17,6 +17,7 @@
 //get from http://docs.sencha.com/extjs/4.2.0/#!/api/Ext.data.Types
 Ext.Loader.require('Ext.data.Types', function(){
     Ext.Loader.require('Scrum.types.UserStoryStatus');
+    Ext.Loader.require('Scrum.types.SprintStatus');
     // ... other custom Ext.data.Types bootstrap refs 
 });
 

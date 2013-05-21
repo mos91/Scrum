@@ -15,6 +15,10 @@
 
 Ext.define('Scrum.view.sprint.Grid', {
     extend: 'Ext.grid.Panel',
+    requires : [
+        'Ext.window.MessageBox',
+        'Ext.grid.column.Action'
+    ],
     alias: 'widget.scrum-sprint-grid',
     title : 'Sprints Overview',
     tools : [
@@ -22,7 +26,25 @@ Ext.define('Scrum.view.sprint.Grid', {
         { type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
     ],
     forceFit : true, 
+    startSprint : function(sprint){
+        var activeSprintIndex = this.store.findBy(function(record){
+            if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT)
+                return true;
+        }, this);
+        var activeSprint;
 
+        if (activeSprintIndex > -1){
+            activeSprint = this.store.getAt(activeSprintIndex);
+        }
+
+        this.fireEvent('startSprint', sprint, activeSprint);
+    },
+    stopSprint : function(sprint){
+        this.fireEvent('stopSprint', sprint);
+    },
+    completeSprint : function(sprint){
+        this.fireEvent('completeSprint', sprint);
+    },
     initComponent: function() {
         var me = this;
 
@@ -36,9 +58,11 @@ Ext.define('Scrum.view.sprint.Grid', {
                 },
                 {
                     dataIndex : 'status',
-                    type : 'int',
                     text: 'Status',
                     groupable : false,
+                    renderer : function(status){
+                        return status.display;
+                    }
                 },
                 {   
                     dataIndex: 'update_time',
@@ -47,6 +71,78 @@ Ext.define('Scrum.view.sprint.Grid', {
                     renderer : function(value){
                         return Scrum.util.template.getPostDate(value);
                     }
+                },
+                {
+                    text : 'Actions',
+                    xtype : 'actioncolumn',
+                    title : 'Actions',
+                    iconCls : 'action-icon',
+                    menuDisabled : true,
+                    width : 100,
+                    items : [
+                        { 
+                            tooltip : 'Start sprint', iconCls : 'icon-start',
+                            isDisabled : function(view, rowIndex, colIndex, item, record){
+                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.PLANNED){
+                                    return false;
+                                }
+
+                                return true;
+                            },
+                            handler : function(view, rowIndex, colIndex, item, event, record){
+                                var me = this;
+                                Ext.MessageBox.confirm('Confirm', 'Are you sure you want to start "' + record.get('name') + '" sprint?', 
+                                    function(buttonId){
+                                        if (buttonId === 'yes'){
+                                            me.startSprint(record);    
+                                        } 
+                                    });
+                            },
+                            scope : me
+                        },
+                        { 
+                            tooltip : 'Stop sprint', iconCls : 'icon-stop',
+                            isDisabled : function(view, rowIndex ,colIndex, item, record){
+                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
+                                    return false;
+                                }
+
+                                return true;
+                            },
+                            handler : function(view, rowIndex, colIndex, item, event, record){
+                                var me = this;
+                                Ext.MessageBox.confirm('Confirm', 'Are you sure you want to stop "' + record.get('name') + '" sprint?', 
+                                function(buttonId){
+                                    if (buttonId === 'yes'){
+                                        me.stopSprint(record);
+                                    }       
+                                })
+                            },
+                            scope : this
+                        },
+                        {
+                            tooltip : 'Complete Sprint', iconCls : 'icon-ok',
+                            isDisabled : function(view, rowIndex, colIndex, item, record){
+                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
+                                    return false;
+                                }
+
+                                return true;
+                            },
+                            handler : function(view, rowIndex, colIndex, item, event, record){
+                                var me = this;
+                                Ext.MessageBox.confirm('Confirm', 'Are you sure you want to complete "' + record.get('name') + '" sprint?' + 
+                                    'All userstories in this sprint will marked as completed.', 
+                                    function(buttonId){
+                                        if (buttonId === 'yes'){
+                                            me.completeSprint(record);
+                                        }
+                                    })
+                            },
+                            scope : this
+                        },
+                        { tooltip : 'Remove', iconCls : 'icon-remove'}
+                    ]
                 }
             ]
         });

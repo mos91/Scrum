@@ -14,7 +14,7 @@ class GetSprintAction extends CAction {
 			$total = Sprint::model()->byProject($_GET['project_id'])->count();
 			$jsonResult = array();
 			foreach($sprints as $id => $record){
-				$jsonResult[$id] = $record->getAttributes(array('id', 'name','description', 'update_time'));
+				$jsonResult[$id] = $record->getAttributes();
 			}
 		}
 		else if (isset($_GET['id'])){

@@ -244,15 +244,20 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 		})
 	},
 	attachToSprint : function(model){
+		var result;
 		model.save({
 			url : '/userstories/changeSprint', 
 			params : { id: model.get('id'), sprint_id : this.activeSprint.get('id') },
 			scope : this,
-			callback : function(record, op){
-				var sprintlogStore = this.getSprintlogStore();
+			callback : function(record, op, success){
 				var backlogStore = this.getBacklogStore();
 
-				backlogStore.remove(model);
+				if (success){
+					backlogStore.remove(model);	
+				}
+				else {
+					return false;
+				}
 			}
 		})
 	},

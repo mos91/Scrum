@@ -21,13 +21,40 @@ class Sprint extends CActiveRecord {
 	}
 	
 	public function scopes(){
-		return array('byProject');
+		return array('byProject', 'planned', 'active', 'completed');
 	}
 	
 	public function byProject($projectId){
 		$this->getDbCriteria()->mergeWith(array(
 				'condition' => '`t`.`project_id`=:project_id AND `t`.`dropped`=0', 
 				'params' => array(':project_id' => $projectId)
+		));
+
+		return $this;
+	}
+
+	public function planned(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'status=:status AND `t`.dropped=0',
+			'params' => array(':status' => SprintStatusCodes::PLANNED)
+		));
+
+		return $this;
+	}
+
+	public function active(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'status=:status AND `t`.dropped=0',
+			'params' => array(':status' => SprintStatusCodes::CURRENT)
+		));
+
+		return $this;
+	}
+
+	public function completed(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => 'status=:status AND `t`.dropped=0',
+			'params' => array(':status' => SprintStatusCodes::COMPLETED)
 		));
 
 		return $this;

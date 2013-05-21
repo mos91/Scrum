@@ -64,21 +64,29 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 			}
 		}
 	],
-	onBeforeUserStoryDrop : function(node, data, overModel){
+	onBeforeUserStoryDrop : function(node, data, overModel, dropPosition, dropHandlers){
 		var draggedModel = data.records[0];
+		var status = draggedModel.get('status');
+		var result;
 
+		if (status.value === Ext.data.Types.USER_STORY_STATUS.OPEN)
+			return false;
+		
 		if (Ext.isEmpty(this.down('combobox').getRawValue()))
 			return false;
 		
 		if ((Ext.isEmpty(overModel) || overModel.get('sprint')) && !draggedModel.get('sprint')){
-			return true;	
+			
+			console.log(result);
+			return result;
 		}
 
 		return false;
 	},
 	onAfterUserStoryDrop : function(node, data, overModel){
-		var sprint;
 		var draggedModel = data.records[0];
+		var fn;
+		var result;
 
 		this.view.fireEvent('attachToSprint', draggedModel);
 	},
