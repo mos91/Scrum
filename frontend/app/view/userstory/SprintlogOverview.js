@@ -10,11 +10,7 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	tools : [
 		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
 	],
-	tbar : {
-		items : [
-			{ xtype : 'combobox' , action : 'get_sprints', displayField : 'name', valueField : 'id', queryMode : 'local'}
-		]
-	},
+	
 	bbar : {
 		xtype : 'pagingtoolbar',
 		itemId : 'paging-toolbar',
@@ -66,13 +62,20 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	],
 	onBeforeUserStoryDrop : function(node, data, overModel, dropPosition, dropHandlers){
 		var draggedModel = data.records[0];
+		var sprintSelect = this.down('combobox');
+		var activeSprintName = sprintSelect.getRawValue();
+		var activeSprint = sprintSelect.findRecordByDisplay(activeSprintName);
+		var activeSprintStatus = activeSprint.get('status').value;
+
 		var status = draggedModel.get('status');
 		var result;
 
 		if (status.value === Ext.data.Types.USER_STORY_STATUS.OPEN)
 			return false;
-		
-		if (Ext.isEmpty(this.down('combobox').getRawValue()))
+		if ((activeSprintStatus === Ext.data.Types.SPRINT_STATUS.COMPLETED) || (activeSprintStatus === Ext.data.Types.SPRINT_STATUS.CURRENT))
+			return false;
+
+		if (Ext.isEmpty(sprintSelect.getRawValue()))
 			return false;
 		
 		if ((Ext.isEmpty(overModel) || overModel.get('sprint')) && !draggedModel.get('sprint')){
@@ -130,6 +133,30 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	},
 	initComponent : function(){
 		Ext.apply(this, {
+			tbar : {
+				items : [
+					{ 
+						xtype : 'combobox' ,
+						action : 'get_sprints',
+						displayField : 'name',
+						valueField : 'id', 
+						queryMode : 'local',
+						listConfig : {
+							tpl : new Ext.XTemplate('<tpl for="."><div class="x-boundlist-item">{name} <tpl if="this.isActive(status)">' + 
+							'<span class="combobox-item-sprint-status"><b> Active</b></span> ' + 
+                			'<tpl elseif="this.isCompleted(status)"><span class="combobox-item-sprint-status"><b> Completed</b></span></tpl></div></tpl>', 
+                			{
+                    			isActive : function(status){
+            						return status.value === Ext.data.Types.SPRINT_STATUS.CURRENT;
+            					},
+            					isCompleted : function(status){
+            						return status.value === Ext.data.Types.SPRINT_STATUS.COMPLETED;
+            					}
+            				})
+						}
+					}
+				]
+			},
 			plugins : [
 				{ 
 					ptype : 'cellediting', 

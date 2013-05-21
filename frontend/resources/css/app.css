@@ -114,6 +114,13 @@
 .scrum-create-form-header {
 	top : 0px !important;
 }
+/*comboboxes*/
+.combobox-item-sprint-status {
+	font-size: 11px;
+	color: #484848;
+	float: right;
+}
+
 /*profiles*/
 .project-card,.userstory-card,.sprint-card {
 	padding : 0px 5px 5px 10px;

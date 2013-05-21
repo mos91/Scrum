@@ -148,6 +148,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 		this.drawGrid(tool.up('grid'), this.getSprintlogStore(), { redraw : true});
 	},
 	showUserstoryCreateForm : function(){
+		this.rightPart.layout.setActiveItem('empty-panel');
 		var form = this.rightPart.layout.setActiveItem('scrum-userstory-create-form');
 		var project = this.project;
 

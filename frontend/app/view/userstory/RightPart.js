@@ -10,6 +10,10 @@ Ext.define('Scrum.view.userstory.RightPart', {
 	layout : { type : 'card'},
 	items : [
 		{
+			itemId : 'empty-panel',
+			hidden : true
+		},
+		{
 			xtype :'tabpanel', 
 			itemId : 'scrum-userstory-tabpanel',
 			tabBar : { cls : 'scrum-tabbar'},
