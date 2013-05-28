@@ -1,11 +1,17 @@
 Ext.define('Scrum.model.UserStory', {
 	extend : 'Ext.data.Model',
-	requires : ['Scrum.types.UserStoryStatus'],
+	requires : ['Scrum.types.UserStoryStatus', 'Scrum.types.UserStoryStatus'],
 	fields : [
 		{ name : 'name', type:'string'},
 		{ name : 'description', type : 'string'},
 		{ name : 'estimate', type : 'int'},
-		{ name : 'priority', type : 'int'},
+		{ 
+			name : 'priority', 
+			type : Ext.data.Types.UserStoryPriority,
+			sortType : function(priority){
+				return priority.value;
+			}
+		},
 		{ name : 'project_id', type : 'int'},
 		{ 
 			name : 'sprint', 
@@ -16,7 +22,7 @@ Ext.define('Scrum.model.UserStory', {
 			}
 		},
 		{
-			name : 'status', type : Ext.data.Types.USER_STORY_STATUS,
+			name : 'status', type : Ext.data.Types.UserStoryStatus,
 			sortType : function(status){
 				return status.value;
 			}

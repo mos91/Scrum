@@ -2,8 +2,6 @@
 class Company extends CActiveRecord {
 	public $name;
 	public $description;
-	public $users;
-	public $products;
 	
 	public static function model($className=__CLASS__)
 	{

@@ -24,19 +24,46 @@ class ChangeUserStoryStatus extends CAction {
 
 	private function onAjax(){
 		$request = Yii::app()->request;
-		$update_time = new DateTime();
+		
 
 		$this->checkIsIdExist();
 		$this->checkStatuses();
-		$id = $_GET['id'];
-		$oldStatus = $_GET['oldStatus'];
-		$newStatus = $_GET['newStatus'];
+		$oldStatus = (int)$_GET['oldStatus'];
+		$newStatus = (int)$_GET['newStatus'];
 
-		$userstory = UserStory::model()->findByPk($id);
-		$userstory->status = (int)$newStatus;
+		$payload = array('success' => true, 'userstory' => array());
+		if ($oldStatus === UserStoryStatusCodes::DONE && $newStatus === UserStoryStatusCodes::COMPLETED){
+			$userstory = $this->completeUserStory();
+			$payload['userstory']['complete_time'] = $userstory->complete_time;
+		}
+		else {
+			$userstory = $this->changeStatus();
+		}
+		$payload['userstory'] = array_merge($payload['userstory'], array('id' => $userstory->id, 'status' => $newStatus, 'update_time' => $userstory->update_time));
+
+		echo CJSON::encode($payload);
+	}
+
+	private function completeUserStory(){
+		$update_time = new DateTime();
+
+		$userstory = UserStory::model()->findByPk($_GET['id']);
+		$userstory->status = UserStoryStatusCodes::COMPLETED;
+		$userstory->update_time = $update_time->getTimestamp();
+		$userstory->complete_time = $update_time->getTimestamp();
+		$userstory->save();
+
+		return $userstory;
+	}
+
+	private function changeStatus(){
+		$update_time = new DateTime();
+
+		$userstory = UserStory::model()->findByPk($_GET['id']);
+		$userstory->status = (int)$_GET['newStatus'];
 		$userstory->update_time = $update_time->getTimestamp();
 		$userstory->save();
 
-		echo CJSON::encode(array('success' => true, 'userstory' => array('id' => $userstory->id, 'status' => $newStatus, 'update_time' => $update_time)));
+		return $userstory;
 	}
 }

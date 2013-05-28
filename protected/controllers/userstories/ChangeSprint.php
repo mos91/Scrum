@@ -68,10 +68,12 @@ class ChangeSprint extends CAction {
 		$userstory->update_time = $update_time->getTimestamp();
 		$userstory->save();
 		$sprint = $userstory->getRelated('sprint');
+		$sprint->estimate += $userstory->estimate; 
+		$sprint->save();
 
 		echo CJSON::encode(array('success' => true, 'userstory' => array(
 			'id' => $userstory->id, 
-			'sprint' => $sprint->getAttributes(array('id', 'name')), 
+			'sprint' => $sprint->getAttributes(array('id', 'name', 'estimate')), 
 			'status' => $status, 
 			'update_time' => $update_time->getTimestamp()
 			)));

@@ -28,7 +28,7 @@ Ext.define('Scrum.view.sprint.Grid', {
     forceFit : true, 
     startSprint : function(sprint){
         var activeSprintIndex = this.store.findBy(function(record){
-            if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT)
+            if (record.get('status').value === Ext.data.Types.SprintStatus.CURRENT)
                 return true;
         }, this);
         var activeSprint;
@@ -44,6 +44,9 @@ Ext.define('Scrum.view.sprint.Grid', {
     },
     completeSprint : function(sprint){
         this.fireEvent('completeSprint', sprint);
+    },
+    dropSprint : function(sprint){
+        this.fireEvent('dropSprint', sprint);
     },
     initComponent: function() {
         var me = this;
@@ -64,6 +67,11 @@ Ext.define('Scrum.view.sprint.Grid', {
                         return status.display;
                     }
                 },
+                {
+                    dataIndex : 'estimate',
+                    text : 'Estimate',
+                    groupable : false
+                },
                 {   
                     dataIndex: 'update_time',
                     text: 'Update time',
@@ -83,7 +91,7 @@ Ext.define('Scrum.view.sprint.Grid', {
                         { 
                             tooltip : 'Start sprint', iconCls : 'icon-start',
                             isDisabled : function(view, rowIndex, colIndex, item, record){
-                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.PLANNED){
+                                if (record.get('status').value === Ext.data.Types.SprintStatus.PLANNED){
                                     return false;
                                 }
 
@@ -91,19 +99,14 @@ Ext.define('Scrum.view.sprint.Grid', {
                             },
                             handler : function(view, rowIndex, colIndex, item, event, record){
                                 var me = this;
-                                Ext.MessageBox.confirm('Confirm', 'Are you sure you want to start "' + record.get('name') + '" sprint?', 
-                                    function(buttonId){
-                                        if (buttonId === 'yes'){
-                                            me.startSprint(record);    
-                                        } 
-                                    });
+                                me.startSprint(record);   
                             },
                             scope : me
                         },
                         { 
                             tooltip : 'Stop sprint', iconCls : 'icon-stop',
                             isDisabled : function(view, rowIndex ,colIndex, item, record){
-                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
+                                if (record.get('status').value === Ext.data.Types.SprintStatus.CURRENT){
                                     return false;
                                 }
 
@@ -111,19 +114,14 @@ Ext.define('Scrum.view.sprint.Grid', {
                             },
                             handler : function(view, rowIndex, colIndex, item, event, record){
                                 var me = this;
-                                Ext.MessageBox.confirm('Confirm', 'Are you sure you want to stop "' + record.get('name') + '" sprint?', 
-                                function(buttonId){
-                                    if (buttonId === 'yes'){
-                                        me.stopSprint(record);
-                                    }       
-                                })
+                                me.stopSprint(record);
                             },
                             scope : this
                         },
                         {
                             tooltip : 'Complete Sprint', iconCls : 'icon-ok',
                             isDisabled : function(view, rowIndex, colIndex, item, record){
-                                if (record.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
+                                if (record.get('status').value === Ext.data.Types.SprintStatus.CURRENT){
                                     return false;
                                 }
 
@@ -141,7 +139,19 @@ Ext.define('Scrum.view.sprint.Grid', {
                             },
                             scope : this
                         },
-                        { tooltip : 'Remove', iconCls : 'icon-remove'}
+                        { 
+                            tooltip : 'Remove', iconCls : 'icon-remove',
+                            isDisabled : function(view, rowIndex, colIndex, item, record){
+                                if (record.get('status').value === Ext.data.Types.SprintStatus.CURRENT){
+                                    return true;
+                                }
+
+                                return false;
+                            },
+                            handler : function(view, rowIndex, colIndex, item, event, record){
+                                me.dropSprint(record);
+                            }
+                        }
                     ]
                 }
             ]

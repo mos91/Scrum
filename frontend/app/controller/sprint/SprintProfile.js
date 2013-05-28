@@ -11,7 +11,13 @@ Ext.define('Scrum.controller.sprint.SprintProfile', {
     getCommentsStore : function(storeId){
 		return Ext.StoreManager.lookup('SprintComments');
 	},
+	getBurndownStatisticsStore : function(){
+		return Ext.StoreManager.lookup('BurndownStatistic');
+	},
     init : function(){
+    	Ext.StoreManager.register(Ext.create('Scrum.store.sprint.BurndownStatistic',{
+    		storeId : 'BurndownStatistic'
+    	}));
     	Ext.StoreManager.register(Ext.create('Scrum.store.Comments', {
 			storeId : 'SprintComments'
 		}));
@@ -41,6 +47,9 @@ Ext.define('Scrum.controller.sprint.SprintProfile', {
 			'scrum-sprint-manager scrum-sprint-summary' : {
 				activate : { fn : this.drawSprintSummary, scope : this}
 			},
+			'scrum-sprint-manager #burndown' : {
+				activate : { fn : this.drawSprintBurndown, scope : this}
+			},
 			'scrum-sprint-manager scrum-commentpanel button[action=submit]' : {
 				click : { fn : this.submitCommentForm , scope : this}
 			}
@@ -51,6 +60,9 @@ Ext.define('Scrum.controller.sprint.SprintProfile', {
 		this.sprintCard = sprintManager.down('scrum-sprint-card');
 		this.sprintSummaryPanel = sprintManager.down('scrum-sprint-summary');
 		this.commentPanel = sprintManager.down('scrum-commentpanel');
+		this.burndownChart = this.sprintManager.down('scrum-sprint-burndown-chart');
+
+		this.burndownChart.bindStore(this.getBurndownStatisticsStore());
     },
     setSprint : function(sprint){
 		this.sprint = sprint;
@@ -128,6 +140,18 @@ Ext.define('Scrum.controller.sprint.SprintProfile', {
 				sprintSummaryPanel.fill(record);	
 			}
 		});
+	},
+	drawSprintBurndown : function(){
+		var sprint = this.sprint;
+		var burndownStatistic = this.getBurndownStatisticsStore();
+
+		burndownStatistic.load({
+			params : { id : sprint.get('id')},
+			callback : function(records, op){
+				this.burndownChart.redraw();
+			},
+			scope : this
+		})
 	},
 	drawComments : function(comments, options){
 		var sprint = this.sprint;

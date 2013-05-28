@@ -16,8 +16,10 @@
 //including my own field data types in Ext.data.Types
 //get from http://docs.sencha.com/extjs/4.2.0/#!/api/Ext.data.Types
 Ext.Loader.require('Ext.data.Types', function(){
+    Ext.Loader.require('Scrum.types.Enumerable');
     Ext.Loader.require('Scrum.types.UserStoryStatus');
     Ext.Loader.require('Scrum.types.SprintStatus');
+    Ext.Loader.require('Scrum.types.UserStoryPriority');
     // ... other custom Ext.data.Types bootstrap refs 
 });
 
@@ -42,6 +44,7 @@ Ext.application({
 });
 
 Ext.namespace('Scrum.util', 'Scrum.util.template', 'Scrum.util.template.date');
+Ext.namespace('Scrum.util', 'Scrum.util.debug');
 Scrum.util.template.date.MS_IN_WEEK = 3600*1000*24*7;
 Scrum.util.template.PRIORITY_DISPLAY_VALUES = { 0 : 'Low', 1 : 'Medium', 2 : 'High'};
 
@@ -73,6 +76,17 @@ Scrum.util.template.getPostDate = function(date){
     return string;  
 }
 
-Scrum.util.template.getPriorityDisplayValue = function(value){
-    return Scrum.util.template.PRIORITY_DISPLAY_VALUES[value];
+Scrum.util.debug.GenerateFiveMonthDays = function(){
+    var days = 30, dayOfMonth;
+    var hits = [];
+    var i;
+    var max,min;
+    
+    for (i = 0, max = days, min = 0;i < 5;i++){
+        dayOfMonth = Math.ceil(Math.random() * (max - min) + min);
+        hits.push(Math.ceil(new Date('02/' + dayOfMonth + '/2013') / 1000));
+        min = dayOfMonth + 1;
+    }
+
+    return hits;
 }

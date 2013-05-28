@@ -13,12 +13,21 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 		{ type : 'plus', action : 'create', tooltipType : 'title', tooltip : 'Add new userstory'},
 		{ type : 'refresh', action : 'refresh', tooltipType : 'title', tooltip : 'Refresh overview'}
 	],
+	dockedItems :[{
+		xtype: 'toolbar',
+		title : 'Filters',
+   	 	dock: 'top',
+    	items: [
+        	{ xtype: 'combobox', fieldLabel : 'Choose priority', store : Ext.data.Types.UserStoryPriority.getPairs()},
+        	{ xtype : 'combobox', fieldLabel : 'Choose Status' , store : Ext.data.Types.UserStoryStatus.getPairs()}
+    	]
+	}],
 	bbar : {
 		xtype : 'pagingtoolbar',
 		itemId : 'paging-toolbar',
 		displayInfo: true,
         displayMsg: 'Displaying userstories {0} - {1} of {2}',
-        emptyMsg: "No userstories to display",
+        emptyMsg: "No userstories to display"
 	},
 	getAvailableUserStoryStatuses : function(cellEditing, event){
 		var activeEditor = event.column.getEditor();
@@ -28,7 +37,7 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 		activeEditor.store.filterBy(function(status){
 			var userstoryStatus = event.value.value; 
 			var status = parseInt(status.raw[0]);
-			return Ext.data.Types.USER_STORY_STATUS.isNeighbour(userstoryStatus, status);
+			return Ext.data.Types.UserStoryStatus.isNeighbour(userstoryStatus, status);
 		}, this);
 	},
 	onBeforeUserStoryDrop : function(node, data, overModel){
@@ -55,7 +64,7 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 	onValidateEdit : function(cellEditing, event){
 		var value = parseInt(event.value);
 		if (event.field === 'status'){
-			event.value = Ext.data.Types.USER_STORY_STATUS.getFromValue(value);
+			event.value = Ext.data.Types.UserStoryStatus.getFromValue(value);
 		}
 	},
 	onCompleteEdit : function(cellEditing, event){
@@ -113,8 +122,8 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 				{ 
 					text : 'Priority', dataIndex : 'priority',
 					groupable : false,
-					renderer : function(value){
-						return Scrum.util.template.getPriorityDisplayValue(value);
+					renderer : function(priority){
+						return priority.display;
 					}
 				},
 				{ 
@@ -129,7 +138,7 @@ Ext.define('Scrum.view.userstory.BacklogOverview', {
 						typeAhead : true, 
 						triggerAction : 'all',
 						selectOnTab : true,
-						store : Ext.data.Types.USER_STORY_STATUS.getPairs(),
+						store : Ext.data.Types.UserStoryStatus.getPairs(),
 						valueField : 'value',
 						displayField : 'display'
 					}

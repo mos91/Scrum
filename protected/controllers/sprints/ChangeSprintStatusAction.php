@@ -15,31 +15,53 @@ class ChangeSprintStatusAction extends CAction {
 	}
 
 	private function checkStatuses(){
-		if (!isset($_GET['oldStatus']) || !isset($_GET['newStatus'])){
-			throw new InvalidRestParamsException(500, $this->controller, "old or new statues doesnt exist");
+		if (isset($_POST['newStatus'])){
+			throw new InvalidRestParamsException(500, $this->controller, "new status doesnt exist");
 		}
 	}
 
 	private function onAjax(){
 		$request = Yii::app()->request;
-		
+		$payload = array();
+
 		$this->checkIsIdExist();
 		$this->checkStatuses();
+		$payload = array('success' => true, 'sprint' => array());
 		$id = $_GET['id'];
-		$oldStatus = (int)$_GET['oldStatus'];
-		$newStatus = (int)$_GET['newStatus'];
 
-		if ($oldStatus === SprintStatusCodes::PLANNED && $newStatus === SprintStatusCodes::CURRENT){
-			$sprint = $this->startSprint();
+		$oldStatus = $_GET['oldStatus'];
+		$newStatus = $_GET['newStatus'];
+		if ($newStatus === 'dropped' || $newStatus === 'restored'){
+			if ($newStatus === 'dropped'){
+				$this->dropSprint();
+				$payload['sprint']['dropped'] = true;
+			}
+			else if ($newStatus === 'restored'){
+				$this->restoreSprint();
+				$payload['sprint']['dropped'] = false;
+			}
+
+			$payload['sprint'] = array_merge($payload['sprint'], array('id' => $_GET['id']));
 		}
-		else if ($oldStatus === SprintStatusCodes::CURRENT && $newStatus === SprintStatusCodes::PLANNED){
-			$sprint = $this->stopSprint();
-		}
-		else if ($oldStatus === SprintStatusCodes::CURRENT && $newStatus === SprintStatusCodes::COMPLETED){
-			$sprint = $this->completeSprint();
+		else if (is_numeric($_GET['newStatus'])){
+			$oldStatus = (int)$oldStatus;
+			$newStatus = (int)$newStatus;
+			if ($oldStatus === SprintStatusCodes::PLANNED && $newStatus === SprintStatusCodes::CURRENT){
+				$sprint = $this->startSprint();
+				$payload['sprint']['start_time'] = $sprint->start_time;
+			}
+			else if ($oldStatus === SprintStatusCodes::CURRENT && $newStatus === SprintStatusCodes::PLANNED){
+				$sprint = $this->stopSprint();
+			}
+			else if ($oldStatus === SprintStatusCodes::CURRENT && $newStatus === SprintStatusCodes::COMPLETED){
+				$sprint = $this->completeSprint();
+				$payload['sprint']['end_time'] = $sprint->end_time;
+			}
+			
+			$payload['sprint'] = array_merge($payload['sprint'], array('id' => $sprint->id, 'status' => $sprint->status, 'update_time' => $sprint->update_time));
 		}
 
-		echo CJSON::encode(array('success' => true, 'sprint' => array('id' => $sprint->id, 'status' => $sprint->status, 'update_time' => $sprint->update_time)));
+		echo CJSON::encode($payload);
 	}
 
 	private function startSprint(){
@@ -48,12 +70,16 @@ class ChangeSprintStatusAction extends CAction {
 		$activeSprint = Sprint::model()->active()->find();
 		$this->stopSprint($activeSprint);
 
-		$sprint = Sprint::model()->findByPk($_GET['id']);
-		
-		$sprint->status = SprintStatusCodes::CURRENT;
-		$sprint->update_time = $update_time->getTimestamp();
-		$sprint->save();
-
+		$sprintId = $_GET['id'];
+		$sprint = Sprint::model()->findByPk($sprintId);
+		$allUserstoriesCount = UserStory::model()->bySprint($sprintId)->count();
+		if (!empty($allUserstoriesCount)){
+			$sprint->status = SprintStatusCodes::CURRENT;
+			$sprint->update_time = $update_time->getTimestamp();
+			$sprint->start_time = $update_time->getTimestamp();
+			$sprint->save();
+		}
+	
 		return $sprint;
 	}
 
@@ -68,9 +94,10 @@ class ChangeSprintStatusAction extends CAction {
 			$sprintId = $sprint->id;
 		}
 		
-		UserStory::model()->bySprint($sprintId)->updateAll(array('status' => UserStoryStatusCodes::TODO));
+		UserStory::model()->bySprint($sprintId)->updateAll(array('status' => UserStoryStatusCodes::TODO, 'complete_time' => null));
 		$sprint->status = SprintStatusCodes::PLANNED;
 		$sprint->update_time = $update_time->getTimestamp();
+		$sprint->start_time = null;
 		$sprint->save();
 
 		return $sprint;
@@ -86,9 +113,29 @@ class ChangeSprintStatusAction extends CAction {
 		if (!empty($allUserstoriesCount) && ($allUserstoriesCount === $completedUserstoriesCount)){
 			$sprint->status = SprintStatusCodes::COMPLETED;
 			$sprint->update_time = $update_time->getTimestamp();
-			$sprint->save();	
+			$sprint->end_time = $update_time->getTimestamp();
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$sprint->save();	
+				$sprintUserstories = UserStory::model()->bySprint($_GET['id'])->updateAll(array('status' => UserStoryStatusCodes::CLOSED));	
+				$transaction->commit();
+			}
+			catch (Exception $e){
+				$transaction->rollback();
+				throw TransactionFailureException(500, $this->controller);
+			}	
 		}
 
 		return $sprint;
+	}
+
+	private function dropSprint(){
+		$sprintId = $_GET['id'];
+		Sprint::model()->updateByPk($sprintId, array('dropped' => true));
+	}
+
+	private function restoreSprint(){
+		$sprintId = $_GET['id'];
+		Sprint::model()->updateByPk($sprintId, array('dropped' => false));
 	}
 }

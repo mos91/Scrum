@@ -31,8 +31,8 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 		{ 
 			text : 'Priority', dataIndex : 'priority',
 			groupable : false,
-			renderer : function(value){
-				return Scrum.util.template.getPriorityDisplayValue(value);
+			renderer : function(priority){
+				return priority.display;
 			}
 		},
 		{ 
@@ -47,7 +47,7 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 				typeAhead : true, 
 				triggerAction : 'all',
 				selectOnTab : true,
-				store : Ext.data.Types.USER_STORY_STATUS.getPairs(),
+				store : Ext.data.Types.UserStoryStatus.getPairs(),
 				valueField : 'value',
 				displayField : 'display'
 			}
@@ -70,17 +70,15 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 		var status = draggedModel.get('status');
 		var result;
 
-		if (status.value === Ext.data.Types.USER_STORY_STATUS.OPEN)
+		if (status.value === Ext.data.Types.UserStoryStatus.OPEN)
 			return false;
-		if ((activeSprintStatus === Ext.data.Types.SPRINT_STATUS.COMPLETED) || (activeSprintStatus === Ext.data.Types.SPRINT_STATUS.CURRENT))
+		if ((activeSprintStatus === Ext.data.Types.SprintStatus.COMPLETED) || (activeSprintStatus === Ext.data.Types.SprintStatus.CURRENT))
 			return false;
 
 		if (Ext.isEmpty(sprintSelect.getRawValue()))
 			return false;
 		
 		if ((Ext.isEmpty(overModel) || overModel.get('sprint')) && !draggedModel.get('sprint')){
-			
-			console.log(result);
 			return result;
 		}
 
@@ -101,7 +99,7 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 		activeEditor.store.filterBy(function(status){
 			var userstoryStatus = event.value.value; 
 			var status = parseInt(status.raw[0]);
-			return Ext.data.Types.USER_STORY_STATUS.isNeighbour(userstoryStatus, status);
+			return Ext.data.Types.UserStoryStatus.isNeighbour(userstoryStatus, status);
 		}, this);
 	},
 	onBeforeEdit : function(cellEditing, event){
@@ -114,7 +112,7 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
 	onValidateEdit : function(cellEditing, event){
 		var value = parseInt(event.value);
 		if (event.field === 'status'){
-			event.value = Ext.data.Types.USER_STORY_STATUS.getFromValue(value);
+			event.value = Ext.data.Types.UserStoryStatus.getFromValue(value);
 		}
 	},
 	onCancelEdit : function(cellEditing, event){
@@ -147,10 +145,10 @@ Ext.define('Scrum.view.userstory.SprintlogOverview', {
                 			'<tpl elseif="this.isCompleted(status)"><span class="combobox-item-sprint-status"><b> Completed</b></span></tpl></div></tpl>', 
                 			{
                     			isActive : function(status){
-            						return status.value === Ext.data.Types.SPRINT_STATUS.CURRENT;
+            						return status.value === Ext.data.Types.SprintStatus.CURRENT;
             					},
             					isCompleted : function(status){
-            						return status.value === Ext.data.Types.SPRINT_STATUS.COMPLETED;
+            						return status.value === Ext.data.Types.SprintStatus.COMPLETED;
             					}
             				})
 						}

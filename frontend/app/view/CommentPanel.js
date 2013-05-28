@@ -22,13 +22,11 @@
 	xtype : 'scrum-commentpanel',
 	cls : 'scrum-commentpanel',
 	require : ['Scrum.store.Comments'],
-	//layout : { type : 'border'},
 	layout : { type : 'vbox'},
 	initComponent : function(){
 		Ext.apply(this, {
 			items : [
 				Ext.create('Ext.form.Panel', {
-					//region : 'north',
 					flex : 1,
 					title : 'Leave a comment',
 					url : this.commentableEntity.url,
@@ -57,7 +55,6 @@
 				Ext.create('Ext.view.View', {
 					width : 900,
 					flex : 4,
-					//region : 'center',
 					cls : 'scrum-comments-list',
 					overflowY : 'scroll',
 					emptyText : '<span>There are no comments yet</span>',

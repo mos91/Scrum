@@ -53,6 +53,10 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
                 completeSprint : {
                     fn : this.completeSprint, 
                     scope : this
+                },
+                dropSprint : {
+                    fn : this.dropSprint,
+                    scope : this
                 }
             },
             'scrum-sprint-manager scrum-sprint-card' : {
@@ -69,6 +73,13 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
                 activate : { fn : function(summary){
                     this.activeTab = summary;
                 }}
+            },
+            'scrum-sprint-manager #burndown' : {
+                activate : {
+                    fn : function(burndown){
+                        this.activeTab = burndown;
+                    }
+                }
             },
             'scrum-sprint-grid' : {
                 itemclick : { fn : this.showSprintProfile, scope : this}
@@ -118,16 +129,21 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
         var sprintsGrid = this.sprintsGrid;
         var oldStatus = sprint.get('status').value;
 
-        sprint.set('status', Ext.data.Types.SPRINT_STATUS.CURRENT);
-        if (!Ext.isEmpty(activeSprint)){
-            activeSprint.set('status', Ext.data.Types.SPRINT_STATUS.PLANNED);
-        }
-
         sprintsGrid.setLoading({ msg : 'Please wait...'});
         sprint.save({
             url : '/sprints/changeStatus',
-            params : { id : sprint.get('id'), oldStatus: oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.CURRENT},
+            params : { id : sprint.get('id'), oldStatus: oldStatus, newStatus : Ext.data.Types.SprintStatus.CURRENT},
             callback : function(){
+                if (sprint.get('status').value === Ext.data.Types.SprintStatus.PLANNED){
+                     Ext.MessageBox.alert('Status', 'You should better add at least one user story to this sprint');
+                }
+                else {
+                    sprint.set('status', Ext.data.Types.SprintStatus.CURRENT);
+                    if (!Ext.isEmpty(activeSprint)){
+                        activeSprint.set('status', Ext.data.Types.SprintStatus.PLANNED);
+                    }
+                }
+
                 sprintsGrid.getView().refresh();
                 sprintsGrid.setLoading(false);
             },
@@ -138,12 +154,12 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
         var sprintsGrid = this.sprintsGrid;
         var oldStatus = sprint.get('status').value;
 
-        sprint.set('status', Ext.data.Types.SPRINT_STATUS.PLANNED);
         sprintsGrid.setLoading({ msg : 'Please wait...'});
         sprint.save({
             url : '/sprints/changeStatus',
-            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.PLANNED},
+            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SprintStatus.PLANNED},
             callback : function(){
+                sprint.set('status', Ext.data.Types.SprintStatus.PLANNED);
                 sprintsGrid.getView().refresh();
                 sprintsGrid.setLoading(false);
             },
@@ -154,21 +170,35 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
         var sprintsGrid = this.sprintsGrid;
         var oldStatus = sprint.get('status').value;
 
-        sprint.set('status', Ext.data.Types.SPRINT_STATUS.COMPLETED);
         sprintsGrid.setLoading({ msg : 'Please wait...'});
         sprint.save({
             url : '/sprints/changeStatus',
-            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SPRINT_STATUS.COMPLETED},
+            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : Ext.data.Types.SprintStatus.COMPLETED},
             callback : function(sprint){
-                if (sprint.get('status').value === Ext.data.Types.SPRINT_STATUS.CURRENT){
-                     Ext.MessageBox.alert('Status', 'You must complete all userstories in this sprint before you can complete it!');
+                if (sprint.get('status').value === Ext.data.Types.SprintStatus.CURRENT){
+                     Ext.MessageBox.alert('Status', 'You should better complete all userstories in this sprint before you can complete it.');
                 }
-
+                else {
+                    sprint.set('status', Ext.data.Types.SprintStatus.COMPLETED);
+                }
                 sprintsGrid.getView().refresh();
                 sprintsGrid.setLoading(false);
             },
             scope : this
         });
+    },
+    dropSprint : function(sprint){
+        var sprintsGrid = this.sprintsGrid;
+        var sprintsStore = this.getSprintsStore();
+        var oldStatus = sprint.get('status').value;
+
+        sprint.save({
+            url : '/sprints/changeStatus',
+            params : { id : sprint.get('id'), oldStatus : oldStatus, newStatus : 'dropped'},
+            callback : function(sprint){
+                sprintsStore.remove(sprint);
+            }
+        })
     },
     onLoadSprints: function(store) {
         if (store.count()){
@@ -201,6 +231,9 @@ Ext.define('Scrum.controller.sprint.SprintManager', {
         }
         else if (this.activeTab.itemId == 'summary'){
             summary = tabPanel.layout.setActiveItem('summary');
+        }
+        else if (this.activeTab.itemId == 'burndown'){
+            burndown = tabPanel.layout.setActiveItem('burndown');
         }
     },
 

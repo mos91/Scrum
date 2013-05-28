@@ -6,6 +6,7 @@ Ext.define('Scrum.view.sprint.summary.SprintSummary', {
 	xtype : 'scrum-sprint-summary',
 	bodyCls : 'scrum-sprint-summary',
 	margin : 5,
+	layout : { type : 'vbox'},
 	items : [
 		{
 			xtype : 'fieldset',
@@ -13,6 +14,7 @@ Ext.define('Scrum.view.sprint.summary.SprintSummary', {
 			labelWidth : 75,
 			collapsible : true,
 			header : false,
+			flex : 1,
 			items : [
 				{
 					tpl : '<div>Total items in sprint - {total}</div>' + 

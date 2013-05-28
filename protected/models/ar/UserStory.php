@@ -23,7 +23,9 @@ class UserStory extends CActiveRecord {
 	}
 	
 	public function scopes(){
-		return array('byProject','bySprint', 'open', 'accepted', 'closed', 'todo', 'totest', 'done', 'completed');
+		return array('byProject','bySprint', 
+			'open', 'accepted', 'closed', 
+			'todo', 'totest', 'done', 'completed', 'completedOrClosed');
 	}
 	
 	public function byProject($projectId){
@@ -37,14 +39,14 @@ class UserStory extends CActiveRecord {
 
 	public function bySprint($sprintId){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'sprint_id=:sprint_id AND `t`.`dropped`=0', 
+				'condition' => '`t`.sprint_id=:sprint_id AND `t`.`dropped`=0', 
 				'params' => array(':sprint_id' => $sprintId)));
 		return $this;
 	}
 
 	public function fromBacklog(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => '(status=:status_open OR status=:status_accepted) AND `t`.dropped=0',
+			'condition' => '(`t`.status=:status_open OR `t`.status=:status_accepted) AND `t`.dropped=0',
 			'params' => array(
 					':status_open' => UserStoryStatusCodes::OPEN, 
 					':status_accepted' => UserStoryStatusCodes::ACCEPTED
@@ -56,7 +58,7 @@ class UserStory extends CActiveRecord {
 
 	public function fromSprints(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => '(status<>:status_open AND status<>:status_accepted) AND `t`.dropped=0',
+			'condition' => '(`t`.status<>:status_open AND `t`.status<>:status_accepted) AND `t`.dropped=0',
 			'params' => array(
 				':status_open' => UserStoryStatusCodes::OPEN, 
 				':status_accepted' => UserStoryStatusCodes::ACCEPTED
@@ -68,7 +70,7 @@ class UserStory extends CActiveRecord {
 
 	public function open(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::OPEN)
 		));
 
@@ -77,7 +79,7 @@ class UserStory extends CActiveRecord {
 
 	public function accepted(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::ACCEPTED)
 		));
 
@@ -86,7 +88,7 @@ class UserStory extends CActiveRecord {
 
 	public function closed(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::CLOSED)
 		));
 
@@ -95,7 +97,7 @@ class UserStory extends CActiveRecord {
 	
 	public function todo(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::TODO)
 		));
 
@@ -104,7 +106,7 @@ class UserStory extends CActiveRecord {
 
 	public function totest(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::TO_TEST)
 		));
 
@@ -113,7 +115,7 @@ class UserStory extends CActiveRecord {
 
 	public function done(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::DONE)
 		));
 
@@ -122,12 +124,21 @@ class UserStory extends CActiveRecord {
 
 	public function completed(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`'.$this->getTableAlias().'`.status=:status AND `'.$this->getTableAlias().'`.dropped=0',
 			'params' => array(':status' => UserStoryStatusCodes::COMPLETED)
 		));
 
 		return $this;
 	}	
+
+	public function completedOrClosed(){
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => '(`'.$this->getTableAlias().'`.status=:completed_status OR `'.$this->getTableAlias().'`.status=:closed_status) AND `'.$this->getTableAlias().'`.dropped=0',
+			'params' => array(':completed_status' => UserStoryStatusCodes::COMPLETED, ':closed_status' => UserStoryStatusCodes::CLOSED)
+		));
+
+		return $this;
+	}
 
 	public function page($offset, $limit){	
 		$this->getDbCriteria()->mergeWith(array(

@@ -166,7 +166,10 @@
 .scrum-sprint-summary {
 	padding-left : 8px;
 }
-
+/*charts*/
+.scrum-chart-header {
+	margin-left : 10px;
+}
 /*scrollbars for Chrome and Safari (Webkit Browsers)*/
 ::-webkit-scrollbar{width:9px;height:9px;}
 ::-webkit-scrollbar-button:start:decrement,

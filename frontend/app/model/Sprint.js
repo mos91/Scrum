@@ -4,9 +4,10 @@ Ext.define('Scrum.model.Sprint', {
 		{ name : 'name', type:'string'},
 		{ name : 'description', type : 'string'},
 		{ name : 'project_id', type : 'int'},
+		{ name : 'estimate', type : 'int'},
 		{
 			name : 'status', 
-			type : Ext.data.Types.SPRINT_STATUS,
+			type : Ext.data.Types.SprintStatus,
 			sortType : function(status){
 				return status.value;
 			}

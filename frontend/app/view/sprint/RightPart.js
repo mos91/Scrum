@@ -20,7 +20,8 @@ Ext.define('Scrum.view.sprint.RightPart', {
     requires: [
         'Scrum.view.sprint.form.CreateForm',
         'Scrum.view.sprint.Card',
-        'Scrum.view.sprint.summary.SprintSummary'
+        'Scrum.view.sprint.summary.SprintSummary',
+        'Scrum.view.sprint.summary.BurndownChart'
     ],
     layout: {
         type: 'card'
@@ -59,7 +60,26 @@ Ext.define('Scrum.view.sprint.RightPart', {
                         Ext.create('Scrum.view.sprint.summary.SprintSummary', {
                             title : 'Summary',
                             itemId : 'summary'
-                        })
+                        }),
+                        {
+                            title : 'Burndown',
+                            itemId : 'burndown',
+                            items : [
+                                {
+                                    xtype : 'panel',
+                                    header : {
+                                        cls : 'scrum-chart-header'
+                                    },
+                                    width : '100%',
+                                    height : 600,
+                                    title : 'Sprint Burndown Chart',
+                                    layout : 'fit',
+                                    items : [
+                                        Ext.create('Scrum.view.sprint.summary.BurndownChart') 
+                                    ]
+                                }   
+                            ]
+                        }
                     ]
                 },
                 Ext.create('Scrum.view.sprint.form.CreateForm', {

@@ -81,7 +81,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 			},
 			'scrum-userstory-create-form tool[action=close]' : {
 				click : { fn : function(){
-					this.backlogGrid.fireEvent('itemclick', this.grid);
+					this.backlogGrid.fireEvent('itemclick', this.grid, this.displayedUserstory);
 				}, scope : this}
 			},
 			'scrum-userstory-backlog-overview tool[action=create]' : {
@@ -184,10 +184,11 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 					if (continueCreate){
 						form.owner.onSuccessfulCreation(userstory);
 						form.owner.down('hiddenfield[name=project_id]').setRawValue(project.get('id'));
+						this.displayedUserstory = userstory;
 					}
 					else {
 						statusBar.hide();
-						grid.fireEvent('itemclick', grid, userstory);	
+						grid.fireEvent('itemclick', grid, this.displayedUserstory = userstory);	
 					}
 					
 					form.owner.down('checkbox[action=continue_create]').setRawValue(continueCreate);
@@ -286,7 +287,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 			grid.setLoading({ msg : 'Refresh...'});
 			if (redraw){
 				store.reload({
-					callback : function(){
+					callback : function(records){
 						grid.setLoading(false);
 					},
 					scope : this
@@ -297,7 +298,7 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 				paging.bind(store);	
 				store.loadPage(1, {
 					scope : this,
-					callback : function(){
+					callback : function(records, op){
 						grid.setLoading(false);
 					}
 				});	
@@ -309,7 +310,8 @@ Ext.define('Scrum.controller.userstory.Backlog', {
 	},
 	onLoadBacklog : function(store){
 		if (store.count()){
-			this.backlogGrid.fireEvent('itemclick', this.backlogGrid, store.getAt(0));
+			this.displayedUserstory = store.getAt(0);
+			this.backlogGrid.fireEvent('itemclick', this.backlogGrid, this.displayedUserstory);
 		}
 		else {
 			this.showUserstoryCreateForm();

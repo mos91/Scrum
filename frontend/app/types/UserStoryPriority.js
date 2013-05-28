@@ -1,27 +1,28 @@
-Ext.define('Scrum.types.SprintStatus', {
+Ext.define('Scrum.types.UserStoryPriority', {
     requires: ['Ext.data.Types', 'Scrum.types.Enumerable'],
     singleton : true, 
     constructor : function(){
-    	var type = Ext.define('Ext.data.Types.SprintStatus', {
+    	var type = Ext.define('Ext.data.Types.UserStoryPriority', {
     		extend : 'Ext.Base',
     		mixins : {
-    		 	Enumerable : 'Ext.data.Types.Enumerable'
+    			Enumerable : 'Ext.data.Types.Enumerable'
     		}
     	});
 
     	type.addStatics({
-    		PLANNED : 0x0000,
-	    	CURRENT : 0x0001,
-	    	COMPLETED : 0x0002,
+    		LOW : 0x0000,
+	    	MEDIUM : 0x0001,
+	    	HIGH : 0x0002,
+	     
 		    VD_PAIRS : {
-			    0x0000 : 'Planned',
-			    0x0001 : 'Active',
-			    0x0002 : 'Completed'
+			    0x0000 : 'Low',
+			    0x0001 : 'Medium',
+			    0x0002 : 'High'
 			},
 			DV_PAIRS : {
-				'Planned' : 0x0000,
-				'Active' : 0x0001,
-				'Completed' : 0x0002
+				'Low' : 0x0000,
+				'Medium' : 0x0001,
+				'High' : 0x0002
 			},
 			convert : function(status, record){
 				var enumerableMixin = type.prototype.mixins.Enumerable;
@@ -57,6 +58,6 @@ Ext.define('Scrum.types.SprintStatus', {
 
 				return enumerableMixin.self.getFromDisplay.apply(type, arguments);
 			}
-    	});
+    	})
 	}
 });

@@ -1,80 +1,24 @@
 Ext.define('Scrum.types.UserStoryStatus', {
-    requires: ['Ext.data.Types'],
+    requires: ['Ext.data.Types', 'Scrum.types.Enumerable'],
     singleton : true, 
     constructor : function(){
-	    	var type = Ext.data.Types.USER_STORY_STATUS = {
-	    	type : Ext.data.Types.USER_STORY_STATUS,
-	    	OPEN : 0x0000,
+		var type = Ext.define('Ext.data.Types.UserStoryStatus', {
+			extend : 'Ext.Base',
+			mixins : { 
+				Enumerable : 'Ext.data.Types.Enumerable'
+			}
+		});
+
+		type.addStatics({
+			OPEN : 0x0000,
 	    	ACCEPTED : 0x0002,
 	    	TODO : 0x0003,
 	    	TO_TEST : 0x0005,
 	    	DONE : 0x0007,
 	    	COMPLETED : 0x0008,
 	    	CLOSED : 0x000B,
-	        convert: function(status, record) {
-	        	if (Ext.isObject(status))
-	        		return status;
-	        	else if (Ext.isNumeric(status))
-	        		return { value : parseInt(status), display : type.VD_PAIRS[status]};
-
-	        	return null;
-	   	 	},
-	   	 	/*get all possible values*/
-	   	 	getValues : function(){
-	   	 		var arr = [];
-	   	 		for (value in type.VD_PAIRS){
-	   	 			arr.push(value);
-	   	 		}
-
-	   	 		return arr;
-	   	 	},
-	   	 	/*get all possible display strings of values*/
-	   	 	getDisplays : function(){
-	   	 		var arr = [];
-	   	 		for (value in type.VD_PAIRS){
-	   	 			arr.push(type.VD_PAIRS[value]);
-	   	 		}
-
-	   	 		return arr;	
-	   	 	},
-	   	 	/*get all possible values and their displays like [{value :<int>, display : <string>},...]*/
-	   	 	getHashes : function(){
-	   	 		var arr = [];
-	   	 		for (value in type.VD_PAIRS){
-	   	 			arr.push({ value : value, display : type.VD_PAIRS[value]})
-	   	 		}
-
-	   	 		return arr;
-	   	 	},
-	   	 	/*get all possible values and their displays like [[value, display],...]*/
-	   	 	getPairs : function(){
-	   	 		var arr = [];
-	   	 		for (value in type.VD_PAIRS){
-	   	 			arr.push([value, type.VD_PAIRS[value]]);
-	   	 		}
-
-	   	 		return arr;
-	   	 	},
-	   	 	/*get UserStoryStatus object by passed value*/	
-	   	 	getFromValue : function(value){
-	   	 		if (value in type.VD_PAIRS){
-	   	 			return { value : value, display : type.VD_PAIRS[value]};
-	   	 		}
-
-	   	 		return null;
-	   	 	},
-	   	 	//get UserStoryStatus object by passed display
-	   	 	getFromDisplay : function(display){
-	   	 		if (value in type.DV_PAIRS){
-	   	 			return { display : display, value : type.DV_PAIRS[display]};
-	   	 		}
-
-	   	 		return null;
-	   	 	},
-	   	 	//get reachable statuses from passed status (string|int|{value:, display:})
-	   	 	//return [{value:, display:}]
-	   	 	getNeighbours : function(status){
-	   	 		var value;
+	    	getNeighbours : function(status){
+   	 			var value;
 
 	   	 		if (Ext.isString(status) || Ext.isNumber(status) || Ext.isObject(status)){
 	   	 			if (Ext.isString(status))
@@ -87,10 +31,10 @@ Ext.define('Scrum.types.UserStoryStatus', {
 	   	 			neighbours = type.ATT_GRAPH[value];
 	   	 			neighbours.push(value);
 	   	 			return Ext.Array.map(neighbours,function(value){
-	   	 				return this.getFromValue(value);
+	   	 				return type.getFromValue(value);
 	   	 			}, type);
 	   	 		}
-	   	 	},
+   	 		},
 	   	 	isNeighbour : function(statusX, statusY){
 	   	 		var valueX, valueY;
 
@@ -118,6 +62,40 @@ Ext.define('Scrum.types.UserStoryStatus', {
    	 			neighbours.push(valueX);
    	 			return Ext.Array.contains(neighbours, valueY);
 	   	 	},
+	   	 	convert : function(status, record){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+				return enumerableMixin.self.convert.apply(type, arguments);
+			},
+			getPairs : function(){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getPairs.apply(type, arguments);
+			},
+			getHashes : function(){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getHashes.apply(type, arguments);
+			},
+			getValues : function(){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getValues.apply(type, arguments);
+			},	
+			getDisplays : function(){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getDisplays.apply(type, arguments);
+			},
+			getFromValue : function(value){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getFromValue.apply(type, arguments);
+			},
+			getFromDisplay : function(display){
+				var enumerableMixin = type.prototype.mixins.Enumerable;
+
+				return enumerableMixin.self.getFromDisplay.apply(type, arguments);
+			},
 		    VD_PAIRS : {
 			    0x0000 : 'Open',
 			    0x0002 : 'Accepted',
@@ -144,8 +122,7 @@ Ext.define('Scrum.types.UserStoryStatus', {
 				0x0005 : [0x0003, 0x0007],
 				0x0007 : [0x0003, 0x0005, 0x0008],
 				0x0008 : [0x0007, 0x000B]
-			},
-	    	type: 'UserStoryStatus'
-    	};
-    }
+			}
+		});	
+	}
 });

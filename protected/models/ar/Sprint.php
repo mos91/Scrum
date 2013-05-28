@@ -5,7 +5,12 @@ class Sprint extends CActiveRecord {
 	
 	public $status;
 	public $dropped = false;
-	
+	public $estimate;
+
+	public $start_time;
+	public $end_time;
+	public $update_time;
+
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -35,7 +40,7 @@ class Sprint extends CActiveRecord {
 
 	public function planned(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => SprintStatusCodes::PLANNED)
 		));
 
@@ -44,7 +49,7 @@ class Sprint extends CActiveRecord {
 
 	public function active(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => SprintStatusCodes::CURRENT)
 		));
 
@@ -53,7 +58,7 @@ class Sprint extends CActiveRecord {
 
 	public function completed(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'status=:status AND `t`.dropped=0',
+			'condition' => '`t`.status=:status AND `t`.dropped=0',
 			'params' => array(':status' => SprintStatusCodes::COMPLETED)
 		));
 
@@ -62,7 +67,8 @@ class Sprint extends CActiveRecord {
 
 	public function relations(){
 		return array(
-			'project' => array(self::BELONGS_TO, 'Project', 'project_id')
+			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
+			'userstories' => array(self::HAS_MANY, 'UserStory', 'sprint_id')
 		);
 	}
 }

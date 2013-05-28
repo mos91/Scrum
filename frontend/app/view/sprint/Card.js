@@ -20,7 +20,7 @@ Ext.define('Scrum.view.sprint.Card', {
 			},
 			tpl : new Ext.XTemplate(
 					'<span class="update-time">Update time - {[this.formatPostDate(values.update_time)]}</span>' + 
-					//'<span class="tag"><b>{status.display}</b></span>' + 
+					'<span class="tag"><b>{status.display}</b></span>' + 
 				'<h2>{name}</h2></hr><div>{description}</div>', {
 				formatPostDate : function(date){
 					return Scrum.util.template.getPostDate(date);
