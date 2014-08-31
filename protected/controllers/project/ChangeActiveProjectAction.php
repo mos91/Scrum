@@ -6,12 +6,10 @@ class ChangeActiveProjectAction extends CAction {
 		}
 	}
 	
+	
 	public function run(){
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
-		}
-		else {
-			$this->onGet();
 		}
 	}
 
@@ -27,15 +25,5 @@ class ChangeActiveProjectAction extends CAction {
 		$project = Project::model()->findByPk($projectId);
 		
 		echo CJSON::encode($project->getAttributes());
-	}
-	
-	private function onGet(){
-		$userId = Yii::app()->user->getState('user-id');
-		$projectId = $_GET['id'];
-			
-		UserRecord::model()->updateByPk($userId, array('active_project_id' => $projectId));
-		Yii::app()->user->setState('project-id', $projectId);
-		
-		$this->controller->redirect('/project/get');
 	}
 }

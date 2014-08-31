@@ -4,69 +4,58 @@ class GetUserStoryAction extends CAction {
 		if (Yii::app()->request->isAjaxRequest){
 			$this->onAjax();
 		}
-		else {
-			$this->onGet();
-		}
 	}
-	
+
 	public function onAjax(){
-		$jsonResult = array();
 		$request = Yii::app()->request;
-		$groups = array('open','accepted','inprogress', 'completed', 'trashed');
-		
-		if (in_array($_GET['group'], $groups)){
-			$jsonResult = $this->fetchCollection($_GET['group']);
+		$projectId = Yii::app()->user->getState('project-id');
+
+		if (isset($_GET['id'])){
+			$userstory = UserStory::model()->findByPk($_GET['id']);
+			$jsonResult = $userstory->getAttributes();
+			$single = true;
 		}
-		else if (isset($_GET['id'])){
-			$jsonResult = $this->fetchSingle();
+		else if (isset($_GET['fromBacklog'])){
+			$jsonResult = array();
+			if (isset($_GET['project_id']))
+				$projectId = $_GET['project_id'];
+			
+			if (isset($_GET['start']) && isset($_GET['limit'])){
+				$total = UserStory::model()->byProject($projectId)->fromBacklog()->count();
+				$userstories = UserStory::model()->byProject($projectId)->fromBacklog()->page($_GET['start'], $_GET['limit'])->findAll();	
+				$page = true;
+			}
+			
+			foreach($userstories as $id => $record){
+				$jsonResult[$id] = $record->getAttributes();
+			}
+		}
+		else if ($_GET['sprint_id']){
+			$jsonResult = array();
+			$sprintId = $_GET['sprint_id'];
+			
+			$total = UserStory::model()->bySprint($sprintId)->with('sprint')->count();
+			$userstories = UserStory::model()->bySprint($sprintId)->with('sprint')->findAll();
+			$page = true;
+
+			foreach($userstories as $id => $record){
+				$jsonResult[$id] = $record->getAttributes();
+
+				$jsonResult[$id]['sprint'] = $record->getRelated('sprint')->getAttributes(array('name', 'description'));
+			}	
 		}
 
-		$jsonResult = array_merge(array('success' => true), $jsonResult);
-		echo CJSON::encode($jsonResult);
-	}
-	
-	public function onGet(){
-		$request = Yii::app()->request;
-		$userId = Yii::app()->user->getState('user-id');
-		if (isset($_GET['all'])){
-			$this->controller->render('table');
+		$payload = array('success' => true);
+		if (isset($single) && !empty($single)){
+			$payload['userstory'] = $jsonResult;
+			echo CJSON::encode($payload);
 		}
 		else {
-			$this->controller->render('dashboard');
+			$payload['userstories'] = $jsonResult;
+			if (isset($page) && !empty($page))
+				$payload['total'] = $total;
+
+			echo CJSON::encode($payload);
 		}
-	}
-
-	private function fetchCollection($collectionName){
-		$projectId = Yii::app()->user->getState('project-id');
-		$userId = Yii::app()->user->getState('user-id');
-		$jsonResult = array();
-		$model = UserStory::model();
-		$args = array($projectId);
-		$collections = array('open','accepted','inprogress','trashed');
-		$scope = call_user_func_array(array($model, $collectionName), $args);
-
-		if (isset($_GET['data']) && !empty($_GET['data'])){
-			$result = $scope->findAll();
-			$jsonResult['data'] = array();
-			foreach($result as $id => $record){
-				$jsonResult['data'][$id] = $record->getAttributes();
-			}
-		}
-
-		if (isset($_GET['count'])){
-			if (isset($_GET['data']) && isset($result))	
-				$jsonResult['count'] = count($result);
-			else{
-				$jsonResult['count'] = $scope->count();
-			}
-		}
-
-		return $jsonResult;
-	}
-
-	/*fetch one model by id*/
-	private function fetchSingle(){
-		$result = Project::model()->findByPk($_GET['id']);
-		return array($result);
 	}
 }

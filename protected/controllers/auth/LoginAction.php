@@ -3,17 +3,16 @@
 class LoginAction extends CAction {
 	private $identity;
 	
+	
 	private function checkFormIsExist(){
 		if (!isset(Yii::app()->request->restParams["LoginForm"])){
-			$this->controller->render('login');
-			Yii::app()->end();
+			throw new InvalidRestParamsException(200, $this->controller, 'Login Form is not exist');
 		}
 	}
 	
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
-			$this->controller->render('login', array('model' => $form));
-			Yii::app()->end();
+			throw new AuthenticationFailureException(200, $this->controller, $form->errors);
 		}
 	}
 	
@@ -21,13 +20,6 @@ class LoginAction extends CAction {
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			$this->onGet(); 
-		}
-	}
-	
-	private function onGet(){
-		$this->controller->render('login', array('model' => new LoginForm));
 	}
 	
 	private function onSubmit(){
@@ -36,13 +28,15 @@ class LoginAction extends CAction {
 		$form->attributes = Yii::app()->request->restParams["LoginForm"];
 		$this->checkFormIsValid($form);
 		
-		$day = 3600*24;
-		$duration=$form->rememberMe ? $day*30 : $day; // 30 days
+		$duration=$form->rememberMe ? 3600*24*30 : 3600 * 24; // 30 days
 		Yii::app()->user->login($form->identity,$duration);
 		$cookies = Yii::app()->request->getCookies();
 		$cookies->add('login', new CHttpCookie('login', true));
 		$cookies->add('state-cookie', new CHttpCookie('state-cookie', Yii::app()->user->getStateKeyPrefix()));
-		$this->controller->redirect('/site/index');
+
+		echo CJSON::encode(array('success' => true));
 		Yii::app()->end();
-	} 
+	}
+
+	
 }

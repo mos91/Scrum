@@ -7,6 +7,7 @@ class ProjectController extends Controller {
 				'get' => 'application.controllers.project.GetProjectAction',
 
 				'create' => 'application.controllers.project.CreateProjectAction',
+				'comment' => 'application.controllers.project.CommentProjectAction',
 				'change' => 'application.controllers.project.ChangeActiveProjectAction',
 				'update' => 'application.controllers.project.UpdateProjectAction',
 				'drop' => 'application.controllers.project.DropProjectAction',

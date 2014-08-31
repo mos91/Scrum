@@ -6,5 +6,6 @@ interface ExceptionCodes {
 	const STORE_OPERATION_FAILURE = 0x0005;
 	const INVALID_STATE = 0x0006;
 	const TRANSACTION_FAILURE = 0x0007;
+	const AUTHENTICATION_FAILURE = 0x0008;
 	const UNKNOWN = 0xffff;
 }

@@ -1,0 +1,234 @@
+.x-panel-body-default {
+	border:none !important;
+}
+/*toppanel*/
+.scrum-toppanel {
+	border-bottom:1px solid silver;
+	border-top:none;
+	border-width:1px !important;
+}
+
+.scrum-toppanel {
+	padding:0px;
+	height:40px;
+}
+
+/*.scrum-toppanel .x-btn {
+	background-image : none;
+	border-radius : 0px;
+	height : 40px;
+}*/
+
+/*content-panel*/
+.scrum-contentpanel {
+	padding-top: 10px;
+}
+/*footer*/
+.scrum-footer {
+	border-top:1px solid silver;
+}
+.scrum-commentpanel .x-border-layout-ct {
+	background:none;
+}
+
+/*tags*/
+.tag {
+	border-radius : 2px;
+	padding: 0 1em;
+	font-weight: bold;
+	color: white;
+	background: #484848;
+}
+
+/*comment-form*/
+.scrum-comment-form {
+	margin-left : 10px;
+}
+
+.scrum-comment-form .x-panel-header,
+.scrum-comment-form .x-toolbar-footer {
+	background : none;
+	padding:0px;
+	border : none;
+}
+
+.scrum-comment-content, .scrum-comment-author,
+.scrum-comment-form .x-panel-header-text-container-default
+{
+	color: #484848;
+}
+
+/*comment list*/
+.scrum-comments-list {
+	margin-left : 10px;
+}
+
+.scrum-comment {
+	margin-top : 10px;
+	border-bottom:1px solid silver;
+}
+
+.scrum-comment-content {
+	padding:5px 10px 5px 0px;
+}
+
+.scrum-comment-author {
+	display:inline-block;
+	margin:0px 5px 5px 5px;
+	vertical-align:top;
+}
+
+.scrum-comment-top-right {
+	display:inline-block;
+	float:right;
+	margin-right:10px;
+}
+
+.scrum-comment-post-time {
+	color : #999;
+}
+
+/*forms */
+.scrum-form-top-status-bar.ok {
+	background-color : rgb(208, 243, 206);
+	border-color : rgb(208, 243, 206);
+}
+
+.scrum-form-top-status-bar.error {
+	background-color : rgb(235, 199, 199);
+	border-color : rgb(235, 199, 199);
+}
+
+.scrum-form-top-status-bar .status-string {
+	margin-left : 20px;
+}
+
+.scrum-form-bottom-bar {
+	border : none;
+}
+
+.scrum-form-bottom-bar + .xtoolbar-footer {
+	background:none;
+}
+
+.scrum-create-form-header {
+	top : 0px !important;
+}
+/*comboboxes*/
+.combobox-item-sprint-status {
+	font-size: 11px;
+	color: #484848;
+	float: right;
+}
+
+/*profiles*/
+.project-card,.userstory-card,.sprint-card {
+	padding : 0px 5px 5px 10px;
+}
+
+.project-card .update-time,.userstory-card .update-time,.sprint-card .update-time {
+	float: right;
+	color: #999;
+	margin: 17px 10px 0px 0px;
+}
+
+.userstory-card .tag, .sprint-card .tag {
+	float : right;
+	margin: 17px 10px 0px 0px;	
+}
+/*.userstory-card .top-right {
+	display:inline-block;
+	float:right;
+	margin-right:10px;
+}*/
+
+.scrum-tabbar {
+	background-color:#ffffff;
+	padding-left:10px;
+}
+
+.scrum-tabbar.x-tab-bar-horizontal .x-tab-bar-strip {
+	left : auto;
+}
+
+/*summary-card*/
+.summary-bar {
+	height : 25px;
+	width : 200px;
+	border:1px solid green;
+	margin:4px;
+}
+
+.summary-header {
+	margin-left : 8px;
+}
+
+.scrum-sprint-summary {
+	padding-left : 8px;
+}
+/*charts*/
+.scrum-chart-header {
+	margin-left : 10px;
+}
+/*scrollbars for Chrome and Safari (Webkit Browsers)*/
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment{display:block;height:0;background-color:transparent;}
+::-webkit-scrollbar-track-piece{background-color:#FAFAFA;-webkit-border-radius:0;-webkit-border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;}
+::-webkit-scrollbar-thumb:vertical{height:50px;background-color:#999;-webkit-border-radius:8px;}
+::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#999;-webkit-border-radius:8px;}
+/*icons*/
+.x-action-col-icon {
+	margin-left:5px;
+}
+
+.icon-start {
+	background-image : url('/frontend/resources/images/common/16/start_2.gif');
+	background-repeat : repeat-y;
+}
+
+.icon-stop {
+	background-image : url('/frontend/resources/images/common/16/stop.gif');
+	background-repeat : repeat-y;	
+}
+
+.icon-remove {
+	background-image : url('/frontend/resources/images/common/16/remove.png');
+	background-repeat : repeat-y;		
+}
+
+.icon-ok {
+	background-image : url('/frontend/resources/images/common/16/ok.png');
+	background-repeat : repeat-y;			
+}
+/*status-icons*/
+.x-status-ok  {
+	background-image : url('/frontend/resources/images/common/16/ok.png');
+	background-repeat : repeat-y;
+}
+
+.x-status-ok .status-string {
+
+}
+
+.x-status-error {
+	background-image : url('/frontend/resources/images/common/16/error.png');
+	background-repeat : repeat-y;	
+}
+
+.x-status-error .status-string {
+	color : rgb(131, 9, 9);
+}
+
+/*additional tool icons*/
+.x-tool-profile {
+	background-image : url('/frontend/resources/images/common/16/profile.png');
+}
+
+.x-tool-edit{
+    background-image: url('/frontend/resources/images/common/16/edit_2.png') !important;
+}
+
+.x-tool-table {
+	background-image : url('/frontend/resources/images/common/16/table.png');
+}

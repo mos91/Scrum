@@ -19,72 +19,65 @@ class Project extends CActiveRecord {
 		return array(
 			'company' => array(self::BELONGS_TO, 'Company', 'company_id'),
 			'users' => array(self::MANY_MANY, 'UserRecord', 'user_projects_table(project_id,user_id)'),
-			'assigns' => array(self::HAS_MANY, 'ProjectAssign', 'project_id')
+			'comments' => array(self::HAS_MANY, 'ProjectComment', 'project_id'),
+			'active_sprint' => array(self::BELONGS_TO, 'Sprint', 'active_sprint_id')
 		);
 	}
 	
 	public function scopes(){
 		return array(
-			'localInfo',
+			'byUser',
+			'byCompany',
 			'live',
 			'trashed',
 			'favorite'
 		);
 	}
 	
-	/*get information about project for current user specified with project id(s)*/
-	public function localinfo($userId, $projectIds){
-		$withCriteria = array('assigns' => 
-			array(
-			 'select' => 'favorite',
-			 'condition' => 'user_id=:id',
-			 'params' => array(':id' => $userId)
+	public function byUser($userId){
+		$this->getDbCriteria()->mergeWith(array(
+			'with' => array(
+				'users' => array(
+					'select' => false, 
+					'condition' => 'users.id=:id', 
+					'params' => array(':id' => $userId))
+			)
 			));
+		return $this;
+	}
 
-		if (is_array($projectIds)) 
-			$withCriteria['assigns']['condition'] .= ' AND project_id IN ('.implode(',', $projectIds).')';
-		else if (is_string($projectIds)){
-			$id = $projectIds;
-			$withCriteria['assigns']['condition'] .= ' AND project_id=:project_id';
-			$withCriteria['assigns']['params'][':project_id'] .= $projectIds;
-		}
-			
+	public function byCompany($companyId){
 		$this->getDbCriteria()->mergeWith(array(
-			'with' => $withCriteria
+			'condition' => 'company_id=:id',
+			'params' => array(':id' => $companyId)
 		));
-		return $this;
+		return $this;	
 	}
-	/*get favorite projects for current user*/
-	public function favorite($userId){
+
+	public function live(){
 		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'dropped=0',
-			'with' => array('assigns' => 
-				array(
-					'select' => false,
-					'condition' => 'user_id=:id AND favorite=1',
-					'params' => array(':id' => $userId)
-			))
-		));
-		return $this;
-	}
-	/*get active projects for current user*/
-	public function live($userId){
-		$this->getDbCriteria()->mergeWith(array(
-			'condition' => 'dropped=0',
-			'with' => array('assigns' => 
-					array('select' => false, 
-						  'condition'=>'user_id=:id AND favorite=0', 
-						  'params' => array(':id' => $userId)
-						)
-			) 		 
+			'condition' => '`t`.dropped=0' 		 
 		));
 		return $this;
 	}
 	
 	public function trashed(){
 		$this->getDbCriteria()->mergeWith(array(
-				'condition' => 'dropped=1'
+			'condition' => '`t`.dropped=1',
 		));
 		return $this;
 	}
+
+	public function favorite(){
+		$this->getDbCriteria()->mergeWith(array(
+				'condition' => '`t`.dropped=0',
+				'with' => array('users' =>
+						array('select' => false,
+							'condition'=>'favorite=1'
+						)
+				)
+		));
+
+		return $this;
+	}	
 }

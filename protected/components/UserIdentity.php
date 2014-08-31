@@ -2,7 +2,6 @@
 
 class UserIdentity extends CUserIdentity
 {
-	//основной ключ записи о пользователе
 	private $_id;
 	 
     public function authenticate()

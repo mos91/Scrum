@@ -18,21 +18,21 @@ return array(
 		'application.models.forms.*',
 		'application.models.ar.*',
 		'application.components.*',
-		'application.components.widgets.*',
 		'application.components.exceptions.*',
 		'application.components.validators.*'
 	),
 
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		/*
-		'gii'=>array(
+		/*'project' => array(
+			'class' => ''
+		)*/
+		/*'gii'=>array(
 			'class'=>'system.gii.GiiModule',
-			'password'=>'Enter Your Password Here',
+			'password'=>'123456',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
-		),
-		*/
+		),*/
 	),
 
 	// application components
@@ -77,7 +77,7 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-				//uncomment the following to show log messages on web pages
+				// uncomment the following to show log messages on web pages
 				array(
 					'class'=>'CFileLogRoute',
 					'categories'=>'system.db.*',

@@ -1,24 +1,17 @@
 <?php
 class CreateUserStoryAction extends CAction {
-	private function checkIsProjectExist(){
-		$projectId = Yii::app()->user->getState('project-id');
-		if (!isset($projectId)){
+	private function checkIsProjectIdExist(){
+		$request = Yii::app()->request->restParams;
+
+		if (!isset($request['project_id'])){
 			throw new InvalidStateException(500, $this->controller, 'project Id doesnt exist');
 		}
 	}
-	
-	private function checkIsFormExist(){
-		if (!isset(Yii::app()->request->restParams["UserStoryForm"])){
-			throw new InvalidRestParamsException(500, $this->controller, "request params doesnt exist");
-		}
-	}
-	
+
 	private function checkFormIsValid($form){
 		if (!$form->validate()){
 			if (Yii::app()->request->isAjaxRequest){
-			 	$content = $this->controller->renderPartial('form', array('model' => $form), true);	
-			 	echo CJSON::encode(array('error' => true, 'content' => $content));
-			 	Yii::app()->end();
+				throw new InvalidRestParamsException(500, $this->controller, "request params are invalid");	
 			}
 		}
 	}
@@ -27,25 +20,23 @@ class CreateUserStoryAction extends CAction {
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
 		}
-		else {
-			if (Yii::app()->request->isAjaxRequest){
-				$this->controller->renderPartial('form', array('model' => new UserStoryForm));
-			}
-		}
 	}
 	
 	private function onSubmit(){
-		$this->checkIsProjectExist();
-		$this->checkIsFormExist();
+		$this->checkIsProjectIdExist();
 		$form = new UserStoryForm;
-		$form->setAttributes(Yii::app()->request->restParams["UserStoryForm"], false);
+		$form->setAttributes(Yii::app()->request->restParams, false);
 		$this->checkFormIsValid($form);
-		$userStory = new UserStory;
-		$userStory->setAttributes($form->attributes,false);
-		$userStory->project_id = Yii::app()->user->getState('project-id');
-		$userStory->save();
+		$userstory = new UserStory;
+		$update_time = new DateTime();
+		$userstory->setAttributes($form->attributes,false);
+		$userstory->project_id = Yii::app()->request->restParams['project_id'];
+		$userstory->update_time = $update_time->getTimestamp();
+		$userstory->save();
 		
-		echo CJSON::encode(array('userStory' => $userStory->getAttributes()));
+		echo CJSON::encode(array('success' => true, 
+			'userstory' => array('id' => $userstory->getPrimaryKey(), 'update_time' => $userstory->update_time, 'status' => $userstory->status)));
+
 		Yii::app()->end();
 	}
 }
