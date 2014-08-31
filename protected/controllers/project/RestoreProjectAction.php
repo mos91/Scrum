@@ -1,17 +1,5 @@
 <?php
 class RestoreProjectAction extends CAction {
-	private function checkIsIdExist(){
-		if (!isset(Yii::app()->request->restParams['id'])){
-			throw new InvalidRestParamsException(500, $this->controller, 'Id doesnt exist');
-		}
-	}
-	
-	private function checkIsIdsExist(){
-		if (!isset(Yii::app()->request->restParams['ids'])){
-			throw new InvalidRestParamsException(500, $this->controller, 'Ids doesnt exist');
-		}
-	}
-
 	public function run(){
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
@@ -20,26 +8,36 @@ class RestoreProjectAction extends CAction {
 	
 	private function onSubmit(){
 		$request = Yii::app()->request;
-		if ($request->restParams['ids']){
-			$this->checkIsIdsExist();
-			$ids = Yii::app()->request->restParams['ids'];
+		$userId = Yii::app()->user->getState('user-id');
 
+		if (isset($request->restParams['ids'])){
+			$ids = Yii::app()->request->restParams['ids'];
+			
 			Project::model()->updateByPk($ids, array('dropped' => false));
-			$projects = Project::model()->findAllByAttributes(array('id' => $ids));
-	
-			echo CJSON::encode(array('projects' => $projects));
+			$projects = Project::model()->localInfo($userId, $ids)->findAll();
+
+			foreach($projects as $id => $project){
+				$jsonResult[$id] = $project->getAttributes();
+				$jsonResult[$id]['favorite'] = $project->assigns[0]->favorite;
+			}
+
+			echo CJSON::encode(array('success' => true, 'data' => $jsonResult));
 			Yii::app()->end();	
 		}
-		else if ($request->restParams['id']) {
-			$this->checkIsIdExist();
+		else if (isset($request->restParams['id'])) {
 			$id = Yii::app()->request->restParams['id'];
 
-			$project = Project::model()->findByPk($id);
-			$project->dropped = false;
-			$project->save();
-			
-			echo CJSON::encode(array('project' => $project));
+			Project::model()->updateByPk($id, array('dropped' => false));
+			$project = Project::model()->localInfo($userId, $id)->find();
+
+			$jsonResult[0] = $project->getAttributes();
+			$jsonResult[0]['favorite'] = $project->assigns[0]->favorite;
+
+			echo CJSON::encode(array('success' => true, 'data' => $jsonResult));
 			Yii::app()->end();
+		}
+		else {
+			throw new InvalidRestParamsException(500, $this->controller, 'Request parameters doesnt exist');
 		}
 	}
 } 

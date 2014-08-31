@@ -1,5 +1,5 @@
 <?php
-class DropProjectAction extends CAction {
+class RestoreUserStoryAction extends CAction {
 	public function run(){
 		if (Yii::app()->request->isPostRequest){
 			$this->onSubmit();
@@ -11,8 +11,8 @@ class DropProjectAction extends CAction {
 		if (isset($request->restParams['ids'])){
 			$ids = Yii::app()->request->restParams['ids'];
 
-			Project::model()->updateByPk($ids, array('dropped' => true));
-			$projects = Project::model()->findAllByAttributes(array('id' => $ids));
+			UserStory::model()->updateByPk($ids, array('dropped' => false));
+			$userstories = UserStory::model()->findAllByAttributes(array('id' => $ids));
 			
 			echo CJSON::encode(array('success' => true, 'data' => $projects));
 			Yii::app()->end();	
@@ -20,11 +20,11 @@ class DropProjectAction extends CAction {
 		else if (isset($request->restParams['id'])){
 			$id = Yii::app()->request->restParams['id'];
 			
-			$project = Project::model()->findByPk($id);
-			$project->dropped = true;
-			$project->save();
+			$userstory = UserStory::model()->findByPk($id);
+			$userstory->dropped = false;
+			$userstory->save();
 
-			echo CJSON::encode(array('success' => true, 'data' => array($project)));
+			echo CJSON::encode(array('success' => true, 'data' => array($userstory)));
 			Yii::app()->end();
 		}
 		else {

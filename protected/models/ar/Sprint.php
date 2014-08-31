@@ -5,12 +5,16 @@ class Sprint extends CActiveRecord {
 	
 	public $status;
 	public $dropped = false;
+<<<<<<< HEAD
 	public $estimate;
 
 	public $start_time;
 	public $end_time;
 	public $update_time;
 
+=======
+	
+>>>>>>> d3dc502d6c8cde883854386db3515c6cdf9d0368
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -24,6 +28,7 @@ class Sprint extends CActiveRecord {
 	public function primaryKey(){
 		return 'id';
 	}
+<<<<<<< HEAD
 	
 	public function scopes(){
 		return array('byProject', 'planned', 'active', 'completed');
@@ -69,6 +74,13 @@ class Sprint extends CActiveRecord {
 		return array(
 			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
 			'userstories' => array(self::HAS_MANY, 'UserStory', 'sprint_id')
+=======
+
+	public function relations(){
+		return array(
+			'project' => array(self::BELONGS_TO, 'Project', 'project_id')
+			//'team' => array(self::MANY_MANY, 'UserRecord', 'user_issues_table(issue_id,user_id)')
+>>>>>>> d3dc502d6c8cde883854386db3515c6cdf9d0368
 		);
 	}
 }
